@@ -1,0 +1,41 @@
+<script>
+
+  function showUser (data) {
+    document.getElementById("user").innerHTML = data.email;
+  }
+
+  function generateInstituteSelect(data){ // створюємо випадний список для вибору інституту
+    const institutes = Object.values(data).map(el =>{
+    return {key: el.idinstitute, value: el.nameinstitute}
+        });
+        institutes.unshift({key: 0, value: "Виберіть інститут"});
+    document.getElementById("institute").innerHTML = generateSelect(institutes, "select-institute");
+  }
+
+  function generateEducationalDegreeSelect(data){ // створюємо випадний список для вибору освітнього ступеня
+    const educationalDegree = Object.values(data).map(el =>{
+    return {key: el.educationaldegreeid, value: el.educationaldegreename}
+        });
+        educationalDegree.unshift({key: 0, value: "Виберіть освітній рівень"});
+    document.getElementById("educationalDegree").innerHTML = generateSelect(educationalDegree, "select-educationalDegree"); 
+  }
+  
+  function generateFormTrainingSelect(data){ // створюємо випадний список для вибору форми навчання
+    const formTraining = Object.values(data).map(el =>{
+    return {key: el.formtrainingid, value: el.formtrainingname}
+        });
+        formTraining.unshift({key: 0, value: "Виберіть форму навчання"});
+    document.getElementById("formTraining").innerHTML = generateSelect(formTraining, "select-formTraining");
+  }
+  
+  function generateGroupsSelect(data){ // створюємо випадний список для вибору групи
+    const groups = Object.values(data).map(el =>{
+    return {key: el.groupId, value: el.name}
+        });        
+        groups.unshift({key: 0, value: "Виберіть групу"});
+    document.getElementById("groups").innerHTML = generateSelect(groups, "select-groups");
+  }
+
+</script>
+
+

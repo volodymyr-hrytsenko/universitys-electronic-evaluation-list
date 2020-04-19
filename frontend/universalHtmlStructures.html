@@ -1,0 +1,24 @@
+<script>
+
+  function generateSelect(data, idSelect){ // створює select, приймає масив списку і id 
+    return `<select id="${idSelect}">${data.map(option =>{
+    return `<option value=${option.key
+            }>${option.value
+            }</option>`
+        })
+    }</select>`
+  }
+
+  function createTable(data){ // створює таблицю
+      return `<table>
+      ${ data.map((row) => {
+         return `<tr> ${ row.map((column) => {
+            return `<td> ${column} </td>`;
+         }).join("") } </tr>`;
+      }).join("") }
+      </table>`;
+  }
+
+</script>
+
+
