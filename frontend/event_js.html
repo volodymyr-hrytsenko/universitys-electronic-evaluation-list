@@ -22,16 +22,16 @@
   let evaluationListData = { //Тестові данні для створення відомості
     listNumber: 1,
     institute: "",
-    academicDiscipline: 'Вища математика', //--
-    controlForm: 'екзамен', //--
-    date: '19/04/2020', //--
+    academicDiscipline: "", //--
+    controlForm: "", //--
+    date: "", //--
     speciality: "",
     educationalProgram: "",
     educationalDegree: "",
     educationalForm: "",
     groupName: "",
-    teacherFullName: 'Босовський Микола Васильович', //--
-    aditionalTeachers: ["Босовський Микола Васильович", "Босовський Микола Васильович"], //--
+    teacherFullName: "", //--
+    aditionalTeachers: [], //--
     students: []
   }
 
@@ -71,6 +71,8 @@
     page.addEventListener('change', function (el) {
       if (el.target && el.target.type == "select-one") { //details
         scanningSelectorsEvents(el.target.id);
+      } else if (el.target && el.target.type == "text") {
+        scanningFormEvents(el.target.id);
       }
     });
 
@@ -80,6 +82,7 @@
         switch (el.target.name) {
           case "createNewForm":
             setEvaluationListData();
+            generateForm();
             break;
           case "approved": //погоджено
             createSpinner();
@@ -168,6 +171,27 @@
     }
   }
 
+  function scanningFormEvents(id) {
+    switch (id) {
+      case "academicDiscipline":
+        evaluationListData.academicDiscipline = document.getElementById("academicDiscipline").value;
+        break;
+      case "controlForm":
+        evaluationListData.controlForm = document.getElementById("controlForm").value;
+        break;
+      case "date":
+        evaluationListData.date = document.getElementById("date").value;
+        break;
+      case "teacherFullName":
+        evaluationListData.teacherFullName = document.getElementById("teacherFullName").value;
+        break;
+      case "aditionalTeachers":
+        evaluationListData.aditionalTeachers = document.getElementById("aditionalTeachers").value.split(",");
+        console.log(evaluationListData);
+        break;
+    }
+  }
+
   function getDataInstituteGroups(instituteId) {
     return new Promise((resolve, reject) => {
       google.script.run
@@ -220,7 +244,7 @@
     });
     evaluationListData.students = handBook.students;
 
-    console.log(evaluationListData);
+    // console.log(evaluationListData);
   }
 
   /*--------------------------------------------------------------------------------------------------------*/

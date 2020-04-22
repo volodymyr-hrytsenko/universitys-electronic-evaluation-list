@@ -63,4 +63,18 @@
   function generateAddButton() {
     document.getElementById("addNewForm").innerHTML = "<button name='createNewForm'>Plus</button>"
   }
+
+  function generateForm() {
+    let form = document.getElementById("form");
+    form.innerHTML =
+      '<div class="row"><label for="academicDiscipline">Навчальна дисципліна</label><input type="text" id="academicDiscipline" placeholder="повна назва дисципліни за навчальним планом"></div>';
+    form.innerHTML +=
+      '<div class="row"><label for="controlForm">Форма підсумкового контролю</label><input type="text" id="controlForm" placeholder="екзамен/залік"></div>';
+    form.innerHTML +=
+      '<div class="row"><label for="date">Дата контролю</label><input type="text" id="date"></div>';
+    form.innerHTML +=
+      '<div class="row"><label for="teacherFullName">посади і ПІБ викладачів, які виставляють підсумкову оцінку</label><input type="text" id="teacherFullName"></div>';
+    form.innerHTML +=
+      '<div class="row"><label for="aditionalTeachers">посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль</label><input type="text" id="aditionalTeachers" placeholder="введіть через кому"></div>';
+  }
 </script>
