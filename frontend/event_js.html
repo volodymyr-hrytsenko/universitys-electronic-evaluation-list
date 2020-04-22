@@ -19,6 +19,17 @@
     }
   };
 
+  let evaluationListData = { //Тестові данні для створення відомості
+  listNumber: 1,
+  institute: "Навчально-науковий інститут інформаційних та освітніх технологій",
+  academicDiscipline: 'Вища математика',//--
+  controlForm: 'екзамен',//--
+  date: '19/04/2020',//--
+  teacherFullName: 'Босовський Микола Васильович',//--
+  aditionalTeachers: ["Босовський Микола Васильович", "Босовський Микола Васильович"],//--
+  students: []
+}
+
   window.onload = function () {
     hiddenMessagesBlock();
     getDataLists()
@@ -143,6 +154,7 @@
         break;
       case "select-groups":
         optionsDataCollection.groupId = +document.getElementById("select-groups").value;
+        setEvaluationListData();
         break;
     }
   }
@@ -163,6 +175,24 @@
     return arr.filter(function (element) {
       return (element[key] === query) ? true : false; //елемент співпадає з рядком запиту
     });
+  }
+  
+  function setEvaluationListData () {
+    let allGroupInfo = filterGroups(handBook.filteredGroupsByFormTraining, "groupId", optionsDataCollection.groupId);
+    allGroupInfo = allGroupInfo[0];
+    
+    allGroupInfo.groupName = allGroupInfo.name;
+    delete allGroupInfo.name;
+    delete allGroupInfo.groupId;
+    delete allGroupInfo.instituteId;
+    
+    evaluationListData.institute = handBook.institutes[optionsDataCollection.instituteId].nameinstitute;
+    
+    for (let key in allGroupInfo) {
+      evaluationListData[key] = allGroupInfo[key];
+    }
+    
+    console.log(evaluationListData);
   }
 
   /*--------------------------------------------------------------------------------------------------------*/

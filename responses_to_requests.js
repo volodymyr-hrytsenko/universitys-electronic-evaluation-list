@@ -40,3 +40,36 @@ function saveResource(data) {
 }
 
 
+
+function sendEmail(dataObject,pdfName,messageTitle,messageBody,organization){
+  const ss = SpreadsheetApp.openById(dataObject.templateId);
+  let sheet = ss.getSheets()[0];
+  let sheetPdf = ss.getSheets()[1];
+  
+  let data = sheet.getRange(...pageRange.mainPage).getValues();
+  
+  let folderID = router.pdfFolder;
+  let folder = DriveApp.getFolderById(folderID);
+  
+  let destSpreadSheet = SpreadsheetApp.open(DriveApp.getFileById(ss.getId()).makeCopy("tmp_pdf", folder));
+  let sheetsPdf = destSpreadSheet.getSheets();
+  
+  let theBlob = destSpreadSheet.getBlob().getAs('application/pdf').setName(pdfName);
+  let newFile = folder.createFile(theBlob);
+  let newFileId = newFile.getId();
+  
+  DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);
+  
+  if(1){
+    GmailApp.sendEmail(dataObject.email,messageTitle,messageBody,
+                       {
+                         name:organization,
+                         attachments: [DriveApp.getFileById(newFileId)]
+                       }
+  )}
+  return newFileId
+}
+
+
+
+
