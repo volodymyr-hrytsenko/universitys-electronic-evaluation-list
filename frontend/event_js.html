@@ -20,15 +20,20 @@
   };
 
   let evaluationListData = { //Тестові данні для створення відомості
-  listNumber: 1,
-  institute: "Навчально-науковий інститут інформаційних та освітніх технологій",
-  academicDiscipline: 'Вища математика',//--
-  controlForm: 'екзамен',//--
-  date: '19/04/2020',//--
-  teacherFullName: 'Босовський Микола Васильович',//--
-  aditionalTeachers: ["Босовський Микола Васильович", "Босовський Микола Васильович"],//--
-  students: []
-}
+    listNumber: 1,
+    institute: "",
+    academicDiscipline: 'Вища математика', //--
+    controlForm: 'екзамен', //--
+    date: '19/04/2020', //--
+    speciality: "",
+    educationalProgram: "",
+    educationalDegree: "",
+    educationalForm: "",
+    groupName: "",
+    teacherFullName: 'Босовський Микола Васильович', //--
+    aditionalTeachers: ["Босовський Микола Васильович", "Босовський Микола Васильович"], //--
+    students: []
+  }
 
   window.onload = function () {
     hiddenMessagesBlock();
@@ -73,15 +78,8 @@
       hiddenMessagesBlock();
       if (el.target && el.target.type == "submit") { //details
         switch (el.target.name) {
-          case "details":
-            getInfoFromDocument(el.target.dataset.id)
-              .then((data) => {
-                // успіх
-                showInfoFromDocument(data);
-              })
-              .catch((e) => {
-                // при помилці
-              })
+          case "createNewForm":
+            setEvaluationListData();
             break;
           case "approved": //погоджено
             createSpinner();
@@ -110,6 +108,7 @@
         optionsDataCollection.formTrainingId = 0;
         document.getElementById("select-groups").value = 0;
         optionsDataCollection.groupId = 0;
+        document.getElementById("addNewForm").innerHTML = "";
 
         handBook.filteredGroupsByEducationalDegree = [];
         handBook.filteredGroupsByFormTraining = [];
@@ -133,28 +132,38 @@
         optionsDataCollection.formTrainingId = 0;
         document.getElementById("select-groups").value = 0;
         optionsDataCollection.groupId = 0;
+        document.getElementById("addNewForm").innerHTML = "";
 
         handBook.filteredGroupsByEducationalDegree = filterGroups(handBook.groups, "educationalDegree", conformity
           .educationalDegree[optionsDataCollection.educationalDegreeId]);
         handBook.filteredGroupsByFormTraining = [];
 
         generateGroupsSelect(handBook.filteredGroupsByFormTraining);
-
-        console.log(handBook);
         break;
       case "select-formTraining":
         optionsDataCollection.formTrainingId = +document.getElementById("select-formTraining").value;
+
+        document.getElementById("addNewForm").innerHTML = "";
 
         handBook.filteredGroupsByFormTraining = filterGroups(handBook.filteredGroupsByEducationalDegree,
           "educationalForm", conformity.formTraining[optionsDataCollection.formTrainingId]);
 
         generateGroupsSelect(handBook.filteredGroupsByFormTraining);
-
-        console.log(handBook);
         break;
       case "select-groups":
         optionsDataCollection.groupId = +document.getElementById("select-groups").value;
-        setEvaluationListData();
+
+        getDataGroupsStudents(optionsDataCollection.groupId)
+          .then((data) => {
+            // успіх
+            handBook.students = data;
+            console.log(handBook);
+            generateAddButton();
+          })
+          .catch((e) => {
+            // при помилці
+            console.log(e);
+          })
         break;
     }
   }
@@ -171,27 +180,46 @@
     });
   }
 
+  function getDataGroupsStudents(groupId) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(res => {
+          //deleteSpinner();
+          resolve(res);
+        })
+        .withFailureHandler(reject)
+        .getDataStudents(groupId); // це функцыя з responnses
+    });
+  }
+
   function filterGroups(arr, key, query) {
     return arr.filter(function (element) {
       return (element[key] === query) ? true : false; //елемент співпадає з рядком запиту
     });
   }
-  
-  function setEvaluationListData () {
+
+  function setEvaluationListData() {
     let allGroupInfo = filterGroups(handBook.filteredGroupsByFormTraining, "groupId", optionsDataCollection.groupId);
     allGroupInfo = allGroupInfo[0];
-    
+
     allGroupInfo.groupName = allGroupInfo.name;
     delete allGroupInfo.name;
     delete allGroupInfo.groupId;
     delete allGroupInfo.instituteId;
-    
+
     evaluationListData.institute = handBook.institutes[optionsDataCollection.instituteId].nameinstitute;
-    
+
     for (let key in allGroupInfo) {
       evaluationListData[key] = allGroupInfo[key];
     }
-    
+
+    handBook.students.forEach(element => {
+      delete element.groupId;
+      element.currentGrade = "";
+      element.semesterGrade = "";
+    });
+    evaluationListData.students = handBook.students;
+
     console.log(evaluationListData);
   }
 

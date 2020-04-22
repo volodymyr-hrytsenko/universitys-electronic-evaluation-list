@@ -163,3 +163,14 @@ function sendEmail(dataObject,pdfName,messageTitle,messageBody,organization){
 function testSendEmail() {
 sendEmail(dataObjectItem,'List','Title','Test','CHNU')
 }
+
+
+function testRouter(){
+
+  let s = writeDataToInstituteRouter(recordData);
+
+console.log(s);
+
+ // console.log(uid());
+  
+}

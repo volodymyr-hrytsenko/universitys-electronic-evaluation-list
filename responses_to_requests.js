@@ -19,6 +19,14 @@ function getDataGroups (instituteId) {
   return arrChosenGroup;
 }
 
+function getDataStudents (groupId) {
+  let obj = getDataFromRouterLists();
+  const students = obj.handBook.students;
+  console.log(Object.values(students));
+  const arrGroupStudents = filterResources(Object.values(students), "groupId", groupId);
+  return arrGroupStudents;
+}
+
 function filterResources(arr, key, query) {
   return arr.filter(function(element) {
       return (element[key] === query) ? true : false;//елемент співпадає з рядком запиту

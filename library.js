@@ -20,17 +20,16 @@ function getDataJsonFromFile(idFolder, fileName){
    }     
 }
 
-function moveFileToFolder(fileId, toFolderId) {
-   try{
-     var file = DriveApp.getFileById(fileId);
-     var source_folder = DriveApp.getFileById(fileId).getParents().next();
-     var folder = DriveApp.getFolderById(toFolderId);
-     folder.addFile(file);
-     source_folder.removeFile(file);
-    return true;
+function moveFileToFolder(fileId, folderId){
+  try{
+    const file = DriveApp.getFileById(fileId);
+    const source_folder = DriveApp.getFileById(fileId).getParents().next();
+    const folder = DriveApp.getFolderById(folderId);
+    folder.addFile(file);
+    source_folder.removeFile(file);
   } catch(e){
     return 'Error: ' + e.toString();
-  }
+  } 
 }
 
 function createFileSpreadsheet(folderID, fileName){
@@ -70,19 +69,19 @@ function createEvaluationList(data, newFileName) {
           sheet = evaluationList.getSheetByName("2");
         }
         let position = ind + rangeNum;
-        sheet.getRange('B' + position).setValue(student.name)
-        sheet.getRange('D' + position).setValue(student.gradebookNumber)
-        sheet.getRange('E' + position).setValue(student.currentGrade)
-        sheet.getRange('F' + position).setValue(student.semesterGrade)
-      })
+        sheet.getRange('B' + position).setValue(student.name);
+        sheet.getRange('D' + position).setValue(student.gradebookNumber);
+        sheet.getRange('E' + position).setValue(student.currentGrade);
+        sheet.getRange('F' + position).setValue(student.semesterGrade);
+      });
       sheet = evaluationList.getSheetByName("1");
     } else if(key === 'aditionalTeachers') {
-      let teachers = data[key].join(', ')
-      sheet.getRange(range).setValue(teachers)
+      let teachers = data[key].join(', ');
+      sheet.getRange(range).setValue(teachers);
     } else if(range) {
-      sheet.getRange(range).setValue(data[key])
+      sheet.getRange(range).setValue(data[key]);
     }
   }
-  return evaluationListId
+  return evaluationListId;
 }
 
