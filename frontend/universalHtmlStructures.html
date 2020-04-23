@@ -9,8 +9,8 @@
     }</select>`
   }
 
-  function createTable(data){ // створює таблицю
-      return `<table>
+  function createTable(data, id){ // створює таблицю
+      return `<table id="${id}">
       ${ data.map((row) => {
          return `<tr> ${ row.map((column) => {
             return `<td> ${column} </td>`;

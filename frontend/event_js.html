@@ -22,16 +22,16 @@
   let evaluationListData = { //Тестові данні для створення відомості
     listNumber: 1,
     institute: "",
-    academicDiscipline: "", //--
-    controlForm: "", //--
-    date: "", //--
+    academicDiscipline: "1", //--
+    controlForm: "2", //--
+    date: "3", //--
     speciality: "",
     educationalProgram: "",
     educationalDegree: "",
     educationalForm: "",
     groupName: "",
-    teacherFullName: "", //--
-    aditionalTeachers: [], //--
+    teacherFullName: "4", //--
+    aditionalTeachers: ["5", "36"], //--
     students: []
   }
 
@@ -71,8 +71,14 @@
     page.addEventListener('change', function (el) {
       if (el.target && el.target.type == "select-one") { //details
         scanningSelectorsEvents(el.target.id);
-      } else if (el.target && el.target.type == "text") {
+      } else if (el.target && el.target.type == "text" && !el.target.name) {
         scanningFormEvents(el.target.id);
+      }else if (el.target && el.target.name == "tableInput"){
+        let marks = +document.getElementById(el.target.id).value,
+            adres = el.target.id.split("-");
+        evaluationListData.students[adres[1]-1][adres[0]] = marks;
+
+        console.log(evaluationListData.students);
       }
     });
 

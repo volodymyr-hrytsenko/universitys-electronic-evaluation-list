@@ -67,14 +67,35 @@
   function generateForm() {
     let form = document.getElementById("form");
     form.innerHTML =
-      '<div class="row"><label for="academicDiscipline">Навчальна дисципліна</label><input type="text" id="academicDiscipline" placeholder="повна назва дисципліни за навчальним планом"></div>';
+      `<div class="row"><label for="academicDiscipline">Навчальна дисципліна</label><input type="text" id="academicDiscipline" placeholder="повна назва дисципліни за навчальним планом" value="${evaluationListData.academicDiscipline}"></div>`;
     form.innerHTML +=
-      '<div class="row"><label for="controlForm">Форма підсумкового контролю</label><input type="text" id="controlForm" placeholder="екзамен/залік"></div>';
+      `<div class="row"><label for="controlForm">Форма підсумкового контролю</label><input type="text" id="controlForm" placeholder="екзамен/залік" value="${evaluationListData.controlForm}"></div>`;
     form.innerHTML +=
-      '<div class="row"><label for="date">Дата контролю</label><input type="text" id="date"></div>';
+      `<div class="row"><label for="date">Дата контролю</label><input type="text" id="date" value="${evaluationListData.date}"></div>`;
     form.innerHTML +=
-      '<div class="row"><label for="teacherFullName">посади і ПІБ викладачів, які виставляють підсумкову оцінку</label><input type="text" id="teacherFullName"></div>';
+      `<div class="row"><label for="teacherFullName">посади і ПІБ викладачів, які виставляють підсумкову оцінку</label><input type="text" id="teacherFullName" value="${evaluationListData.teacherFullName}"></div>`;
     form.innerHTML +=
-      '<div class="row"><label for="aditionalTeachers">посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль</label><input type="text" id="aditionalTeachers" placeholder="введіть через кому"></div>';
+      `<div class="row"><label for="aditionalTeachers">посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль</label><input type="text" id="aditionalTeachers" placeholder="введіть через кому" value="${evaluationListData.aditionalTeachers.join(", ")}"></div>`;
+
+    let arr = evaluationListData.students;
+    let result,
+      tableHeader = ["№", "Прізвище, ініціали студента", "Поточний контроль", "Підсумковий семестровий контроль", "ЗВО"],
+      tableMain = [],
+      num = 1;
+
+    arr.forEach(element => {
+      result = Object.keys(element).map(function (key) {
+        return element[key];
+      });
+      result.splice(1, 1);
+      result.unshift(num);
+      result[2] = `<input type="text" name="tableInput" id="${"currentGrade-" + num}">`;
+      result[3] = `<input type="text" name="tableInput" id="${"semesterGrade-" + num}">`;
+        ++num;
+        tableMain.push(result);
+    });
+    tableMain.unshift(tableHeader);
+    console.log(tableMain);
+    form.innerHTML += createTable(tableMain, "formTable");
   }
 </script>
