@@ -76,8 +76,12 @@
       } else if (el.target && el.target.name == "tableInput") {
         let marks = +document.getElementById(el.target.id).value,
           adres = el.target.id.split("-"),
-          marksSum = +document.getElementById(`gradeSum-${adres[1]}`).value;
+          marksSum;
+
         evaluationListData.students[adres[1] - 1][adres[0]] = marks;
+
+        marksSum = (adres[0] == "currentGrade") ? +document.getElementById(`semesterGrade-${adres[1]}`).value : +
+          document.getElementById(`currentGrade-${adres[1]}`).value;
         marksSum += marks;
         document.getElementById(`gradeSum-${adres[1]}`).value = marksSum;
         evaluationListData.students[adres[1] - 1]["gradeSum"] = marksSum;
@@ -91,20 +95,34 @@
       if (el.target && el.target.type == "submit") { //details
         switch (el.target.name) {
           case "createForm":
-            setEvaluationListData();
+            createEvaluationListData();
             document.getElementById("filter").style.display = "none";
             generateForm();
+            document.getElementById("formWrap").style.display = "block";
 
             break;
-          case "approved": //погоджено
-            createSpinner();
-            el.target.classList.add("buttonDisabled");
-            google.script.run.withSuccessHandler(deleteSpinner).workingCorrectDocument(el.target.dataset.id);
+          case "closeForm":
+            document.getElementById("formWrap").style.display = "none";
+            clearnEvaluationListData();
+            document.getElementById("select-institute").value = 0;
+            document.getElementById("select-educationalDegree").value = 0;
+            document.getElementById("select-formTraining").value = 0;
+            document.getElementById("select-groups").value = 0;
+            generateAddButton(false);
+            document.getElementById("filter").style.display = "block";
+
+            console.log(evaluationListData);
             break;
-          case "rejected": //відхилено
-            createSpinner();
-            el.target.classList.add("buttonDisabled");
-            google.script.run.withSuccessHandler(deleteSpinner).moveFileBadDocs(el.target.dataset.id);
+          case "saveForm":
+            setEvaluationListData(evaluationListData)
+              .then((data) => {
+                // успіх
+                alert("Успіх");
+              })
+              .catch((e) => {
+                // при помилці
+                console.log(e);
+              })
             break;
         }
 
@@ -118,15 +136,13 @@
         optionsDataCollection.instituteId = +document.getElementById("select-institute").value;
 
         document.getElementById("select-educationalDegree").value = 0;
-        optionsDataCollection.educationalDegreeId = 0;
         document.getElementById("select-formTraining").value = 0;
-        optionsDataCollection.formTrainingId = 0;
         document.getElementById("select-groups").value = 0;
-        optionsDataCollection.groupId = 0;
         document.getElementById("buttonsAddForm").innerHTML = "";
 
         handBook.filteredGroupsByEducationalDegree = [];
         handBook.filteredGroupsByFormTraining = [];
+        generateGroupsSelect([]);
 
         getDataInstituteGroups(optionsDataCollection.instituteId)
           .then((data) => {
@@ -144,9 +160,7 @@
         optionsDataCollection.educationalDegreeId = +document.getElementById("select-educationalDegree").value;
 
         document.getElementById("select-formTraining").value = 0;
-        optionsDataCollection.formTrainingId = 0;
         document.getElementById("select-groups").value = 0;
-        optionsDataCollection.groupId = 0;
         document.getElementById("buttonsAddForm").innerHTML = "";
 
         handBook.filteredGroupsByEducationalDegree = filterGroups(handBook.groups, "educationalDegree", conformity
@@ -173,7 +187,7 @@
             // успіх
             handBook.students = data;
             console.log(handBook);
-            generateAddButton();
+            generateAddButton(true);
           })
           .catch((e) => {
             // при помилці
@@ -234,7 +248,7 @@
     });
   }
 
-  function setEvaluationListData() {
+  function createEvaluationListData() {
     let allGroupInfo = filterGroups(handBook.filteredGroupsByFormTraining, "groupId", optionsDataCollection.groupId);
     allGroupInfo = allGroupInfo[0];
 
@@ -244,6 +258,7 @@
     delete allGroupInfo.instituteId;
 
     evaluationListData.institute = handBook.institutes[optionsDataCollection.instituteId].nameinstitute;
+    evaluationListData.aditionalTeachers = [];
 
     for (let key in allGroupInfo) {
       evaluationListData[key] = allGroupInfo[key];
@@ -258,6 +273,24 @@
     evaluationListData.students = handBook.students;
 
     // console.log(evaluationListData);
+  }
+
+  function clearnEvaluationListData() {
+    for (let key in evaluationListData) {
+      evaluationListData[key] = "";
+    }
+  }
+
+  function setEvaluationListData(formData) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(res => {
+          //deleteSpinner();
+          resolve(res);
+        })
+        .withFailureHandler(reject)
+        .saveEvaluationListData(formData); // це функцыя з responnses
+    });
   }
 
   /*--------------------------------------------------------------------------------------------------------*/

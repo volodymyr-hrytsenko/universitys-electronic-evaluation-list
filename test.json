@@ -1,0 +1,69 @@
+{
+    "recordNumber": 7,
+    "emailTeacher": "sfgng@xfvfkn",
+    "instituteId": 2,
+    "groupId": 5,
+    "controlFormId": 1,
+    "evaluationListType": 1,
+    "status": 0,
+    "spreadsheetId": "",
+    "pdfId": "",
+    "evaluationListData": {
+        "institute": "Навчально-науковий інститут педагогічної освіти, соціальної роботи і мистецтва",
+        "listNumber": 1,
+        "date": "20934",
+        "speciality": "014 СЕРЕДНЯ ОСВІТА (ІНФОРМАТИКА)",
+        "educationalDegree": "Магістр",
+        "teacherFullName": "4ідлвао",
+        "educationalForm": "Денна",
+        "educationalProgram": "ПРИКЛАДНА МАТЕМАТИКА",
+        "groupName": "2-І",
+        "controlForm": "1",
+        "students": [{
+            "gradeSum": 127,
+            "semesterGrade": 34,
+            "gradebookNumber": 746702,
+            "currentGrade": 93,
+            "name": "Шевелев Артем Віталійович"
+        }, {
+            "gradeSum": 56,
+            "semesterGrade": 53,
+            "gradebookNumber": 772167,
+            "currentGrade": 3,
+            "name": "Пономарев Роберт Владиславович"
+        }, {
+            "currentGrade": 53335,
+            "name": "Костін Роберт Аланович",
+            "gradeSum": 53335,
+            "semesterGrade": "",
+            "gradebookNumber": 575087
+        }, {
+            "currentGrade": "",
+            "name": "Ткачев Алан Михайлович",
+            "gradeSum": "",
+            "semesterGrade": "",
+            "gradebookNumber": 176099
+        }, {
+            "currentGrade": "",
+            "name": "Платонов Алан Олексійович",
+            "gradeSum": "",
+            "semesterGrade": "",
+            "gradebookNumber": 335847
+        }, {
+            "currentGrade": 23,
+            "name": "Шевелев Петро Анварович",
+            "gradeSum": 58,
+            "semesterGrade": 35,
+            "gradebookNumber": 748902
+        }, {
+            "currentGrade": "",
+            "name": "Кузнецов Игор Владиславович",
+            "gradeSum": "",
+            "semesterGrade": "",
+            "gradebookNumber": 880723
+        }],
+        "academicDiscipline": "Мавді",
+        "aditionalTeachers": ["фжідвл", " лдфіор", "фірдві"]
+    },
+    "uid": "1587754388234-743d047a-8e35-4ea2-8945-fb88a818c0e4"
+}

@@ -60,8 +60,9 @@
     document.getElementById("groups").innerHTML = generateSelect(groups, "select-groups");
   }
 
-  function generateAddButton() {
-    document.getElementById("buttonsAddForm").innerHTML = "<button name='createForm'>Plus</button>"
+  function generateAddButton(b) {
+    (b) ? document.getElementById("buttonsAddForm").innerHTML = "<button name='createForm'>Plus</button>": document
+      .getElementById("buttonsAddForm").innerHTML = "";
   }
 
   function generateForm() {
@@ -75,6 +76,8 @@
       result,
       tableMain = [],
       num = 1;
+
+      console.log(data);
 
     formButtons = `<button name='closeForm'>Закрити</button>
       <button name='saveForm'>Зберегти</button>
@@ -109,6 +112,7 @@
     tableMain.unshift(tableHeader);
     form += createTable(tableMain, "formTable");
 
+    document.getElementById("formButtons").innerHTML = formButtons;
     document.getElementById("form").innerHTML = form;
     document.getElementById("controlForm").value = +data.controlForm;
   }

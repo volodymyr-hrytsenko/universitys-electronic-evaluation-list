@@ -79,6 +79,11 @@ function sendEmail(dataObject,pdfName,messageTitle,messageBody,organization){
   return newFileId
 }
 
+function saveEvaluationListData(evaluationListData) {
+  recordData.evaluationListData = evaluationListData;
+  return writeDataToInstituteRouter(recordData);
+}
+
 
 
 
