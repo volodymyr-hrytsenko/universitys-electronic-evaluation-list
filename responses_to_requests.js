@@ -5,7 +5,8 @@ function getDataFromHandbook(){
     user: getUser(),
     institutes: obj.handBook.institutes,
     educational_degree: obj.handBook.educational_degree,
-    form_of_training: obj.handBook.form_of_training
+    form_of_training: obj.handBook.form_of_training,
+    controlForm: controlForm
   }
   console.log(inputData);
   return inputData;

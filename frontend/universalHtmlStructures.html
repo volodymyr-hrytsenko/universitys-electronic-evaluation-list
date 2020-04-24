@@ -1,16 +1,13 @@
 <script>
-
-  function generateSelect(data, idSelect){ // створює select, приймає масив списку і id 
+  function generateSelect(data, idSelect) { // створює select, приймає масив списку і id 
     return `<select id="${idSelect}">${data.map(option =>{
-    return `<option value=${option.key
-            }>${option.value
-            }</option>`
-        })
-    }</select>`
+    return `<option value=${option.key}>${option.value}</option>`
+        }).join("")}
+      </select>`;
   }
 
-  function createTable(data, id){ // створює таблицю
-      return `<table id="${id}">
+  function createTable(data, id) { // створює таблицю
+    return `<table id="${id}">
       ${ data.map((row) => {
          return `<tr> ${ row.map((column) => {
             return `<td> ${column} </td>`;
@@ -18,7 +15,4 @@
       }).join("") }
       </table>`;
   }
-
 </script>
-
-

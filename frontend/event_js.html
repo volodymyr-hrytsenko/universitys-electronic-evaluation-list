@@ -33,7 +33,7 @@
     teacherFullName: "4", //--
     aditionalTeachers: ["5", "36"], //--
     students: []
-  }
+  };
 
   window.onload = function () {
     hiddenMessagesBlock();
@@ -73,12 +73,16 @@
         scanningSelectorsEvents(el.target.id);
       } else if (el.target && el.target.type == "text" && !el.target.name) {
         scanningFormEvents(el.target.id);
-      }else if (el.target && el.target.name == "tableInput"){
+      } else if (el.target && el.target.name == "tableInput") {
         let marks = +document.getElementById(el.target.id).value,
-            adres = el.target.id.split("-");
-        evaluationListData.students[adres[1]-1][adres[0]] = marks;
+          adres = el.target.id.split("-"),
+          marksSum = +document.getElementById(`gradeSum-${adres[1]}`).value;
+        evaluationListData.students[adres[1] - 1][adres[0]] = marks;
+        marksSum += marks;
+        document.getElementById(`gradeSum-${adres[1]}`).value = marksSum;
+        evaluationListData.students[adres[1] - 1]["gradeSum"] = marksSum;
 
-        console.log(evaluationListData.students);
+        console.log(evaluationListData);
       }
     });
 
@@ -86,9 +90,11 @@
       hiddenMessagesBlock();
       if (el.target && el.target.type == "submit") { //details
         switch (el.target.name) {
-          case "createNewForm":
+          case "createForm":
             setEvaluationListData();
+            document.getElementById("filter").style.display = "none";
             generateForm();
+
             break;
           case "approved": //погоджено
             createSpinner();
@@ -117,7 +123,7 @@
         optionsDataCollection.formTrainingId = 0;
         document.getElementById("select-groups").value = 0;
         optionsDataCollection.groupId = 0;
-        document.getElementById("addNewForm").innerHTML = "";
+        document.getElementById("buttonsAddForm").innerHTML = "";
 
         handBook.filteredGroupsByEducationalDegree = [];
         handBook.filteredGroupsByFormTraining = [];
@@ -141,7 +147,7 @@
         optionsDataCollection.formTrainingId = 0;
         document.getElementById("select-groups").value = 0;
         optionsDataCollection.groupId = 0;
-        document.getElementById("addNewForm").innerHTML = "";
+        document.getElementById("buttonsAddForm").innerHTML = "";
 
         handBook.filteredGroupsByEducationalDegree = filterGroups(handBook.groups, "educationalDegree", conformity
           .educationalDegree[optionsDataCollection.educationalDegreeId]);
@@ -152,7 +158,7 @@
       case "select-formTraining":
         optionsDataCollection.formTrainingId = +document.getElementById("select-formTraining").value;
 
-        document.getElementById("addNewForm").innerHTML = "";
+        document.getElementById("buttonsAddForm").innerHTML = "";
 
         handBook.filteredGroupsByFormTraining = filterGroups(handBook.filteredGroupsByEducationalDegree,
           "educationalForm", conformity.formTraining[optionsDataCollection.formTrainingId]);
@@ -174,16 +180,16 @@
             console.log(e);
           })
         break;
+      case "controlForm":
+        evaluationListData.controlForm = document.getElementById("controlForm").value;
+        break;
     }
   }
 
-  function scanningFormEvents(id) {
+  function scanningFormEvents(id) { //
     switch (id) {
       case "academicDiscipline":
         evaluationListData.academicDiscipline = document.getElementById("academicDiscipline").value;
-        break;
-      case "controlForm":
-        evaluationListData.controlForm = document.getElementById("controlForm").value;
         break;
       case "date":
         evaluationListData.date = document.getElementById("date").value;
@@ -247,6 +253,7 @@
       delete element.groupId;
       element.currentGrade = "";
       element.semesterGrade = "";
+      element.gradeSum = "";
     });
     evaluationListData.students = handBook.students;
 
