@@ -1,6 +1,11 @@
 <script>
   let handBook = {};
 
+  let a ={
+    x: 1,
+    y: 2
+  }
+
   let optionsDataCollection = {
     instituteId: 0,
     educationalDegreeId: 0,
@@ -66,6 +71,10 @@
     });
   }
 
+  function cloneObj(obj){
+    return JSON.parse(JSON.stringify(obj));
+  }
+
   function setEventScaner() {
     const page = document.getElementById("data");
     page.addEventListener('change', function (el) {
@@ -104,17 +113,13 @@
           case "closeForm":
             document.getElementById("formWrap").style.display = "none";
             clearnEvaluationListData();
-            document.getElementById("select-institute").value = 0;
-            document.getElementById("select-educationalDegree").value = 0;
-            document.getElementById("select-formTraining").value = 0;
-            document.getElementById("select-groups").value = 0;
-            generateAddButton(false);
             document.getElementById("filter").style.display = "block";
-
-            console.log(evaluationListData);
             break;
           case "saveForm":
-            setEvaluationListData(evaluationListData)
+            optionsDataCollection.emailTeacher = handBook.user.email;
+            optionsDataCollection.evaluationListType = 1; // признак основної відомості
+            optionsDataCollection.status = 0; // признак в роботі
+            setEvaluationListData(evaluationListData, optionsDataCollection)
               .then((data) => {
                 // успіх
                 alert("Успіх");
@@ -249,13 +254,20 @@
   }
 
   function createEvaluationListData() {
-    let allGroupInfo = filterGroups(handBook.filteredGroupsByFormTraining, "groupId", optionsDataCollection.groupId);
-    allGroupInfo = allGroupInfo[0];
+    console.log(handBook.filteredGroupsByFormTraining);
+
+    let buffer = cloneObj(handBook.filteredGroupsByFormTraining),
+        allGroupInfo = filterGroups(buffer, "groupId", optionsDataCollection.groupId);
+
+    console.log(allGroupInfo);
+    allGroupInfo = cloneObj(allGroupInfo[0]);
+    console.log(allGroupInfo);
 
     allGroupInfo.groupName = allGroupInfo.name;
     delete allGroupInfo.name;
     delete allGroupInfo.groupId;
     delete allGroupInfo.instituteId;
+    console.log(allGroupInfo);
 
     evaluationListData.institute = handBook.institutes[optionsDataCollection.instituteId].nameinstitute;
     evaluationListData.aditionalTeachers = [];
@@ -281,7 +293,7 @@
     }
   }
 
-  function setEvaluationListData(formData) {
+  function setEvaluationListData(formData, id) {
     return new Promise((resolve, reject) => {
       google.script.run
         .withSuccessHandler(res => {
@@ -289,7 +301,7 @@
           resolve(res);
         })
         .withFailureHandler(reject)
-        .saveEvaluationListData(formData); // це функцыя з responnses
+        .saveEvaluationListData(formData, id); // це функцыя з responnses
     });
   }
 

@@ -66,8 +66,8 @@
   }
 
   function generateForm() {
-    let data = evaluationListData,
-      controlFormData = handBook.controlForm,
+    let data = cloneObj(evaluationListData),
+      controlFormData = cloneObj(handBook.controlForm),
       formButtons,
       form,
       tableHeader = ["№", "Прізвище, ініціали студента", "Поточний контроль", "Підсумковий семестровий контроль",

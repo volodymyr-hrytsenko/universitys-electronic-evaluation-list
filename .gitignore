@@ -2,5 +2,6 @@ ini.js*
 .clasp.json*
 appsscript.js*
 package-lock.json*
+test.json*
 
 node_modules
