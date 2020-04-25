@@ -6,8 +6,9 @@ function getDataFromHandbook(){
     institutes: obj.handBook.institutes,
     educational_degree: obj.handBook.educational_degree,
     form_of_training: obj.handBook.form_of_training,
-    controlForm: controlForm
-  }
+    controlForm: controlForm,
+    сurrentStudyYearAndSemester: studyYear.getCurrentStudyYearAndSemester()
+  };
   console.log(inputData);
   return inputData;
 }
@@ -86,7 +87,5 @@ function saveEvaluationListData(evaluationListData, optionsDataCollection) {
   recordData.evaluationListData = evaluationListData;
   return writeDataToInstituteRouter(recordData);
 }
-
-
 
 

@@ -1,12 +1,8 @@
 <script>
   let handBook = {};
 
-  let a ={
-    x: 1,
-    y: 2
-  }
-
   let optionsDataCollection = {
+    recordNumber: -1,
     instituteId: 0,
     educationalDegreeId: 0,
     formTrainingId: 0,
@@ -25,18 +21,21 @@
   };
 
   let evaluationListData = { //Тестові данні для створення відомості
-    listNumber: 1,
+    listNumber: "",
     institute: "",
-    academicDiscipline: "1", //--
-    controlForm: "2", //--
-    date: "3", //--
+    academicDiscipline: "",
+    controlForm: "",
+    date: "",
     speciality: "",
     educationalProgram: "",
     educationalDegree: "",
     educationalForm: "",
     groupName: "",
-    teacherFullName: "4", //--
-    aditionalTeachers: ["5", "36"], //--
+    teacherFullName: "4",
+    aditionalTeachers: ["5", "36"],
+    studyYearAndSemester: "",
+    studyCredits: 3,
+    hourAndCredit: "",
     students: []
   };
 
@@ -71,7 +70,7 @@
     });
   }
 
-  function cloneObj(obj){
+  function cloneObj(obj) {
     return JSON.parse(JSON.stringify(obj));
   }
 
@@ -80,22 +79,10 @@
     page.addEventListener('change', function (el) {
       if (el.target && el.target.type == "select-one") { //details
         scanningSelectorsEvents(el.target.id);
-      } else if (el.target && el.target.type == "text" && !el.target.name) {
-        scanningFormEvents(el.target.id);
+      } else if (el.target && el.target.name == "formInput") {
+        scanningFormInputs(el.target.id);
       } else if (el.target && el.target.name == "tableInput") {
-        let marks = +document.getElementById(el.target.id).value,
-          adres = el.target.id.split("-"),
-          marksSum;
-
-        evaluationListData.students[adres[1] - 1][adres[0]] = marks;
-
-        marksSum = (adres[0] == "currentGrade") ? +document.getElementById(`semesterGrade-${adres[1]}`).value : +
-          document.getElementById(`currentGrade-${adres[1]}`).value;
-        marksSum += marks;
-        document.getElementById(`gradeSum-${adres[1]}`).value = marksSum;
-        evaluationListData.students[adres[1] - 1]["gradeSum"] = marksSum;
-
-        console.log(evaluationListData);
+        scanningFormTable(el.target.id);
       }
     });
 
@@ -103,10 +90,21 @@
       hiddenMessagesBlock();
       if (el.target && el.target.type == "submit") { //details
         switch (el.target.name) {
-          case "createForm":
+          case "createFirstForm":
             createEvaluationListData();
             document.getElementById("filter").style.display = "none";
             generateForm();
+            optionsDataCollection.evaluationListType = 1; // признак основної відомості
+            optionsDataCollection.recordNumber = -1;
+            document.getElementById("formWrap").style.display = "block";
+
+            break;
+          case "createSecondForm":
+            createEvaluationListData();
+            document.getElementById("filter").style.display = "none";
+            generateForm();
+            optionsDataCollection.evaluationListType = 2; // признак повторної відомості
+            optionsDataCollection.recordNumber = -1;
             document.getElementById("formWrap").style.display = "block";
 
             break;
@@ -117,17 +115,23 @@
             break;
           case "saveForm":
             optionsDataCollection.emailTeacher = handBook.user.email;
-            optionsDataCollection.evaluationListType = 1; // признак основної відомості
             optionsDataCollection.status = 0; // признак в роботі
+            console.log(evaluationListData);
+
             setEvaluationListData(evaluationListData, optionsDataCollection)
               .then((data) => {
                 // успіх
+                optionsDataCollection.recordNumber = data;
+                // console.log(optionsDataCollection);
                 alert("Успіх");
               })
               .catch((e) => {
                 // при помилці
                 console.log(e);
               })
+            break;
+          case "subscribe":
+            optionsDataCollection.status = 1; // признак підписати
             break;
         }
 
@@ -153,8 +157,6 @@
           .then((data) => {
             // успіх
             handBook.groups = data;
-
-            console.log(handBook);
           })
           .catch((e) => {
             // при помилці
@@ -168,6 +170,7 @@
         document.getElementById("select-groups").value = 0;
         document.getElementById("buttonsAddForm").innerHTML = "";
 
+        console.log(handBook.groups);
         handBook.filteredGroupsByEducationalDegree = filterGroups(handBook.groups, "educationalDegree", conformity
           .educationalDegree[optionsDataCollection.educationalDegreeId]);
         handBook.filteredGroupsByFormTraining = [];
@@ -191,8 +194,12 @@
           .then((data) => {
             // успіх
             handBook.students = data;
-            console.log(handBook);
-            generateAddButton(true);
+            const nameButtons = [{
+              createFirstForm: "Основна"
+            }, {
+              createSecondForm: "Повторна"
+            }]
+            generateAddButtons(nameButtons);
           })
           .catch((e) => {
             // при помилці
@@ -205,22 +212,35 @@
     }
   }
 
-  function scanningFormEvents(id) { //
+  function scanningFormInputs(id) {
     switch (id) {
-      case "academicDiscipline":
-        evaluationListData.academicDiscipline = document.getElementById("academicDiscipline").value;
-        break;
-      case "date":
-        evaluationListData.date = document.getElementById("date").value;
-        break;
-      case "teacherFullName":
-        evaluationListData.teacherFullName = document.getElementById("teacherFullName").value;
+      case "studyCredits":
+        let credit = +document.getElementById(`${id}`).value;
+        evaluationListData[id] = credit;
+        evaluationListData.hourAndCredit = `${credit * 30}(${credit})`;
         break;
       case "aditionalTeachers":
-        evaluationListData.aditionalTeachers = document.getElementById("aditionalTeachers").value.split(",");
-        console.log(evaluationListData);
+        evaluationListData[id] = document.getElementById(`${id}`).value.split(",");
         break;
+      default:
+        evaluationListData[id] = document.getElementById(`${id}`).value;
     }
+    // console.log(evaluationListData);
+  }
+
+  function scanningFormTable(id) {
+    let marks = +document.getElementById(id).value,
+      adres = id.split("-"),
+      marksSum;
+
+    evaluationListData.students[adres[1] - 1][adres[0]] = marks;
+
+    marksSum = (adres[0] == "currentGrade") ? +document.getElementById(`semesterGrade-${adres[1]}`).value : +
+      document.getElementById(`currentGrade-${adres[1]}`).value;
+    marksSum += marks;
+    document.getElementById(`gradeSum-${adres[1]}`).value = marksSum;
+    evaluationListData.students[adres[1] - 1]["gradeSum"] = marksSum;
+    // console.log(evaluationListData);
   }
 
   function getDataInstituteGroups(instituteId) {
@@ -254,42 +274,43 @@
   }
 
   function createEvaluationListData() {
-    console.log(handBook.filteredGroupsByFormTraining);
+    let buffer = cloneObj(handBook),
+      allGroupInfo = filterGroups(buffer.filteredGroupsByFormTraining, "groupId", optionsDataCollection.groupId);
 
-    let buffer = cloneObj(handBook.filteredGroupsByFormTraining),
-        allGroupInfo = filterGroups(buffer, "groupId", optionsDataCollection.groupId);
-
-    console.log(allGroupInfo);
     allGroupInfo = cloneObj(allGroupInfo[0]);
-    console.log(allGroupInfo);
 
     allGroupInfo.groupName = allGroupInfo.name;
     delete allGroupInfo.name;
     delete allGroupInfo.groupId;
     delete allGroupInfo.instituteId;
-    console.log(allGroupInfo);
 
-    evaluationListData.institute = handBook.institutes[optionsDataCollection.instituteId].nameinstitute;
-    evaluationListData.aditionalTeachers = [];
+    evaluationListData.institute = buffer.institutes[optionsDataCollection.instituteId].nameinstitute;
+    evaluationListData.studyYearAndSemester = buffer.сurrentStudyYearAndSemester;
 
     for (let key in allGroupInfo) {
       evaluationListData[key] = allGroupInfo[key];
     }
 
-    handBook.students.forEach(element => {
+    buffer.students.forEach(element => {
       delete element.groupId;
       element.currentGrade = "";
       element.semesterGrade = "";
       element.gradeSum = "";
     });
-    evaluationListData.students = handBook.students;
-
+    evaluationListData.students = buffer.students;
+    // console.log(typeof (evaluationListData.recordNumber));
     // console.log(evaluationListData);
   }
 
   function clearnEvaluationListData() {
     for (let key in evaluationListData) {
-      evaluationListData[key] = "";
+      switch (key) {
+        case "aditionalTeachers":
+          evaluationListData[key] = [];
+          break;
+        default:
+          evaluationListData[key] = "";
+      }
     }
   }
 

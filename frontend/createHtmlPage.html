@@ -60,54 +60,78 @@
     document.getElementById("groups").innerHTML = generateSelect(groups, "select-groups");
   }
 
-  function generateAddButton(b) {
-    (b) ? document.getElementById("buttonsAddForm").innerHTML = "<button name='createForm'>Plus</button>": document
-      .getElementById("buttonsAddForm").innerHTML = "";
+  function generateAddButtons(names) {
+    let buttons = [];
+    names.forEach(el => {
+      buttons.push(Object.keys(el).map(function (key) {
+        return `<button name='${key}'>${el[key]}</button>`;
+      }).join(""));
+    });
+    document.getElementById("buttonsAddForm").innerHTML = buttons.join("");
   }
 
   function generateForm() {
-    let data = cloneObj(evaluationListData),
+    let data = cloneObj(evaluationListData), // evaluationListData recordData
       controlFormData = cloneObj(handBook.controlForm),
       formButtons,
       form,
       tableHeader = ["№", "Прізвище, ініціали студента", "Поточний контроль", "Підсумковий семестровий контроль",
         "Загальна оцінка"
       ],
-      result,
+      tableRow,
       tableMain = [],
       num = 1;
-
-      console.log(data);
 
     formButtons = `<button name='closeForm'>Закрити</button>
       <button name='saveForm'>Зберегти</button>
       <button name='subscribe'>Підписати</button>`;
 
     form =
-      `<div class="row"><label for="academicDiscipline">Навчальна дисципліна</label><input type="text" id="academicDiscipline" placeholder="повна назва дисципліни за навчальним планом" value="${data.academicDiscipline}"></div>`;
-
+      `<div class="row">
+        <label for="academicDiscipline">Навчальна дисципліна</label>
+        <input type="text" name="formInput" id="academicDiscipline" placeholder="повна назва дисципліни за навчальним планом" value="${data.academicDiscipline}">
+      </div>
+      <div class="row">
+        <label for="studyCredits">Кілкість крелитів</label>
+        <input type="number" name="formInput" id="studyCredits" name="number" min="1" max="36" step="1" value="${data.studyCredits}">
+      </div>`;
     controlFormData.unshift({
       key: 0,
       value: "Форма підсумкового контролю"
     });
-    form += generateSelect(controlFormData, "controlForm");
+    form += `<div class="row">${generateSelect(controlFormData, "controlForm")}</div>`
     form +=
-      `<div class="row"><label for="date">Дата контролю</label><input type="text" id="date" value="${data.date}"></div>
-      <div class="row"><label for="teacherFullName">посади і ПІБ викладачів, які виставляють підсумкову оцінку</label><input type="text" id="teacherFullName" value="${data.teacherFullName}"></div>
-      <div class="row"><label for="aditionalTeachers">посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль</label><input type="text" id="aditionalTeachers" placeholder="введіть через кому" value="${data.aditionalTeachers.join(", ")}"></div>`;
+      `<div class="row">
+        <label for="date">Дата контролю</label>
+        <input type="date" name="formInput" id="date" value="${data.date}">
+      </div>
+      <div class="row">
+        <label for="teacherFullName">посади і ПІБ викладачів, які виставляють підсумкову оцінку</label>
+        <input type="text" name="formInput" id="teacherFullName" value="${data.teacherFullName}">
+      </div>
+      <div class="row">
+        <label for="aditionalTeachers">посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль</label>
+        <input type="text" name="formInput" id="aditionalTeachers" placeholder="введіть через кому" value="${data.aditionalTeachers.join(", ")}">
+      </div>`;
+
+    let arrFildTabie = ["name", "currentGrade", "semesterGrade", "gradeSum"];
 
     data.students.forEach(el => {
-      result = Object.keys(el).map(function (key) {
-        return el[key];
+      tableRow = [num];
+      arrFildTabie.forEach(key => {
+        switch (key) {
+          case "name":
+          tableRow.push(el[key]);
+            break;
+          case "gradeSum":
+          tableRow.push(`<input type="text" name="tableInput" id="${key + "-" + num}" value="${el[key]}" disabled>`);
+            break;
+          default:
+          tableRow.push(`<input type="text" name="tableInput" id="${key + "-" + num}" value="${el[key]}">`);
+        }
       });
-      result.splice(1, 1);
-      result.unshift(num);
-      result[2] = `<input type="text" name="tableInput" id="${"currentGrade-" + num}" value="${el.currentGrade}">`;
-      result[3] =
-        `<input type="text" name="tableInput" id="${"semesterGrade-" + num}" value="${el.semesterGrade}">`;
-      result[4] = `<input type="text" name="tableInput" id="${"gradeSum-" + num}" value="${el.gradeSum}" disabled>`;
       ++num;
-      tableMain.push(result);
+      tableMain.push(tableRow);
     });
     tableMain.unshift(tableHeader);
     form += createTable(tableMain, "formTable");

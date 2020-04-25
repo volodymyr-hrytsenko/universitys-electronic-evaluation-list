@@ -174,3 +174,12 @@ console.log(s);
  // console.log(uid());
   
 }
+
+function getteachersEvolution () {
+  const obj = {
+    instituteId: 5,
+    email: "iot@vu.cdu.edu.ua"
+  };
+  
+  console.log(getteachersEvolutionList(obj));
+}
