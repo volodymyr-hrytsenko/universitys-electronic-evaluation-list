@@ -1,69 +1,83 @@
 {
-    "recordNumber": 7,
-    "emailTeacher": "sfgng@xfvfkn",
-    "instituteId": 2,
-    "groupId": 5,
-    "controlFormId": 1,
+    "formTrainingId": 1,
     "evaluationListType": 1,
-    "status": 0,
-    "spreadsheetId": "",
     "pdfId": "",
+    "groupId": 3,
+    "instituteId": 5,
+    "emailTeacher": "volodymyr@vu.cdu.edu.ua",
+    "recordNumber": 9,
+    "educationalDegreeId": 2,
     "evaluationListData": {
-        "institute": "Навчально-науковий інститут педагогічної освіти, соціальної роботи і мистецтва",
-        "listNumber": 1,
-        "date": "20934",
+        "date": "2020-04-30",
         "speciality": "014 СЕРЕДНЯ ОСВІТА (ІНФОРМАТИКА)",
         "educationalDegree": "Магістр",
-        "teacherFullName": "4ідлвао",
+        "hourAndCredit": "150(5)",
+        "teacherFullName": "Гриценко",
         "educationalForm": "Денна",
+        "studyCredits": 5,
         "educationalProgram": "ПРИКЛАДНА МАТЕМАТИКА",
         "groupName": "2-І",
-        "controlForm": "1",
-        "students": [{
-            "gradeSum": 127,
-            "semesterGrade": 34,
-            "gradebookNumber": 746702,
-            "currentGrade": 93,
-            "name": "Шевелев Артем Віталійович"
-        }, {
-            "gradeSum": 56,
-            "semesterGrade": 53,
-            "gradebookNumber": 772167,
-            "currentGrade": 3,
-            "name": "Пономарев Роберт Владиславович"
-        }, {
-            "currentGrade": 53335,
-            "name": "Костін Роберт Аланович",
-            "gradeSum": 53335,
-            "semesterGrade": "",
-            "gradebookNumber": 575087
-        }, {
-            "currentGrade": "",
-            "name": "Ткачев Алан Михайлович",
-            "gradeSum": "",
-            "semesterGrade": "",
-            "gradebookNumber": 176099
-        }, {
-            "currentGrade": "",
-            "name": "Платонов Алан Олексійович",
-            "gradeSum": "",
-            "semesterGrade": "",
-            "gradebookNumber": 335847
-        }, {
-            "currentGrade": 23,
-            "name": "Шевелев Петро Анварович",
-            "gradeSum": 58,
-            "semesterGrade": 35,
-            "gradebookNumber": 748902
-        }, {
-            "currentGrade": "",
-            "name": "Кузнецов Игор Владиславович",
-            "gradeSum": "",
-            "semesterGrade": "",
-            "gradebookNumber": 880723
-        }],
-        "academicDiscipline": "Математика",
-        "aditionalTeachers": ["фжідвл", " лдфіор", "фірдві"]
+        "controlForm": "2",
+        "studyYearAndSemester": "1 семестру 2019/2020 навчального року",
+        "students": [
+            {
+                "name": "Шевелев Артем Віталійович",
+                "gradeSum": 2,
+                "semesterGrade": 1,
+                "gradebookNumber": 746702,
+                "currentGrade": 1
+            },
+            {
+                "currentGrade": 1,
+                "name": "Пономарев Роберт Владиславович",
+                "gradeSum": 2,
+                "semesterGrade": 1,
+                "gradebookNumber": 772167
+            },
+            {
+                "currentGrade": 1,
+                "name": "Костін Роберт Аланович",
+                "gradeSum": 2,
+                "semesterGrade": 1,
+                "gradebookNumber": 575087
+            },
+            {
+                "currentGrade": 1,
+                "name": "Ткачев Алан Михайлович",
+                "gradeSum": 2,
+                "semesterGrade": 1,
+                "gradebookNumber": 176099
+            },
+            {
+                "currentGrade": 1,
+                "name": "Платонов Алан Олексійович",
+                "gradeSum": 2,
+                "semesterGrade": 1,
+                "gradebookNumber": 335847
+            },
+            {
+                "currentGrade": 1,
+                "name": "Шевелев Петро Анварович",
+                "gradeSum": 2,
+                "semesterGrade": 1,
+                "gradebookNumber": 748902
+            },
+            {
+                "currentGrade": 1,
+                "name": "Кузнецов Игор Владиславович",
+                "gradeSum": 2,
+                "semesterGrade": 1,
+                "gradebookNumber": 880723
+            }
+        ],
+        "aditionalTeachers": [
+            "вася",
+            " света"
+        ],
+        "academicDiscipline": "Ще одна форма",
+        "institute": "Навчально-науковий інститут педагогічної освіти, соціальної роботи і мистецтва",
+        "listNumber": ""
     },
-    "uid": "1587754388234-743d047a-8e35-4ea2-8945-fb88a818c0e4"
+    "spreadsheetId": "",
+    "status": 0
 }

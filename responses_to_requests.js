@@ -32,7 +32,7 @@ function getDataStudents (groupId) {
 function filterResources(arr, key, query) {
   return arr.filter(function(element) {
       return (element[key] === query) ? true : false;//елемент співпадає з рядком запиту
-  })
+  });
 }
 
 function moveFileBadDocs(fileId){
@@ -80,11 +80,10 @@ function sendEmail(dataObject,pdfName,messageTitle,messageBody,organization){
   return newFileId
 }
 
-function saveEvaluationListData(evaluationListData, optionsDataCollection) {
+function saveEvaluationListData(recordData) {
   for (let key in recordData){
-    recordData[key] = optionsDataCollection[key];
+    recordData[key] = recordData[key];
   }
-  recordData.evaluationListData = evaluationListData;
   return writeDataToInstituteRouter(recordData);
 }
 

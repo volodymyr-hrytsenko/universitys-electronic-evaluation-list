@@ -61,15 +61,18 @@
   }
 
   function generateTeacherEvolutionsLists(teachersEvLists) {
-    let evLists ="";
-    teachersEvLists.forEach(el => {
-      console.log(el.evaluationListData);
-      evLists += `<div class="evList">
+    let evLists = "";
+    if (teachersEvLists.length < 1) {
+      document.getElementById("teacherEvolutionsLists").innerHTML = "";
+    } else {
+      teachersEvLists.forEach(el => {
+        evLists += `<div class="evList">
         <button>${el.evaluationListData.academicDiscipline + ", " + el.evaluationListData.groupName}</button>
         <button>X</button>
         </div>`;
-    });
-    document.getElementById("teacherEvolutionsLists").innerHTML = evLists;
+      });
+      document.getElementById("teacherEvolutionsLists").innerHTML = evLists;
+    }
   }
 
   function generateAddButtons(names) {
@@ -83,7 +86,7 @@
   }
 
   function generateForm() {
-    let data = cloneObj(evaluationListData), // evaluationListData recordData
+    let data = cloneObj(recordData.evaluationListData),
       controlFormData = cloneObj(handBook.controlForm),
       formButtons,
       form,
