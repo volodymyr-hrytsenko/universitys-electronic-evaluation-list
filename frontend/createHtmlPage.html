@@ -60,6 +60,18 @@
     document.getElementById("groups").innerHTML = generateSelect(groups, "select-groups");
   }
 
+  function generateTeacherEvolutionsLists(teachersEvLists) {
+    let evLists ="";
+    teachersEvLists.forEach(el => {
+      console.log(el.evaluationListData);
+      evLists += `<div class="evList">
+        <button>${el.evaluationListData.academicDiscipline + ", " + el.evaluationListData.groupName}</button>
+        <button>X</button>
+        </div>`;
+    });
+    document.getElementById("teacherEvolutionsLists").innerHTML = evLists;
+  }
+
   function generateAddButtons(names) {
     let buttons = [];
     names.forEach(el => {
@@ -121,13 +133,14 @@
       arrFildTabie.forEach(key => {
         switch (key) {
           case "name":
-          tableRow.push(el[key]);
+            tableRow.push(el[key]);
             break;
           case "gradeSum":
-          tableRow.push(`<input type="text" name="tableInput" id="${key + "-" + num}" value="${el[key]}" disabled>`);
+            tableRow.push(
+              `<input type="text" name="tableInput" id="${key + "-" + num}" value="${el[key]}" disabled>`);
             break;
           default:
-          tableRow.push(`<input type="text" name="tableInput" id="${key + "-" + num}" value="${el[key]}">`);
+            tableRow.push(`<input type="text" name="tableInput" id="${key + "-" + num}" value="${el[key]}">`);
         }
       });
       ++num;

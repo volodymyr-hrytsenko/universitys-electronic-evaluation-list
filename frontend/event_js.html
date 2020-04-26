@@ -162,6 +162,17 @@
             // при помилці
             console.log(e);
           })
+
+        getTeacherEvolutionsLists(optionsDataCollection.instituteId)
+          .then((data) => {
+            // успіх
+            handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);;
+            generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+          })
+          .catch((e) => {
+            // при помилці
+            console.log(e);
+          })
         break;
       case "select-educationalDegree":
         optionsDataCollection.educationalDegreeId = +document.getElementById("select-educationalDegree").value;
@@ -171,7 +182,7 @@
         document.getElementById("buttonsAddForm").innerHTML = "";
 
         console.log(handBook.groups);
-        handBook.filteredGroupsByEducationalDegree = filterGroups(handBook.groups, "educationalDegree", conformity
+        handBook.filteredGroupsByEducationalDegree = filterResources(handBook.groups, "educationalDegree", conformity
           .educationalDegree[optionsDataCollection.educationalDegreeId]);
         handBook.filteredGroupsByFormTraining = [];
 
@@ -182,7 +193,7 @@
 
         document.getElementById("buttonsAddForm").innerHTML = "";
 
-        handBook.filteredGroupsByFormTraining = filterGroups(handBook.filteredGroupsByEducationalDegree,
+        handBook.filteredGroupsByFormTraining = filterResources(handBook.filteredGroupsByEducationalDegree,
           "educationalForm", conformity.formTraining[optionsDataCollection.formTrainingId]);
 
         generateGroupsSelect(handBook.filteredGroupsByFormTraining);
@@ -267,7 +278,7 @@
     });
   }
 
-  function filterGroups(arr, key, query) {
+  function filterResources(arr, key, query) {
     return arr.filter(function (element) {
       return (element[key] === query) ? true : false; //елемент співпадає з рядком запиту
     });
@@ -275,7 +286,7 @@
 
   function createEvaluationListData() {
     let buffer = cloneObj(handBook),
-      allGroupInfo = filterGroups(buffer.filteredGroupsByFormTraining, "groupId", optionsDataCollection.groupId);
+      allGroupInfo = filterResources(buffer.filteredGroupsByFormTraining, "groupId", optionsDataCollection.groupId);
 
     allGroupInfo = cloneObj(allGroupInfo[0]);
 
@@ -326,6 +337,21 @@
     });
   }
 
+  function getTeacherEvolutionsLists(id) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(res => {
+          //deleteSpinner();
+          resolve(res);
+        })
+        .withFailureHandler(reject)
+        .getEvolutionListsByTeacher(id); // це функцыя з responnses
+    });
+  }
+
+  function filterTeachersDelatedEvLists(list){
+    return filterResources(list, "status", 0).concat(filterResources(list, "status", 1));
+  }
   /*--------------------------------------------------------------------------------------------------------*/
   function showData(data) {
     document.getElementById("data").innerHTML = createTable(data); //JSON.stringify(data);

@@ -42,30 +42,20 @@ function searchRecordInSheet(uId, currentSheet) {
   return recordNumber;
 }
 
-function getteachersEvolutionList(obj) {
+function getEvolutionListsByTeacher(instituteId) {
   try {
-    // const currentSheet = studyYear.getCurrentSheetsName();
-    const routerInstituteId = getRouterInstituteId(obj.instituteId);
+    const routerInstituteId = getRouterInstituteId(instituteId);
 
     const sheetName = studyYear.getCurrentSheetsName();
     let currentSheet = SpreadsheetApp.openById(routerInstituteId).getSheetByName(sheetName);
     let list = currentSheet.getRange(1, 1, currentSheet.getRange("A1").getDataRegion().getLastRow(), 1).getValues();
 
-    let evolutionLists = list.map(el => {
+    // let evolutionLists = list.map(el => {
+    //   return JSON.parse(el);
+    // });
+    return filterResources(list.map(el => {
       return JSON.parse(el);
-    });
-
-    let teachersEvolutionList = filterResources(evolutionLists, "emailTeacher", obj.email)
-    // if (obj.recordNumber !== -1) {
-    //   currentSheet.getRange(obj.recordNumber, 1).setValue(JSON.stringify(obj));
-    // } else {
-    //   if (!currentSheet) currentSheet = SpreadsheetApp.openById(routerInstituteId).insertSheet(sheetName);
-    //   obj.uid = uid(); // додавання до запису унікального ідентифікатора
-    //   currentSheet.appendRow([JSON.stringify(obj)]);
-    //   obj.recordNumber = searchRecordInSheet(obj.uid, currentSheet);
-    //   currentSheet.getRange(obj.recordNumber, 1).setValue(JSON.stringify(obj));
-    // }
-    return teachersEvolutionList;
+    }), "emailTeacher", getUser().email);
   } catch (e) {
     return 'Error: ' + e.toString();
   }
