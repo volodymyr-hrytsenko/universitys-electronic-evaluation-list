@@ -13,15 +13,15 @@
   };
 
   window.onload = function () {
-    hiddenMessagesBlock();
     getDataLists()
       .then((data) => {
         handBook = data;
+        console.log(data);
         handBook.filteredGroupsByFormTraining = [];
-        showUser(data.user);
-        generateInstituteSelect(data.institutes);
-        generateEducationalDegreeSelect(data.educational_degree);
-        generateFormTrainingSelect(data.form_of_training);
+        showUser(handBook.user.email);
+        generateInstituteSelect(handBook.institutes);
+        generateEducationalDegreeSelect(handBook.educational_degree);
+        generateFormTrainingSelect(handBook.form_of_training);
         generateGroupsSelect(handBook.filteredGroupsByFormTraining);
       })
       .catch((e) => {})
@@ -58,7 +58,6 @@
     });
 
     page.addEventListener('click', function (el) {
-      hiddenMessagesBlock();
       if (el.target && el.target.type == "submit") { //details
         switch (el.target.name) {
           case "createFirstForm":
@@ -80,17 +79,31 @@
             document.getElementById("formWrap").style.display = "none";
             clearnEvaluationListData();
             document.getElementById("filter").style.display = "block";
+            createSpinner();
+            getTeacherEvolutionsLists(recordData
+                .instituteId) // отримуємо відомості викладача по інституту, якщо такі були створені раніше
+              .then((data) => {
+                // успіх
+                handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
+                generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+                deleteSpinner();
+              })
+              .catch((e) => {
+                // помилка
+                console.log(e);
+              })
             break;
           case "saveForm":
             recordData.emailTeacher = handBook.user.email;
             recordData.status = 0; // признак в роботі
 
+            createSpinner();
             setRecordData(recordData)
               .then((data) => {
                 // успіх
-                recordData.recordNumber = data;
-                console.log(recordData);
-                alert("Успіх");
+                recordData.recordNumber = data.recordNumber;
+                recordData.uid = data.uid;
+                deleteSpinner();
               })
               .catch((e) => {
                 // при помилці
@@ -115,7 +128,7 @@
           0; // обнуляємо селектори, якщо вони були вибрані раніше
         document.getElementById("select-formTraining").value = 0;
         document.getElementById("select-groups").value = 0;
-        document.getElementById("buttonsAddForm").innerHTML = "";
+        document.getElementById("buttonsActionUnderForm").innerHTML = "";
 
         handBook
           .filteredGroupsByEducationalDegree = []; // затираємо дані відфільтровані нижчими повідношенню до даного селекторами
@@ -125,35 +138,37 @@
         handBook.filteredEvListsByFormTraining = [];
         handBook.filteredEvListsByGroup = [];
 
+        createSpinner(); // заблокувати всі селекти поки не виконалось
         getDataInstituteGroups(recordData.instituteId) // отримуємо всі групи вибраного інституту
           .then((data) => {
             // успіх
             handBook.groups = data;
-          })
-          .catch((e) => {
-            // помилка
-            console.log(e);
-          })
 
-        getTeacherEvolutionsLists(recordData
-            .instituteId) // отримуємо відомості викладача по інституту, якщо такі були створені раніше
-          .then((data) => {
-            // успіх
-            handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
-            console.log(handBook.teacherEvolutionsLists);
-            generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+            getTeacherEvolutionsLists(recordData
+                .instituteId) // отримуємо відомості викладача по інституту, якщо такі були створені раніше
+              .then((data) => {
+                // успіх
+                handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
+                generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+                deleteSpinner();
+              })
+              .catch((e) => {
+                // помилка
+                console.log(e);
+              });
+
           })
           .catch((e) => {
             // помилка
             console.log(e);
-          })
+          });
         break;
       case "select-educationalDegree":
         recordData.educationalDegreeId = +document.getElementById("select-educationalDegree").value;
 
         document.getElementById("select-formTraining").value = 0; // обнуляємо селектори, якщо вони були вибрані раніше
         document.getElementById("select-groups").value = 0;
-        document.getElementById("buttonsAddForm").innerHTML = "";
+        document.getElementById("buttonsActionUnderForm").innerHTML = "";
 
         handBook
           .filteredGroupsByFormTraining = []; // затираємо дані відфільтровані нижчими повідношенню до даного селекторами
@@ -174,7 +189,7 @@
         recordData.formTrainingId = +document.getElementById("select-formTraining").value;
 
         handBook.filteredEvListsByGroup = [];
-        document.getElementById("buttonsAddForm").innerHTML = "";
+        document.getElementById("buttonsActionUnderForm").innerHTML = "";
 
         handBook.filteredGroupsByFormTraining = filterResources(handBook.filteredGroupsByEducationalDegree,
           "educationalForm", conformity.formTraining[recordData.formTrainingId]);
@@ -192,6 +207,7 @@
 
         generateTeacherEvolutionsLists(handBook.filteredEvListsByGroup);
 
+        createSpinner();
         getDataGroupsStudents(recordData.groupId)
           .then((data) => {
             // успіх
@@ -201,7 +217,8 @@
             }, {
               createSecondForm: "Повторна"
             }]
-            generateAddButtons(nameButtons);
+            generateActionsButtons(nameButtons);
+            deleteSpinner();
           })
           .catch((e) => {
             // при помилці
@@ -220,6 +237,15 @@
         let credit = +document.getElementById(`${id}`).value;
         recordData.evaluationListData[id] = credit;
         recordData.evaluationListData.hourAndCredit = `${credit * 30}(${credit})`;
+        break;
+      case "date":
+        let date = document.getElementById(`${id}`).value,
+          unixDate = new Date(date).getTime();
+
+        recordData.evaluationListData.date = unixDate;
+        console.log(date);
+        console.log(unixDate);
+
         break;
       case "aditionalTeachers":
         recordData.evaluationListData[id] = document.getElementById(`${id}`).value.split(",");
@@ -287,6 +313,7 @@
     recordData.evaluationListData.institute = buffer.institutes[recordData.instituteId].nameinstitute;
     recordData.evaluationListData.studyYearAndSemester = buffer.сurrentStudyYearAndSemester;
     recordData.recordNumber = -1;
+    recordData.uid = "";
 
     for (let key in allGroupInfo) {
       recordData.evaluationListData[key] = allGroupInfo[key];
@@ -299,7 +326,7 @@
       element.gradeSum = "";
     });
     recordData.evaluationListData.students = buffer.students;
-    console.log(recordData);
+    // console.log(recordData);
   }
 
   function clearnEvaluationListData() {
@@ -322,7 +349,7 @@
           resolve(res);
         })
         .withFailureHandler(reject)
-        .saveEvaluationListData(Data); // це функцыя з responnses
+        .writeDataToInstituteRouter(Data); // це функцыя з responnses
     });
   }
 
@@ -341,38 +368,22 @@
   function filterTeachersDelatedEvLists(list) {
     return filterResources(list, "status", 0).concat(filterResources(list, "status", 1));
   }
+
   /*--------------------------------------------------------------------------------------------------------*/
-  function showData(data) {
-    document.getElementById("data").innerHTML = createTable(data); //JSON.stringify(data);
-  }
 
-  function getInfoFromDocument(id) {
-    createSpinner();
-    return new Promise((resolve, reject) => {
-      google.script.run
-        .withSuccessHandler(res => {
-          //deleteSpinner();
-          resolve(res);
-        })
-        .withFailureHandler(reject)
-        .getDataFromDocument(id);
-    });
-    //google.script.run.withSuccessHandler(showInfoFromDocument).getDataFromDocument(id);
-  }
+  // function showInfoFromDocument(data) {
+  //   deleteSpinner();
+  //   let message = document.getElementById("message");
+  //   message.innerHTML = '<h4>' + data.name + '</h4>' + createTable(data.table1) + '<br>' + createTable(data.table2);
+  //   // message.innerHTML = '<h4>'+data.name+'</h4>'+createTable(data.table1)+createTable(data.table2);
+  //   message.style.display = "block";
+  // }
 
-  function showInfoFromDocument(data) {
-    deleteSpinner();
-    let message = document.getElementById("message");
-    message.innerHTML = '<h4>' + data.name + '</h4>' + createTable(data.table1) + '<br>' + createTable(data.table2);
-    // message.innerHTML = '<h4>'+data.name+'</h4>'+createTable(data.table1)+createTable(data.table2);
-    message.style.display = "block";
-  }
-
-  function hiddenMessagesBlock() {
-    let message = document.getElementById("message");
-    message.style.display = "none";
-    message.innerHTML = '';
-  }
+  // function hiddenMessagesBlock() {
+  //   let message = document.getElementById("message");
+  //   message.style.display = "none";
+  //   message.innerHTML = '';
+  // }
 
   function createSpinner() {
     var div = document.createElement("div");

@@ -1,14 +1,14 @@
 function getUser(){
   var obj = {};
   var email = getUserEmail();
-  email = 'volodymyr@vu.cdu.edu.ua';
+  email = 'volodymur@vu.cdu.edu.ua';
   switch (email){
     case 'admin@vu.cdu.edu.ua':
     case 'nmv@vu.cdu.edu.ua':
       obj = {"level": 1, "role": "administrator"};
     break;
     case 'iot@vu.cdu.edu.ua':
-      obj = {"level": 2, "role": "secretary"};
+      obj = {"level": 2, "role": "secretary", "idDepartment": 5};
     break;
     case 'anonymous':
       obj = {"level": 1000000, "role": "anonymous"};

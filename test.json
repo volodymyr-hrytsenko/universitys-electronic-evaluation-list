@@ -1,83 +1,34 @@
 {
-    "formTrainingId": 1,
-    "evaluationListType": 1,
     "pdfId": "",
-    "groupId": 3,
-    "instituteId": 5,
+    "groupId": 11,
     "emailTeacher": "volodymyr@vu.cdu.edu.ua",
-    "recordNumber": 9,
-    "educationalDegreeId": 2,
+    "educationalDegreeId": 1,
     "evaluationListData": {
-        "date": "2020-04-30",
-        "speciality": "014 СЕРЕДНЯ ОСВІТА (ІНФОРМАТИКА)",
-        "educationalDegree": "Магістр",
-        "hourAndCredit": "150(5)",
-        "teacherFullName": "Гриценко",
+        "speciality": "111 МАТЕМАТИКА (МАТЕМАТИЧНА ЕКОНОМІКА ТА ЕКОНОМЕТРИКА)",
+        "educationalDegree": "Бакалавр",
+        "hourAndCredit": "",
+        "teacherFullName": "4",
         "educationalForm": "Денна",
-        "studyCredits": 5,
-        "educationalProgram": "ПРИКЛАДНА МАТЕМАТИКА",
         "groupName": "2-І",
-        "controlForm": "2",
+        "studyCredits": "",
+        "educationalProgram": "ПРИКЛАДНА ФІЗИКА ТА НАНО",
+        "controlForm": "",
         "studyYearAndSemester": "1 семестру 2019/2020 навчального року",
-        "students": [
-            {
-                "name": "Шевелев Артем Віталійович",
-                "gradeSum": 2,
-                "semesterGrade": 1,
-                "gradebookNumber": 746702,
-                "currentGrade": 1
-            },
-            {
-                "currentGrade": 1,
-                "name": "Пономарев Роберт Владиславович",
-                "gradeSum": 2,
-                "semesterGrade": 1,
-                "gradebookNumber": 772167
-            },
-            {
-                "currentGrade": 1,
-                "name": "Костін Роберт Аланович",
-                "gradeSum": 2,
-                "semesterGrade": 1,
-                "gradebookNumber": 575087
-            },
-            {
-                "currentGrade": 1,
-                "name": "Ткачев Алан Михайлович",
-                "gradeSum": 2,
-                "semesterGrade": 1,
-                "gradebookNumber": 176099
-            },
-            {
-                "currentGrade": 1,
-                "name": "Платонов Алан Олексійович",
-                "gradeSum": 2,
-                "semesterGrade": 1,
-                "gradebookNumber": 335847
-            },
-            {
-                "currentGrade": 1,
-                "name": "Шевелев Петро Анварович",
-                "gradeSum": 2,
-                "semesterGrade": 1,
-                "gradebookNumber": 748902
-            },
-            {
-                "currentGrade": 1,
-                "name": "Кузнецов Игор Владиславович",
-                "gradeSum": 2,
-                "semesterGrade": 1,
-                "gradebookNumber": 880723
-            }
-        ],
+        "students": [],
+        "academicDiscipline": "",
         "aditionalTeachers": [
-            "вася",
-            " света"
+            "5",
+            "36"
         ],
-        "academicDiscipline": "Ще одна форма",
         "institute": "Навчально-науковий інститут педагогічної освіти, соціальної роботи і мистецтва",
-        "listNumber": ""
+        "listNumber": "",
+        "date": 1585699200000
     },
     "spreadsheetId": "",
-    "status": 0
+    "uid": "1587992275427-5ea35d2c-228e-4374-99e7-130d61c1e0ff",
+    "instituteId": 5,
+    "recordNumber": 1,
+    "status": 0,
+    "formTrainingId": 1,
+    "evaluationListType": 1
 }

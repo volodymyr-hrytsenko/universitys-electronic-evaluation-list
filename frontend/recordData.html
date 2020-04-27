@@ -1,4 +1,5 @@
 <script>
+  // const todayDate = Date.now();
   let recordData = {
     recordNumber: -1,
     emailTeacher: "",
@@ -10,19 +11,20 @@
     status: 0, //признак: в роботі (in_work: 0); підписання (signed:1) або знищення (delete: -1) відомості Викладачем
     spreadsheetId: "",
     pdfId: "",
+    uid: "",
     evaluationListData: {
       listNumber: "",
       institute: "",
       academicDiscipline: "",
       controlForm: "",
-      date: "",
+      date: Date.now(),
       speciality: "",
       educationalProgram: "",
       educationalDegree: "",
       educationalForm: "",
       groupName: "",
-      teacherFullName: "4",
-      aditionalTeachers: ["5", "36"],
+      teacherFullName: "",
+      aditionalTeachers: [],
       studyYearAndSemester: "",
       studyCredits: "",
       hourAndCredit: "",

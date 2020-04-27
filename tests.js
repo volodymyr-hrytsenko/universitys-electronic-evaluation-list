@@ -11,8 +11,7 @@ const testEvaluationListData = { //Тестові данні для створе
   groupName: '2-В',
   teacherFullName: 'Босовський Микола Васильович',
   aditionalTeachers: ["Босовський Микола Васильович", "Босовський Микола Васильович"],
-  students: [
-    {
+  students: [{
       name: "Шевелев Олексій Тимофійович",
       gradebookNumber: 150310,
       groupId: 5,
@@ -123,54 +122,53 @@ const testEvaluationListData = { //Тестові данні для створе
 function testCreateEvaluationList() {
   createEvaluationList(testEvaluationListData, 'test')
 }
-    
+
 const dataObjectItem = {
   templateId: "1rK-EnjyDZVjavlV3XNLqY1tK20NS_2rUCDrOdE60ZsU",
   email: 'ovcharenko@vu.cdu.edu.ua'
 }
 
 
-function sendEmail(dataObject,pdfName,messageTitle,messageBody,organization){
+function sendEmail(dataObject, pdfName, messageTitle, messageBody, organization) {
   const ss = SpreadsheetApp.openById(dataObject.templateId);
   let sheet = ss.getSheets()[0];
   let sheetPdf = ss.getSheets()[1];
-  
+
   let data = sheet.getRange(...pageRange.mainPage).getValues();
-  
+
   let folderID = router.pdfFolder;
   let folder = DriveApp.getFolderById(folderID);
-  
+
   let destSpreadSheet = SpreadsheetApp.open(DriveApp.getFileById(ss.getId()).makeCopy("tmp_pdf", folder));
   let sheetsPdf = destSpreadSheet.getSheets();
-  
+
   let theBlob = destSpreadSheet.getBlob().getAs('application/pdf').setName(pdfName);
   let newFile = folder.createFile(theBlob);
   let newFileId = newFile.getId();
-  
+
   DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);
-  
-  if(1){
-    GmailApp.sendEmail(dataObject.email,messageTitle,messageBody,
-                       {
-                         name:organization,
-                         attachments: [DriveApp.getFileById(newFileId)]
-                       }
-  )}
+
+  if (1) {
+    GmailApp.sendEmail(dataObject.email, messageTitle, messageBody, {
+      name: organization,
+      attachments: [DriveApp.getFileById(newFileId)]
+    })
+  }
   return newFileId
 }
 
 
 function testSendEmail() {
-sendEmail(dataObjectItem,'List','Title','Test','CHNU')
+  sendEmail(dataObjectItem, 'List', 'Title', 'Test', 'CHNU')
 }
 
 
-function testRouter(){
+// function testRouter(){
 
-  let s = writeDataToInstituteRouter(recordData);
+//   let s = writeDataToInstituteRouter(recordData);
 
-console.log(s);
+// console.log(s);
 
- // console.log(uid());
-  
-}
+//  // console.log(uid());
+
+// }

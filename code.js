@@ -1,5 +1,5 @@
 function doGet() {
-  var html = HtmlService.createTemplateFromFile("frontend/index").evaluate();
+  var html = HtmlService.createTemplateFromFile(`${getUser().role}_way/index`).evaluate();
   html.setTitle(names.titlePage);
   return html;
 }
