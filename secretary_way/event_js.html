@@ -20,6 +20,7 @@
   }
 
   window.onload = function () {
+    createSpinner();
     getDataLists()
       .then((data) => {
         handBook = data;
@@ -30,7 +31,6 @@
         let buffer = filterResources(Object.values(handBook.institutes), "idinstitute", handBook.user.idDepartment);
         showUser(buffer[0].nameinstitute);
 
-        createSpinner();
         getDataInstituteGroups(handBook.user.idDepartment) // отримуємо всі групи інституту
           .then((data) => {
             // успіх

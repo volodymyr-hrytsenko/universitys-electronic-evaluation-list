@@ -54,34 +54,3 @@ function createCopySpreadsheet(folderID, spreadsheetId, newFileName){
   }
 }
 
-function createEvaluationList(data, newFileName) {
-  const evaluationListId = createCopySpreadsheet(router.idEvaluationListsFolder, router.templateId, newFileName);
-  const evaluationList = SpreadsheetApp.openById(evaluationListId);
-  let sheet = evaluationList.getSheetByName("1");
-  for(let key in data) {
-    let range = propertyToRange[key];
-    if(key === 'students') {
-      let students = data.students;
-      let rangeNum = 23;
-      students.forEach(function (student, ind) {
-        if(ind >= 14) {
-          rangeNum = -11;
-          sheet = evaluationList.getSheetByName("2");
-        }
-        let position = ind + rangeNum;
-        sheet.getRange('B' + position).setValue(student.name);
-        sheet.getRange('D' + position).setValue(student.gradebookNumber);
-        sheet.getRange('E' + position).setValue(student.currentGrade);
-        sheet.getRange('F' + position).setValue(student.semesterGrade);
-      });
-      sheet = evaluationList.getSheetByName("1");
-    } else if(key === 'aditionalTeachers') {
-      let teachers = data[key].join(', ');
-      sheet.getRange(range).setValue(teachers);
-    } else if(range) {
-      sheet.getRange(range).setValue(data[key]);
-    }
-  }
-  return evaluationListId;
-}
-

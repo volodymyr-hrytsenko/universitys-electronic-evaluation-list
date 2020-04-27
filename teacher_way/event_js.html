@@ -9,6 +9,10 @@
     formTraining: {
       1: "Денна",
       2: "Заочна"
+    },
+    controlForm: {
+      1: "Екзамен",
+      2: "Залік"
     }
   };
 
@@ -58,63 +62,10 @@
     });
 
     page.addEventListener('click', function (el) {
-      if (el.target && el.target.type == "submit") { //details
-        switch (el.target.name) {
-          case "createFirstForm":
-            createEvaluationListData();
-            document.getElementById("filter").style.display = "none";
-            generateForm();
-            recordData.evaluationListType = 1; // признак основної відомості
-            document.getElementById("formWrap").style.display = "block";
-
-            break;
-          case "createSecondForm":
-            createEvaluationListData();
-            document.getElementById("filter").style.display = "none";
-            generateForm();
-            recordData.evaluationListType = 2; // признак повторної відомості
-            document.getElementById("formWrap").style.display = "block";
-            break;
-          case "closeForm":
-            document.getElementById("formWrap").style.display = "none";
-            clearnEvaluationListData();
-            document.getElementById("filter").style.display = "block";
-            createSpinner();
-            getTeacherEvolutionsLists(recordData
-                .instituteId) // отримуємо відомості викладача по інституту, якщо такі були створені раніше
-              .then((data) => {
-                // успіх
-                handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
-                generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
-                deleteSpinner();
-              })
-              .catch((e) => {
-                // помилка
-                console.log(e);
-              })
-            break;
-          case "saveForm":
-            recordData.emailTeacher = handBook.user.email;
-            recordData.status = 0; // признак в роботі
-
-            createSpinner();
-            setRecordData(recordData)
-              .then((data) => {
-                // успіх
-                recordData.recordNumber = data.recordNumber;
-                recordData.uid = data.uid;
-                deleteSpinner();
-              })
-              .catch((e) => {
-                // при помилці
-                console.log(e);
-              })
-            break;
-          case "subscribe":
-            recordData.status = 1; // признак підписати
-            break;
-        }
-
+      if (el.target && el.target.name == "actionsButtons") { //details
+        scanningActionsButtons(el.target.id);
+      } else if (el.target && el.target.name == "edit") {
+        runTeachersEvListsForEditing(el.target.id);
       }
     });
   }
@@ -226,9 +177,93 @@
           })
         break;
       case "controlForm":
-        recordData.evaluationListData.controlForm = document.getElementById("controlForm").value;
+        recordData.evaluationListData.controlFormId = document.getElementById("controlForm").value;
+        recordData.evaluationListData.controlForm = conformity.controlForm[recordData.evaluationListData.controlFormId];
         break;
     }
+  }
+
+  function scanningActionsButtons(id) {
+    switch (id) {
+      case "createFirstForm":
+        createEvaluationListData();
+        document.getElementById("filter").style.display = "none";
+        generateForm();
+        recordData.evaluationListType = 1; // признак основної відомості
+        document.getElementById("formWrap").style.display = "block";
+        console.log(recordData);
+        break;
+      case "createSecondForm":
+        createEvaluationListData();
+        document.getElementById("filter").style.display = "none";
+        generateForm();
+        recordData.evaluationListType = 2; // признак повторної відомості
+        document.getElementById("formWrap").style.display = "block";
+        console.log(recordData);
+        break;
+      case "closeForm":
+        document.getElementById("formWrap").style.display = "none";
+        clearnEvaluationListData();
+        document.getElementById("filter").style.display = "block";
+        createSpinner();
+        getTeacherEvolutionsLists(recordData
+            .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
+          .then((data) => {
+            // успіх
+            handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
+            generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+            deleteSpinner();
+          })
+          .catch((e) => {
+            // помилка
+            console.log(e);
+          })
+        console.log(recordData);
+        break;
+      case "saveForm":
+        recordData.emailTeacher = handBook.user.email;
+        recordData.status = 0; // признак в роботі
+
+        createSpinner();
+        setRecordData(recordData)
+          .then((data) => {
+            // успіх
+            recordData.recordNumber = data.recordNumber;
+            recordData.uid = data.uid;
+            deleteSpinner();
+          })
+          .catch((e) => {
+            // при помилці
+            console.log(e);
+          })
+        console.log(recordData);
+        break;
+      case "subscribe":
+        recordData.status = 1; // признак підписати
+        // createSpinner();
+        subscrideEvList(recordData)
+          .then((data) => {
+            // успіх
+            console.log(data);
+            deleteSpinner();
+          })
+          .catch((e) => {
+            // при помилці
+            console.log(e);
+          })
+        // console.log(recordData);
+        break;
+    }
+  }
+
+  function runTeachersEvListsForEditing(id) {
+    // console.log(handBook.teacherEvolutionsLists);
+    let adres = id.split("-"),
+      buffer = filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(adres[1]));
+    recordData = cloneObj(buffer[0]);
+    document.getElementById("filter").style.display = "none";
+    generateForm();
+    document.getElementById("formWrap").style.display = "block";
   }
 
   function scanningFormInputs(id) {
@@ -243,9 +278,6 @@
           unixDate = new Date(date).getTime();
 
         recordData.evaluationListData.date = unixDate;
-        console.log(date);
-        console.log(unixDate);
-
         break;
       case "aditionalTeachers":
         recordData.evaluationListData[id] = document.getElementById(`${id}`).value.split(",");
@@ -312,6 +344,7 @@
 
     recordData.evaluationListData.institute = buffer.institutes[recordData.instituteId].nameinstitute;
     recordData.evaluationListData.studyYearAndSemester = buffer.сurrentStudyYearAndSemester;
+    recordData.evaluationListData.date = Date.now();
     recordData.recordNumber = -1;
     recordData.uid = "";
 
@@ -353,6 +386,18 @@
     });
   }
 
+  function subscrideEvList(Data) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(res => {
+          //deleteSpinner();
+          resolve(res);
+        })
+        .withFailureHandler(reject)
+        .subscribeEvolutionsList(Data); // це функцыя з responnses
+    });
+  }
+
   function getTeacherEvolutionsLists(id) {
     return new Promise((resolve, reject) => {
       google.script.run
@@ -369,7 +414,7 @@
     return filterResources(list, "status", 0).concat(filterResources(list, "status", 1));
   }
 
-  /*--------------------------------------------------------------------------------------------------------*/
+  /*---------------------------------------------------------------------------------------------------------*/
 
   // function showInfoFromDocument(data) {
   //   deleteSpinner();

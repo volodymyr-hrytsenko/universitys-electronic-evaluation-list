@@ -67,7 +67,7 @@
     } else {
       teachersEvLists.forEach(el => {
         evLists += `<div class="evList">
-        <button>${el.evaluationListData.academicDiscipline + ", " + el.evaluationListData.groupName}</button>
+        <button name="edit" id="edit-${el.recordNumber}">${el.evaluationListData.academicDiscipline + ", " + el.evaluationListData.groupName}</button>
         <button>X</button>
         </div>`;
       });
@@ -79,7 +79,7 @@
     let buttons = [];
     names.forEach(el => {
       buttons.push(Object.keys(el).map(function (key) {
-        return `<button name='${key}'>${el[key]}</button>`;
+        return `<button name="actionsButtons" id='${key}'>${el[key]}</button>`;
       }).join(""));
     });
     document.getElementById("buttonsActionUnderForm").innerHTML = buttons.join("");
@@ -97,9 +97,9 @@
       tableMain = [],
       num = 1;
 
-    formButtons = `<button name='closeForm'>Закрити</button>
-      <button name='saveForm'>Зберегти</button>
-      <button name='subscribe'>Підписати</button>`;
+    formButtons = `<button name="actionsButtons" id='closeForm'>Закрити</button>
+      <button name="actionsButtons" id='saveForm'>Зберегти</button>
+      <button name="actionsButtons" id='subscribe'>Підписати</button>`;
 
     form =
       `<div class="row">
@@ -156,7 +156,7 @@
 
     document.getElementById("formButtons").innerHTML = formButtons;
     document.getElementById("form").innerHTML = form;
-    document.getElementById("controlForm").value = +data.controlForm;
+    document.getElementById("controlForm").value = +data.controlFormId;
   }
 
   // function dialogBox(quest,callback) {

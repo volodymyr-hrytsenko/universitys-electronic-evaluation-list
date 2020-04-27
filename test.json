@@ -1,34 +1,85 @@
 {
-    "pdfId": "",
-    "groupId": 11,
-    "emailTeacher": "volodymyr@vu.cdu.edu.ua",
-    "educationalDegreeId": 1,
-    "evaluationListData": {
-        "speciality": "111 МАТЕМАТИКА (МАТЕМАТИЧНА ЕКОНОМІКА ТА ЕКОНОМЕТРИКА)",
-        "educationalDegree": "Бакалавр",
-        "hourAndCredit": "",
-        "teacherFullName": "4",
-        "educationalForm": "Денна",
-        "groupName": "2-І",
-        "studyCredits": "",
-        "educationalProgram": "ПРИКЛАДНА ФІЗИКА ТА НАНО",
-        "controlForm": "",
-        "studyYearAndSemester": "1 семестру 2019/2020 навчального року",
-        "students": [],
-        "academicDiscipline": "",
-        "aditionalTeachers": [
-            "5",
-            "36"
-        ],
-        "institute": "Навчально-науковий інститут педагогічної освіти, соціальної роботи і мистецтва",
-        "listNumber": "",
-        "date": 1585699200000
-    },
-    "spreadsheetId": "",
-    "uid": "1587992275427-5ea35d2c-228e-4374-99e7-130d61c1e0ff",
     "instituteId": 5,
     "recordNumber": 1,
     "status": 0,
     "formTrainingId": 1,
-    "evaluationListType": 1
+    "evaluationListType": 1,
+    "pdfId": "",
+    "groupId": 3,
+    "emailTeacher": "volodyk753@vu.cdu.edu.ua",
+    "educationalDegreeId": 2,
+    "evaluationListData": {
+        "speciality": "014 СЕРЕДНЯ ОСВІТА (ІНФОРМАТИКА)",
+        "educationalDegree": "Магістр",
+        "hourAndCredit": "450(15)",
+        "controlFormId": "1",
+        "teacherFullName": "Чемерис І. М.",
+        "educationalForm": "Денна",
+        "studyCredits": 15,
+        "educationalProgram": "ПРИКЛАДНА МАТЕМАТИКА",
+        "groupName": "2-І",
+        "controlForm": "Екзамен",
+        "studyYearAndSemester": "1 семестру 2019/2020 навчального року",
+        "students": [
+            {
+                "currentGrade": 50,
+                "name": "Шевелев Артем Віталійович",
+                "gradeSum": 85,
+                "semesterGrade": 35,
+                "gradebookNumber": 746702
+            },
+            {
+                "currentGrade": 42,
+                "name": "Пономарев Роберт Владиславович",
+                "gradeSum": 95,
+                "semesterGrade": 53,
+                "gradebookNumber": 772167
+            },
+            {
+                "currentGrade": 43,
+                "name": "Костін Роберт Аланович",
+                "gradeSum": 96,
+                "semesterGrade": 53,
+                "gradebookNumber": 575087
+            },
+            {
+                "currentGrade": 42,
+                "name": "Ткачев Алан Михайлович",
+                "gradeSum": 84,
+                "semesterGrade": 42,
+                "gradebookNumber": 176099
+            },
+            {
+                "currentGrade": 35,
+                "name": "Платонов Алан Олексійович",
+                "gradeSum": 69,
+                "semesterGrade": 34,
+                "gradebookNumber": 335847
+            },
+            {
+                "currentGrade": 54,
+                "name": "Шевелев Петро Анварович",
+                "gradeSum": 77,
+                "semesterGrade": 23,
+                "gradebookNumber": 748902
+            },
+            {
+                "currentGrade": 54,
+                "name": "Кузнецов Игор Владиславович",
+                "gradeSum": 60,
+                "semesterGrade": 6,
+                "gradebookNumber": 880723
+            }
+        ],
+        "academicDiscipline": "Англ мова",
+        "aditionalTeachers": [
+            "Гриценко",
+            " Ляшенко"
+        ],
+        "institute": "Навчально-науковий інститут педагогічної освіти, соціальної роботи і мистецтва",
+        "listNumber": "",
+        "date": 1588204800000
+    },
+    "spreadsheetId": "",
+    "uid": "1588016322655-37d210dd-6b82-4c2e-9c54-96bd7ae0185a"
 }
