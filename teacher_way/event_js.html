@@ -201,22 +201,32 @@
         console.log(recordData);
         break;
       case "closeForm":
-        document.getElementById("formWrap").style.display = "none";
-        clearnEvaluationListData();
-        document.getElementById("filter").style.display = "block";
-        createSpinner();
-        getTeacherEvolutionsLists(recordData
-            .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
-          .then((data) => {
-            // успіх
-            handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
-            generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
-            deleteSpinner();
-          })
-          .catch((e) => {
-            // помилка
-            console.log(e);
-          })
+        if (recordData.recordNumber === -1) {
+          dialogBox('Ви справді бажеєте залишити форму не зберігши дані?', (bool) => {
+            if (bool === true) {
+              document.getElementById("formWrap").style.display = "none";
+              clearnEvaluationListData();
+              document.getElementById("filter").style.display = "block";
+            }
+          });
+        } else {
+          createSpinner();
+          document.getElementById("formWrap").style.display = "none";
+          clearnEvaluationListData();
+          document.getElementById("filter").style.display = "block";
+          getTeacherEvolutionsLists(recordData
+              .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
+            .then((data) => {
+              // успіх
+              handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
+              generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+              deleteSpinner();
+            })
+            .catch((e) => {
+              // помилка
+              console.log(e);
+            })
+        }
         console.log(recordData);
         break;
       case "saveForm":
@@ -229,12 +239,12 @@
             recordData.recordNumber = data.recordNumber;
             recordData.uid = data.uid;
             deleteSpinner();
+            console.log(recordData);
           })
           .catch((e) => {
             // при помилці
             console.log(e);
           })
-        console.log(recordData);
         break;
       case "subscribe":
         recordData.status = 1; // признак підписати
@@ -245,6 +255,20 @@
             recordData = cloneObj(data);
             document.getElementById("formWrap").style.display = "none";
             document.getElementById("filter").style.display = "block";
+
+            console.log(recordData);
+
+            getTeacherEvolutionsLists(recordData
+                .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
+              .then((data) => {
+                // успіх
+                handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
+                generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+              })
+              .catch((e) => {
+                // помилка
+                console.log(e);
+              })
             deleteSpinner();
 
             sendEmail(recordData)
@@ -261,7 +285,6 @@
             // при помилці
             console.log(e);
           })
-        // console.log(recordData);
         break;
     }
   }

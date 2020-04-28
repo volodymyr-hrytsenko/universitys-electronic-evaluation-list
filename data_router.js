@@ -46,14 +46,15 @@ function searchRecordInSheet(uId, currentSheet) {
 }
 
 function createEvaluationList(data, newFileName) {
+  let evList = JSON.parse(JSON.stringify(data));
   const evaluationListId = createCopySpreadsheet(router.idEvaluationListsFolder, router.templateId, newFileName);
   const evaluationList = SpreadsheetApp.openById(evaluationListId);
-  data.date = Utilities.formatDate(new Date(data.date), "Europe/Kiev", "dd.MM.yyyy");
+  evList.date = Utilities.formatDate(new Date(evList.date), "Europe/Kiev", "dd.MM.yyyy");
   let sheet = evaluationList.getSheetByName("1");
-  for (let key in data) {
+  for (let key in evList) {
     let range = propertyToRange[key];
     if (key === 'students') {
-      let students = data.students;
+      let students = evList.students;
       let rangeNum = 23;
       students.forEach(function (student, ind) {
         if (ind >= 14) {
@@ -68,10 +69,10 @@ function createEvaluationList(data, newFileName) {
       });
       sheet = evaluationList.getSheetByName("1");
     } else if (key === 'aditionalTeachers') {
-      let teachers = data[key].join(', ');
+      let teachers = evList[key].join(', ');
       sheet.getRange(range).setValue(teachers);
     } else if (range) {
-      sheet.getRange(range).setValue(data[key]);
+      sheet.getRange(range).setValue(evList[key]);
     }
   }
   //evaluationList;

@@ -107,7 +107,7 @@
         <input type="text" name="formInput" id="academicDiscipline" placeholder="повна назва дисципліни за навчальним планом" value="${data.academicDiscipline}">
       </div>
       <div class="row">
-        <label for="studyCredits">Кілкість крелитів</label>
+        <label for="studyCredits">Кількість кредитів</label>
         <input type="number" name="formInput" id="studyCredits" name="number" min="1" max="36" step="1" value="${data.studyCredits}">
       </div>`;
     controlFormData.unshift({
@@ -159,29 +159,30 @@
     document.getElementById("controlForm").value = +data.controlFormId;
   }
 
-  // function dialogBox(quest,callback) {
-  //   let okButton = `<div id = 'ok'>Ok</div>`;
-  //   let cancelButton = `<div id = 'cancel'>Cancel</div>`;
+  function dialogBox(quest, callback) {
+    const dialogBox =
+      `<div class="modalBlock">
+        <div class="dialogBox">
+          <label>${quest}</label>
+          <div class="yesNoButtons">
+            <div id = 'ok'>Ok</div>
+            <div id = 'cancel'>Cancel</div>
+          </div>
+        </div>
+      </div>`;
 
-  //   let confirmBox = `<div>${quest}</div>`;
+    let dialog = document.getElementById('castomAlert');
 
-  //   let dialog = document.getElementById('message');
+    dialog.innerHTML = dialogBox;
 
-  //   dialog.innerHTML = confirmBox + okButton + cancelButton;
-    
-  //   dialog.addEventListener('click',(event) => {
-  //     if (event.target.id === 'ok') {
-  //        callback(true);
-  //        dialog.innerHtml = '';
-  //     } 
-  //     else if(event.target.id === 'cancel') {
-  //       // callback(false);
-  //       dialog.innerHtml = '';
-  //       } 
-  //     })
-  //   }
-  //   dialogBox('Did you see this message?', function(bool){ console.log(bool)});
-
-
-
+    dialog.addEventListener('click', (event) => {
+      if (event.target.id === 'ok') {
+        callback(true);
+        dialog.innerHTML = '';
+      } else if (event.target.id === 'cancel') {
+        callback(false);
+        dialog.innerHTML = '';
+      }
+    })
+  }
 </script>
