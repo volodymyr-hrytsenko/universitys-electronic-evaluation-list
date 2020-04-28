@@ -1,85 +1,50 @@
 {
-    "instituteId": 5,
-    "recordNumber": 1,
-    "status": 0,
-    "formTrainingId": 1,
+    "status": 1,
+    "formTrainingId": 2,
     "evaluationListType": 1,
-    "pdfId": "",
-    "groupId": 3,
-    "emailTeacher": "volodyk753@vu.cdu.edu.ua",
-    "educationalDegreeId": 2,
+    "groupId": 6,
+    "pdfId": "1XC-akzRtOqL3J81oBGB9BGLuGh3mEuD3",
+    "emailTeacher": "grytsenko@vu.cdu.edu.ua",
+    "educationalDegreeId": 1,
     "evaluationListData": {
-        "speciality": "014 СЕРЕДНЯ ОСВІТА (ІНФОРМАТИКА)",
-        "educationalDegree": "Магістр",
-        "hourAndCredit": "450(15)",
-        "controlFormId": "1",
-        "teacherFullName": "Чемерис І. М.",
-        "educationalForm": "Денна",
-        "studyCredits": 15,
-        "educationalProgram": "ПРИКЛАДНА МАТЕМАТИКА",
-        "groupName": "2-І",
+        "educationalForm": "Заочна",
+        "educationalProgram": "СЕРЕДНЯ ОСВІТА (ФІЗИКА)",
+        "studyCredits": 5,
+        "groupName": "2-Б",
         "controlForm": "Екзамен",
-        "studyYearAndSemester": "1 семестру 2019/2020 навчального року",
         "students": [
             {
-                "currentGrade": 50,
-                "name": "Шевелев Артем Віталійович",
-                "gradeSum": 85,
-                "semesterGrade": 35,
-                "gradebookNumber": 746702
+                "gradebookNumber": 100470,
+                "semesterGrade": "",
+                "gradeSum": "",
+                "currentGrade": "",
+                "name": "Кузнецов Игор Олексійович"
             },
             {
-                "currentGrade": 42,
-                "name": "Пономарев Роберт Владиславович",
-                "gradeSum": 95,
-                "semesterGrade": 53,
-                "gradebookNumber": 772167
-            },
-            {
-                "currentGrade": 43,
-                "name": "Костін Роберт Аланович",
-                "gradeSum": 96,
-                "semesterGrade": 53,
-                "gradebookNumber": 575087
-            },
-            {
-                "currentGrade": 42,
-                "name": "Ткачев Алан Михайлович",
-                "gradeSum": 84,
-                "semesterGrade": 42,
-                "gradebookNumber": 176099
-            },
-            {
-                "currentGrade": 35,
-                "name": "Платонов Алан Олексійович",
-                "gradeSum": 69,
-                "semesterGrade": 34,
-                "gradebookNumber": 335847
-            },
-            {
-                "currentGrade": 54,
-                "name": "Шевелев Петро Анварович",
-                "gradeSum": 77,
-                "semesterGrade": 23,
-                "gradebookNumber": 748902
-            },
-            {
-                "currentGrade": 54,
-                "name": "Кузнецов Игор Владиславович",
-                "gradeSum": 60,
-                "semesterGrade": 6,
-                "gradebookNumber": 880723
+                "currentGrade": "",
+                "name": "Кузьмін Алан Владиславович",
+                "gradebookNumber": 406066,
+                "semesterGrade": "",
+                "gradeSum": ""
             }
         ],
-        "academicDiscipline": "Англ мова",
+        "studyYearAndSemester": "1 семестру 2019/2020 навчального року",
         "aditionalTeachers": [
-            "Гриценко",
-            " Ляшенко"
+            "Lola",
+            " Ola"
         ],
+        "academicDiscipline": "AKIT",
         "institute": "Навчально-науковий інститут педагогічної освіти, соціальної роботи і мистецтва",
         "listNumber": "",
-        "date": 1588204800000
+        "date": "03.05.2020",
+        "speciality": "105 ПРИКЛАДНА ФІЗИКА ТА НАНОМАТЕРІАЛИ",
+        "educationalDegree": "Бакалавр",
+        "hourAndCredit": "150 (5)",
+        "controlFormId": "1",
+        "teacherFullName": "Hritsenko"
     },
-    "spreadsheetId": "",
-    "uid": "1588016322655-37d210dd-6b82-4c2e-9c54-96bd7ae0185a"
+    "spreadsheetId": "1suroai6cMcnYEczRqUB7V41M2W7BD-C8-tbshyChXsk",
+    "uid": "1588067685662-e668df2b-ec94-4660-a00c-b5b622dfa259",
+    "instituteId": 5,
+    "recordNumber": 1
 }

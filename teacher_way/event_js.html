@@ -132,8 +132,7 @@
         handBook.filteredEvListsByEducationalDegree = filterResources(handBook.teacherEvolutionsLists,
           "educationalDegreeId", recordData.educationalDegreeId);
 
-        generateGroupsSelect(handBook
-          .filteredGroupsByEducationalDegree); // виводимо групи, що вдповідають вибраному параметру
+        generateGroupsSelect([]); // виводимо групи, що вдповідають вибраному параметру
         generateTeacherEvolutionsLists(handBook.filteredEvListsByEducationalDegree); // виводимо відомості ...
         break;
       case "select-formTraining":
@@ -221,7 +220,6 @@
         console.log(recordData);
         break;
       case "saveForm":
-        recordData.emailTeacher = handBook.user.email;
         recordData.status = 0; // признак в роботі
 
         createSpinner();
@@ -240,12 +238,24 @@
         break;
       case "subscribe":
         recordData.status = 1; // признак підписати
-        // createSpinner();
+        createSpinner();
         subscrideEvList(recordData)
           .then((data) => {
             // успіх
-            console.log(data);
+            recordData = cloneObj(data);
+            document.getElementById("formWrap").style.display = "none";
+            document.getElementById("filter").style.display = "block";
             deleteSpinner();
+
+            sendEmail(recordData)
+              .then((data) => {
+                // успіх
+                console.log(data);
+              })
+              .catch((e) => {
+                // при помилці
+                console.log(e);
+              })
           })
           .catch((e) => {
             // при помилці
@@ -271,7 +281,7 @@
       case "studyCredits":
         let credit = +document.getElementById(`${id}`).value;
         recordData.evaluationListData[id] = credit;
-        recordData.evaluationListData.hourAndCredit = `${credit * 30}(${credit})`;
+        recordData.evaluationListData.hourAndCredit = `${credit * 30} (${credit})`;
         break;
       case "date":
         let date = document.getElementById(`${id}`).value,
@@ -345,7 +355,10 @@
     recordData.evaluationListData.institute = buffer.institutes[recordData.instituteId].nameinstitute;
     recordData.evaluationListData.studyYearAndSemester = buffer.сurrentStudyYearAndSemester;
     recordData.evaluationListData.date = Date.now();
+    recordData.emailTeacher = handBook.user.email;
     recordData.recordNumber = -1;
+    recordData.pdfId = "";
+    recordData.spreadsheetId = "";
     recordData.uid = "";
 
     for (let key in allGroupInfo) {
@@ -374,7 +387,7 @@
     }
   }
 
-  function setRecordData(Data) {
+  function setRecordData(data) {
     return new Promise((resolve, reject) => {
       google.script.run
         .withSuccessHandler(res => {
@@ -382,11 +395,11 @@
           resolve(res);
         })
         .withFailureHandler(reject)
-        .writeDataToInstituteRouter(Data); // це функцыя з responnses
+        .writeDataToInstituteRouter(data); // це функцыя з responnses
     });
   }
 
-  function subscrideEvList(Data) {
+  function subscrideEvList(data) {
     return new Promise((resolve, reject) => {
       google.script.run
         .withSuccessHandler(res => {
@@ -394,7 +407,19 @@
           resolve(res);
         })
         .withFailureHandler(reject)
-        .subscribeEvolutionsList(Data); // це функцыя з responnses
+        .subscribeEvolutionsList(data); // це функцыя з responnses
+    });
+  }
+
+  function sendEmail(data) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(res => {
+          //deleteSpinner();
+          resolve(res);
+        })
+        .withFailureHandler(reject)
+        .sendPdfToEmail(data); // це функцыя з responnses
     });
   }
 

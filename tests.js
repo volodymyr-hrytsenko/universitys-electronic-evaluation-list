@@ -118,3 +118,102 @@ const testEvaluationListData = { //Тестові данні для створе
     },
   ]
 }
+             
+//
+             
+             // function sendEmail(spredsheetId, email, pdfName, messageTitle, messageBody, organization) {
+//   const ss = SpreadsheetApp.openById(spredsheetId);
+//   let sheet = ss.getSheets()[0];
+//   let sheetPdf = ss.getSheets()[1];
+
+//   let data = sheet.getRange(...pageRange.mainPage).getValues();
+
+//   let folderID = router.pdfFolder;
+//   let folder = DriveApp.getFolderById(folderID);
+
+//   let destSpreadSheet = SpreadsheetApp.open(DriveApp.getFileById(ss.getId()).makeCopy("tmp_pdf", folder));
+//   let sheetsPdf = destSpreadSheet.getSheets();
+
+//   let theBlob = destSpreadSheet.getBlob().getAs('application/pdf').setName(pdfName);
+//   let newFile = folder.createFile(theBlob);
+//   let newFileId = newFile.getId();
+
+//   DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);
+
+//   if (1) {
+//     GmailApp.sendEmail(email, messageTitle, messageBody, {
+//       name: organization,
+//       attachments: [DriveApp.getFileById(newFileId)]
+//     });
+//   }
+//   return newFileId
+// }
+/*
+function sendEmailOLD(id, email, pdfName, messageTitle, messageBody, organization) {
+  try {
+    const ss = SpreadsheetApp.openById(id);
+    //let sheet = ss.getSheets()[0];
+    // let sheetPdf = ss.getSheets()[1];
+
+    // let data = sheet.getRange(...pageRange.mainPage).getValues();
+
+    let folderID = router.pdfFolder;
+    let folder = DriveApp.getFolderById(folderID);
+
+    let destSpreadSheet = SpreadsheetApp.open(DriveApp.getFileById(ss.getId()).makeCopy("tmp_pdf", folder));
+    let sheetsPdf = destSpreadSheet.getSheets();
+
+    let theBlob = destSpreadSheet.getBlob().getAs('application/pdf').setName(pdfName);
+    let newFile = folder.createFile(theBlob);
+    let newFileId = newFile.getId();
+
+    DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);
+
+    if (1) {
+      GmailApp.sendEmail(email, messageTitle, messageBody, {
+        name: organization,
+        attachments: [DriveApp.getFileById(newFileId)]
+      })
+    }
+    return newFileId
+  } catch (e) {
+    return 'Error: sending mail ' + e.toString();
+  }
+}
+
+*/
+             
+             
+             /*
+function spreedshetToPDF(SpreadsheetId, pdfFileName){
+   try {
+             let folder = DriveApp.getFolderById(router.pdfFolder); 
+             let spreedsheets = SpreadsheetApp.openById(SpreadsheetId);
+             let theBlob = spreedsheets.getBlob().getAs('application/pdf').setName(pdfFileName);
+             let newFile = folder.createFile(theBlob);
+             let newFileId = newFile.getId();
+             return newFileId;
+   } catch (e) {
+    return 'Error: sending mail ' + e.toString();
+  }   
+}
+function sendEmail(email, messageTitle, messageBody, organization, attachmentFileId) {
+  try {
+       GmailApp.sendEmail(email, messageTitle, messageBody, {
+        name: organization,
+        attachments: [DriveApp.getFileById(attachmentFileId)]
+      });
+   return true;
+  } catch (e) {
+    return 'Error: sending mail ' + e.toString();
+  }
+}
+
+             
+             function testPDF (){
+             SpreadsheetId = '1IZRLl90nOxtBlnpwelhbJ95lXzRKpTOt6uK32bYci80';
+             pdfFileName = "wer";
+             let attachmentFileId = spreedshetToPDF(SpreadsheetId, pdfFileName);
+             sendEmail(email, messageTitle, messageBody, organization, attachmentFileId);
+             } 
+*/           

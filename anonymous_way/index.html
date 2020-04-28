@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .warning {
+            height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <class class="warning">
+        <span class="fa fa-exclamation-triangle" style="font-size:36px;color:#ffbf00"></span>
+        <lable style="font-size:24px; margin-left:3px;">Для відображення відомостей слід авторизуватися в
+            корпоративному
+            акаунті <button class="authorization" name="eu" onclick="singin(this)">@vu.cdu.edu.ua</button></lable>
+    </class>
+
+    <script>
+        function singin() {
+            var myWindow = window.open(
+                "https://accounts.google.com/signin/v2/identifier?hd=vu.cdu.edu.ua&continue=https://mail.google.com/mail/u/0/#inbox",
+                "_blank");
+        }
+    </script>
+
+</body>
+
+</html>

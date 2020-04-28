@@ -1,7 +1,8 @@
 function getUser(){
   var obj = {};
   var email = getUserEmail();
-  email = 'volodyk753@vu.cdu.edu.ua';
+  // email = 'grytsenko@vu.cdu.edu.ua';
+  email = 'iot@vu.cdu.edu.ua';
   switch (email){
     case 'admin@vu.cdu.edu.ua':
     case 'nmv@vu.cdu.edu.ua':

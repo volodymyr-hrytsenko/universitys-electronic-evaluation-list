@@ -48,6 +48,7 @@ function searchRecordInSheet(uId, currentSheet) {
 function createEvaluationList(data, newFileName) {
   const evaluationListId = createCopySpreadsheet(router.idEvaluationListsFolder, router.templateId, newFileName);
   const evaluationList = SpreadsheetApp.openById(evaluationListId);
+  data.date = Utilities.formatDate(new Date(data.date), "Europe/Kiev", "dd.MM.yyyy");
   let sheet = evaluationList.getSheetByName("1");
   for (let key in data) {
     let range = propertyToRange[key];
@@ -73,64 +74,34 @@ function createEvaluationList(data, newFileName) {
       sheet.getRange(range).setValue(data[key]);
     }
   }
+  //evaluationList;
   return evaluationListId;
 }
 
-// function sendEmail(spredsheetId, email, pdfName, messageTitle, messageBody, organization) {
-//   const ss = SpreadsheetApp.openById(spredsheetId);
-//   let sheet = ss.getSheets()[0];
-//   let sheetPdf = ss.getSheets()[1];
 
-//   let data = sheet.getRange(...pageRange.mainPage).getValues();
 
-//   let folderID = router.pdfFolder;
-//   let folder = DriveApp.getFolderById(folderID);
-
-//   let destSpreadSheet = SpreadsheetApp.open(DriveApp.getFileById(ss.getId()).makeCopy("tmp_pdf", folder));
-//   let sheetsPdf = destSpreadSheet.getSheets();
-
-//   let theBlob = destSpreadSheet.getBlob().getAs('application/pdf').setName(pdfName);
-//   let newFile = folder.createFile(theBlob);
-//   let newFileId = newFile.getId();
-
-//   DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);
-
-//   if (1) {
-//     GmailApp.sendEmail(email, messageTitle, messageBody, {
-//       name: organization,
-//       attachments: [DriveApp.getFileById(newFileId)]
-//     });
-//   }
-//   return newFileId
-// }
-
-function sendEmail(id, email, pdfName, messageTitle, messageBody, organization) {
+function spreedshetToPDF(SpreadsheetId, pdfFileName) {
   try {
-    const ss = SpreadsheetApp.openById(id);
-    let sheet = ss.getSheets()[0];
-    // let sheetPdf = ss.getSheets()[1];
-
-    // let data = sheet.getRange(...pageRange.mainPage).getValues();
-
-    let folderID = router.pdfFolder;
-    let folder = DriveApp.getFolderById(folderID);
-
-    let destSpreadSheet = SpreadsheetApp.open(DriveApp.getFileById(ss.getId()).makeCopy("tmp_pdf", folder));
-    let sheetsPdf = destSpreadSheet.getSheets();
-
-    let theBlob = destSpreadSheet.getBlob().getAs('application/pdf').setName(pdfName);
+    // SpreadsheetId = '1aiABIEYCX21uouznbSqBUxIfrpDMA8CM8cRIWLrvvcM';
+    let folder = DriveApp.getFolderById(router.pdfFolder);
+    let spreedsheets = SpreadsheetApp.openById(SpreadsheetId);
+    let theBlob = spreedsheets.getBlob().getAs('application/pdf').setName(pdfFileName + ".pdf");
     let newFile = folder.createFile(theBlob);
     let newFileId = newFile.getId();
+    // DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);//видалення файлу в корзину
+    return newFileId;
+  } catch (e) {
+    return 'Error: sending mail ' + e.toString();
+  }
+}
 
-    DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);
-
-    if (1) {
-      GmailApp.sendEmail(email, messageTitle, messageBody, {
-        name: organization,
-        attachments: [DriveApp.getFileById(newFileId)]
-      })
-    }
-    return newFileId
+function sendEmail(email, messageTitle, messageBody, organization, attachmentFileId) {
+  try {
+    GmailApp.sendEmail(email, messageTitle, messageBody, {
+      name: organization,
+      attachments: [DriveApp.getFileById(attachmentFileId)]
+    });
+    return true;
   } catch (e) {
     return 'Error: sending mail ' + e.toString();
   }
@@ -138,16 +109,26 @@ function sendEmail(id, email, pdfName, messageTitle, messageBody, organization) 
 
 function subscribeEvolutionsList(obj) {
   try {
-    // let emailParametrs = {
-    //   pdfName: obj.evaluationListData.groupName + " " + obj.evaluationListData.academicDiscipline,
-    //   title: "Відомість(" + obj.evaluationListData.groupName + " " + obj.evaluationListData.academicDiscipline + ")",
-    //   description: "Роздрукуйте і підпишить. Передайте до дирекції " + obj.evaluationListData.institute,
-    //   resourseName: "е-Відомість ЧНУ"
-    // };
-    obj.spreadsheetId = createEvaluationList(obj.evaluationListData, obj.evaluationListData.groupName);
-    // obj.pdfId = sendEmail(obj.spredsheetId, getUser().email, emailParametrs.pdfName, emailParametrs.title, emailParametrs.description, emailParametrs.resourseName);
-    obj.pdfId = sendEmail(obj.spredsheetId, getUser().email, 'emailParametrs.pdfName', 'emailParametrs.title', 'emailParametrs.description', 'emailParametrs.resourseName');
-    return writeDataToInstituteRouter(obj);
+    obj.spreadsheetId = createEvaluationList(obj.evaluationListData, `${obj.evaluationListData.groupName} ${obj.evaluationListData.academicDiscipline}`);
+    writeDataToInstituteRouter(obj);
+    return obj;
+  } catch (e) {
+    return 'Error: ' + e.toString();
+  }
+}
+
+function sendPdfToEmail(obj) {
+  try {
+    let emailParametrs = {
+      pdfName: obj.evaluationListData.groupName + " " + obj.evaluationListData.academicDiscipline,
+      title: "Відомість(" + obj.evaluationListData.groupName + " " + obj.evaluationListData.academicDiscipline + ")",
+      description: "Роздрукуйте і підпишить. Передайте до дирекції " + obj.evaluationListData.institute,
+      resourseName: "е-Відомість ЧНУ"
+    };
+    obj.pdfId = spreedshetToPDF(obj.spreadsheetId, emailParametrs.pdfName);
+    writeDataToInstituteRouter(obj);
+    sendEmail(getUser().email, emailParametrs.title, emailParametrs.description, emailParametrs.resourseName, obj.pdfId);
+    return true;
   } catch (e) {
     return 'Error: ' + e.toString();
   }
