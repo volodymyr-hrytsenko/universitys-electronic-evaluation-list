@@ -3,12 +3,8 @@
 
   const conformity = {
     educationalDegree: {
-      1: "Бакалавр",
-      2: "Магістр"
-    },
-    formTraining: {
-      1: "Денна",
-      2: "Заочна"
+      1: "6",
+      2: "8"
     },
     controlForm: {
       1: "Екзамен",
@@ -19,6 +15,7 @@
   window.onload = function () {
     getDataLists()
       .then((data) => {
+        handBook = {};
         handBook = data;
         console.log(data);
         handBook.filteredGroupsByFormTraining = [];
@@ -90,7 +87,8 @@
         handBook.filteredEvListsByGroup = [];
 
         createSpinner(); // заблокувати всі селекти поки не виконалось
-        getDataInstituteGroups(recordData.instituteId) // отримуємо всі групи вибраного інституту
+        getDataInstituteGroups(handBook.institutes[recordData.instituteId]
+          .iddivision) // отримуємо всі групи вибраного інституту
           .then((data) => {
             // успіх
             handBook.groups = data;
@@ -127,7 +125,7 @@
         handBook.filteredEvListsByGroup = [];
 
         //відфільтровуємо дані відповідно до вибраного параметра
-        handBook.filteredGroupsByEducationalDegree = filterResources(handBook.groups, "educationalDegree", conformity
+        handBook.filteredGroupsByEducationalDegree = filterResources(handBook.groups, "educationalDegreeId", conformity
           .educationalDegree[recordData.educationalDegreeId]);
         handBook.filteredEvListsByEducationalDegree = filterResources(handBook.teacherEvolutionsLists,
           "educationalDegreeId", recordData.educationalDegreeId);
@@ -142,12 +140,16 @@
         document.getElementById("buttonsActionUnderForm").innerHTML = "";
 
         handBook.filteredGroupsByFormTraining = filterResources(handBook.filteredGroupsByEducationalDegree,
-          "educationalForm", conformity.formTraining[recordData.formTrainingId]);
+          "educationalFormId", (recordData.formTrainingId).toString());
+        console.log(handBook.filteredGroupsByFormTraining);
         handBook.filteredEvListsByFormTraining = filterResources(handBook.filteredEvListsByEducationalDegree,
           "formTrainingId", recordData.formTrainingId)
 
         generateGroupsSelect(handBook.filteredGroupsByFormTraining);
         generateTeacherEvolutionsLists(handBook.filteredEvListsByFormTraining);
+        break;
+      case "select-cours":
+
         break;
       case "select-groups":
         recordData.groupId = +document.getElementById("select-groups").value;

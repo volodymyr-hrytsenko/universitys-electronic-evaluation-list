@@ -46,6 +46,21 @@
     document.getElementById("formTraining").innerHTML = generateSelect(formTraining, "select-formTraining");
   }
 
+  function generateCoursSelect(data) { // створюємо випадний список для вибору курсу навчання
+    const formTraining = Object.values(data).map(el => {
+      return {
+        key: el.formtrainingid,
+        value: el.formtrainingname
+      }
+    });
+    formTraining.unshift({
+      key: 0,
+      value: "Виберіть форму навчання"
+    });
+    document.getElementById("formTraining").innerHTML = generateSelect(formTraining, "select-formTraining");
+  }
+
+
   function generateGroupsSelect(data) { // створюємо випадний список для вибору групи
     const groups = Object.values(data).map(el => {
       return {
@@ -163,15 +178,17 @@
     const dialogBox =
       `<div class="modalBlock">
         <div class="dialogBox">
-          <label>${quest}</label>
-          <div class="yesNoButtons">
-            <div id = 'ok'>Ok</div>
-            <div id = 'cancel'>Cancel</div>
+          <div class="question">
+            <label>${quest}</label>
           </div>
+          <div class="yesNoButtons">
+            <div id = 'ok'>Так</div>
+            <div id = 'cancel'>Ні</div>
+          </>
         </div>
       </div>`;
 
-    let dialog = document.getElementById('castomAlert');
+    let dialog = document.getElementById('customAlert');
 
     dialog.innerHTML = dialogBox;
 

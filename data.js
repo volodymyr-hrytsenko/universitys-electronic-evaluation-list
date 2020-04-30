@@ -22,21 +22,22 @@ function getUser(){
 }
 
 function getDataFromRouterLists(){
-    const elementId = "handBook";
-    const cache = CacheService.getScriptCache();
-    let handBook = {};
-    const cached = cache.get(elementId); //отримуємо запис про ресурс з кешу
+    // const elementId = "handBook";
+    // const cache = CacheService.getScriptCache();
+    // // let handBook = {};
+    // // const cached = cache.get(elementId); //отримуємо запис про ресурс з кешу
     
-    if (cached != null) {
-      handBook = JSON.parse(cached);
-     console.log('Дані з кешу');
-    } else {
-      handBook = getDataJsonFromFile(router.idFolderDB, router.nameJsonData);
-      cache.put(elementId, JSON.stringify(handBook)); //кешуємо об'єкти ресурсів
-      console.log('Дані з файлу');
-    }
-    return handBook;
+    // if (cached != null) {
+    // if (false) {
+    //   handBook = JSON.parse(cached);
+    //  console.log('Дані з кешу');
+    // } else {
+    //   handBook = getDataJsonFromFile(router.idFolderDB, router.nameJsonData);
+    //   // log(handBook);
+    //   // cache.put(elementId, JSON.stringify(handBook)); //кешуємо об'єкти ресурсів
+    //   console.log('Дані з файлу');
+    // }
+    return getDataJsonFromFile(router.idFolderDB, router.nameJsonData);  // handBook
 }
-
 
 

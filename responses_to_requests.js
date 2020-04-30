@@ -1,33 +1,30 @@
 function getDataFromHandbook() {
   let obj = getDataFromRouterLists();
+  obj.user = getUser();
+  obj.сurrentStudyYearAndSemester = studyYear.getCurrentStudyYearAndSemester();
 
-  let inputData = {
-    user: getUser(),
-    institutes: obj.handBook.institutes,
-    educational_degree: obj.handBook.educational_degree,
-    form_of_training: obj.handBook.form_of_training,
-    controlForm: controlForm,
-    сurrentStudyYearAndSemester: studyYear.getCurrentStudyYearAndSemester()
-  };
-  console.log(inputData);
-  return inputData;
+  // let inputData = {
+  //   user: getUser(),
+  //   institutes: obj.handBook.institutes,
+  //   educational_degree: obj.handBook.educational_degree,
+  //   form_of_training: obj.handBook.form_of_training,
+  //   controlForm: controlForm,
+  //   сurrentStudyYearAndSemester: studyYear.getCurrentStudyYearAndSemester()
+  // };
+  return obj;
 }
 
-function getDataGroups(instituteId) {
-  let obj = getDataFromRouterLists();
-  const groups = obj.handBook.groups;
-  console.log(Object.values(groups));
-  const arrChosenGroup = filterResources(Object.values(groups), "instituteId", instituteId);
-  return arrChosenGroup;
+function getDataGroups(iddivision) {
+  return getDataJsonFromFile(router.idFolderStudentsGroup, `handBookStudentGroups_${iddivision}.json`);
 }
 
-function getDataStudents(groupId) {
-  let obj = getDataFromRouterLists();
-  const students = obj.handBook.students;
-  console.log(Object.values(students));
-  const arrGroupStudents = filterResources(Object.values(students), "groupId", groupId);
-  return arrGroupStudents;
-}
+// function getDataStudents(groupId) {
+//   let obj = getDataFromRouterLists();
+//   const students = obj.handBook.students;
+//   console.log(Object.values(students));
+//   const arrGroupStudents = filterResources(Object.values(students), "groupId", groupId);
+//   return arrGroupStudents;
+// }
 
 function getEvolutionListsByTeacher(instituteId) {
   try {

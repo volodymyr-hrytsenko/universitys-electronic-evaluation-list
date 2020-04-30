@@ -7,7 +7,7 @@ function getUserEmail(){
 }
 
 function getDataJsonFromFile(idFolder, fileName){
-   try{  
+   try{
     var files = DriveApp.getFolderById(idFolder).getFilesByName(fileName);
     var file = files.next();
     var fileId = file.getId();
@@ -54,3 +54,8 @@ function createCopySpreadsheet(folderID, spreadsheetId, newFileName){
   }
 }
 
+/*--------------------------------------*/
+function log(value){
+  let currentSheet = SpreadsheetApp.openById(router.log).getSheetByName('data');
+  currentSheet.appendRow([JSON.stringify(value)]);
+ }

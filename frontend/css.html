@@ -14,7 +14,7 @@
     .evList{
         margin-right: 20px;
     }
-
+/* ---------------- modal block style ------------- */
     .modalBlock {
     display: flex;
     justify-content: center;
@@ -30,5 +30,72 @@
     color: #fff;
     font-size: 30px;
   }
+
+/* ---------------- castom alert style ------------- */
+.dialogBox{
+    width: 480px;
+    background: #fff;
+    color: #000;
+    border-radius: 20px;
+    box-shadow: 0px 0px 7px 0px rgba(0,0,0,0.5);
+}
+
+.question{
+    width: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.question > label{
+    width: 420px;
+}
+
+.yesNoButtons{
+    display: flex;
+    width: inherit;
+    height: 90px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid #E0E0E0;
+}
+
+.yesNoButtonsWrap{
+    
+}
+
+#ok, #cancel{
+    height: 50px;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #2D9CDB;
+    background: #F2F2F2;
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.25);
+    border: 2px solid #2D9CDB;
+    box-sizing: border-box;
+    border-radius: 100px;
+    cursor: pointer;
+    -webkit-transition-duration:box-shadow 1s;
+    transition-duration: box-shadow 1s;
+}
+
+#ok{
+    margin-right: 50px;
+    color: #2D9CDB;
+    border: 2px solid #2D9CDB;
+}
+
+#cancel{
+    color: #4F4F4F;
+    border: 2px solid #4F4F4F;
+}
+
+#ok:hover, #cancel:hover{
+    box-shadow: inset 0px 0px 5px 1px rgba(0,0,0,0);
+    
+}
 
 </style>
