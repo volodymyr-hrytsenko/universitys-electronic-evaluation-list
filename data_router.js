@@ -25,7 +25,8 @@ function writeDataToInstituteRouter(obj) {
     }
     return {
       recordNumber: obj.recordNumber,
-      uid: obj.uid
+      uid: obj.uid,
+      status: obj.status
     };
   } catch (e) {
     return 'Error: ' + e.toString();
@@ -90,7 +91,10 @@ function spreedshetToPDF(SpreadsheetId, pdfFileName) {
     let newFile = folder.createFile(theBlob);
     let newFileId = newFile.getId();
     // DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);//видалення файлу в корзину
-    return newFileId;
+    let urlFile = DriveApp.getFolderById(newFileId).getUrl();
+    DriveApp.getFileById(newFileId).setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW); //розшарювання файлу
+   // return newFileId;
+    return urlFile;
   } catch (e) {
     return 'Error: sending mail ' + e.toString();
   }

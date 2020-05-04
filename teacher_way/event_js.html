@@ -1,5 +1,7 @@
 <script>
-  let handBook = {};
+  let handBook = {},
+    saveOrNotSave = 1, // вказівник на те що відбулися зміни
+    showOrNotShow = false; // вказівник на необхідність викликання функції закриття підменю відомостей
 
   const conformity = {
     educationalDegree: {
@@ -18,12 +20,13 @@
         handBook = {};
         handBook = data;
         console.log(data);
-        handBook.filteredGroupsByFormTraining = [];
         showUser(handBook.user.email);
         generateInstituteSelect(handBook.institutes);
         generateEducationalDegreeSelect(handBook.educational_degree);
         generateFormTrainingSelect(handBook.form_of_training);
-        generateGroupsSelect(handBook.filteredGroupsByFormTraining);
+        generateCoursSelect(handBook.course_number);
+        generateGroupsSelect([]);
+        generateButtonNewEvList(false);
       })
       .catch((e) => {})
     setEventScaner();
@@ -59,10 +62,16 @@
     });
 
     page.addEventListener('click', function (el) {
+      if(showOrNotShow) closeSubMenu();
+      let adres = el.target.id.split("-");
       if (el.target && el.target.name == "actionsButtons") { //details
         scanningActionsButtons(el.target.id);
-      } else if (el.target && el.target.name == "edit") {
-        runTeachersEvListsForEditing(el.target.id);
+      } else if (el.target && adres[0] == "edit") {
+        runTeachersEvListsForEditing(adres);
+      } else if (el.target && adres[0] == "delete") {
+        deleteTeacherEvList(adres);
+      } else if (el.target && adres[0] == "openSubMenu") {
+        openSubMenu(adres);
       }
     });
   }
@@ -75,12 +84,14 @@
         document.getElementById("select-educationalDegree").value =
           0; // обнуляємо селектори, якщо вони були вибрані раніше
         document.getElementById("select-formTraining").value = 0;
+        document.getElementById("select-cours").value = 0;
         document.getElementById("select-groups").value = 0;
-        document.getElementById("buttonsActionUnderForm").innerHTML = "";
+        generateButtonNewEvList(false);
 
         handBook
           .filteredGroupsByEducationalDegree = []; // затираємо дані відфільтровані нижчими повідношенню до даного селекторами
         handBook.filteredGroupsByFormTraining = [];
+        handBook.filteredGroupsByCours = [];
         generateGroupsSelect([]);
         handBook.filteredEvListsByEducationalDegree = [];
         handBook.filteredEvListsByFormTraining = [];
@@ -88,7 +99,7 @@
 
         createSpinner(); // заблокувати всі селекти поки не виконалось
         getDataInstituteGroups(handBook.institutes[recordData.instituteId]
-          .iddivision) // отримуємо всі групи вибраного інституту
+            .iddivision) // отримуємо всі групи вибраного інституту
           .then((data) => {
             // успіх
             handBook.groups = data;
@@ -116,11 +127,13 @@
         recordData.educationalDegreeId = +document.getElementById("select-educationalDegree").value;
 
         document.getElementById("select-formTraining").value = 0; // обнуляємо селектори, якщо вони були вибрані раніше
+        document.getElementById("select-cours").value = 0;
         document.getElementById("select-groups").value = 0;
-        document.getElementById("buttonsActionUnderForm").innerHTML = "";
+        generateButtonNewEvList(false);
 
         handBook
           .filteredGroupsByFormTraining = []; // затираємо дані відфільтровані нижчими повідношенню до даного селекторами
+        handBook.filteredGroupsByCours = [];
         handBook.filteredEvListsByFormTraining = [];
         handBook.filteredEvListsByGroup = [];
 
@@ -136,49 +149,45 @@
       case "select-formTraining":
         recordData.formTrainingId = +document.getElementById("select-formTraining").value;
 
+        document.getElementById("select-cours").value = 0; // обнуляємо селектори, якщо вони були вибрані раніше
+        document.getElementById("select-groups").value = 0;
+        generateButtonNewEvList(false);
+
+        handBook.filteredGroupsByCours = []; // затираємо дані відфільтровані нижчими повідношенню до даного селекторами
         handBook.filteredEvListsByGroup = [];
-        document.getElementById("buttonsActionUnderForm").innerHTML = "";
 
         handBook.filteredGroupsByFormTraining = filterResources(handBook.filteredGroupsByEducationalDegree,
           "educationalFormId", (recordData.formTrainingId).toString());
-        console.log(handBook.filteredGroupsByFormTraining);
         handBook.filteredEvListsByFormTraining = filterResources(handBook.filteredEvListsByEducationalDegree,
           "formTrainingId", recordData.formTrainingId)
 
-        generateGroupsSelect(handBook.filteredGroupsByFormTraining);
+        generateGroupsSelect([]);
         generateTeacherEvolutionsLists(handBook.filteredEvListsByFormTraining);
         break;
       case "select-cours":
+        recordData.courseId = +document.getElementById("select-cours").value;
 
+        document.getElementById("select-groups").value = 0; // обнуляємо селектори, якщо вони були вибрані раніше
+        generateButtonNewEvList(false);
+
+        handBook.filteredGroupsByCours = filterResources(handBook.filteredGroupsByFormTraining, "course", (recordData
+          .courseId).toString());
+        generateGroupsSelect(handBook.filteredGroupsByCours);
         break;
       case "select-groups":
         recordData.groupId = +document.getElementById("select-groups").value;
 
         handBook.filteredEvListsByGroup = filterResources(handBook.filteredEvListsByFormTraining, "groupId", recordData
           .groupId)
-
         generateTeacherEvolutionsLists(handBook.filteredEvListsByGroup);
 
-        createSpinner();
-        getDataGroupsStudents(recordData.groupId)
-          .then((data) => {
-            // успіх
-            handBook.students = data;
-            const nameButtons = [{
-              createFirstForm: "Основна"
-            }, {
-              createSecondForm: "Повторна"
-            }]
-            generateActionsButtons(nameButtons);
-            deleteSpinner();
-          })
-          .catch((e) => {
-            // при помилці
-            console.log(e);
-          })
+        generateButtonNewEvList(true);
+
         break;
       case "controlForm":
+        saveOrNotSave = 0;
         recordData.evaluationListData.controlFormId = document.getElementById("controlForm").value;
+        console.log(recordData.evaluationListData.controlFormId);
         recordData.evaluationListData.controlForm = conformity.controlForm[recordData.evaluationListData.controlFormId];
         break;
     }
@@ -187,35 +196,39 @@
   function scanningActionsButtons(id) {
     switch (id) {
       case "createFirstForm":
-        createEvaluationListData();
-        document.getElementById("filter").style.display = "none";
+        let groupForEvList = filterResources(handBook.filteredGroupsByCours, "groupId", (recordData.groupId)
+          .toString());
+        createEvaluationListData(cloneObj(groupForEvList[0]));
         generateForm();
+        document.getElementById("filter").style.display = "none";
         recordData.evaluationListType = 1; // признак основної відомості
         document.getElementById("formWrap").style.display = "block";
-        console.log(recordData);
+        // console.log(recordData);
         break;
       case "createSecondForm":
-        createEvaluationListData();
-        document.getElementById("filter").style.display = "none";
-        generateForm();
-        recordData.evaluationListType = 2; // признак повторної відомості
-        document.getElementById("formWrap").style.display = "block";
-        console.log(recordData);
+        // createEvaluationListData();
+        // document.getElementById("filter").style.display = "none";
+        // generateForm();
+        // recordData.evaluationListType = 2; // признак повторної відомості
+        // document.getElementById("formWrap").style.display = "block";
+        // console.log(recordData);
         break;
       case "closeForm":
-        if (recordData.recordNumber === -1) {
+        if (saveOrNotSave === 0) {
           dialogBox('Ви справді бажеєте залишити форму не зберігши дані?', (bool) => {
             if (bool === true) {
               document.getElementById("formWrap").style.display = "none";
               clearnEvaluationListData();
-              document.getElementById("filter").style.display = "block";
+              document.getElementById("filter").style.display = "flex";
+              saveOrNotSave = 1;
             }
           });
-        } else {
+        } else if (saveOrNotSave === 2) {
           createSpinner();
           document.getElementById("formWrap").style.display = "none";
           clearnEvaluationListData();
-          document.getElementById("filter").style.display = "block";
+          document.getElementById("filter").style.display = "flex";
+          saveOrNotSave = 1;
           getTeacherEvolutionsLists(recordData
               .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
             .then((data) => {
@@ -228,12 +241,16 @@
               // помилка
               console.log(e);
             })
+        } else {
+          document.getElementById("formWrap").style.display = "none";
+          clearnEvaluationListData();
+          document.getElementById("filter").style.display = "flex";
         }
-        console.log(recordData);
+        // console.log(recordData);
         break;
       case "saveForm":
         recordData.status = 0; // признак в роботі
-
+        saveOrNotSave = 2; // вказівник на те що відбулися зміни
         createSpinner();
         setRecordData(recordData)
           .then((data) => {
@@ -250,15 +267,16 @@
         break;
       case "subscribe":
         recordData.status = 1; // признак підписати
+        saveOrNotSave = 2; // вказівник на те що відбулися зміни
         createSpinner();
         subscrideEvList(recordData)
           .then((data) => {
             // успіх
             recordData = cloneObj(data);
             document.getElementById("formWrap").style.display = "none";
-            document.getElementById("filter").style.display = "block";
+            document.getElementById("filter").style.display = "flex";
 
-            console.log(recordData);
+            // console.log(recordData);
 
             getTeacherEvolutionsLists(recordData
                 .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
@@ -291,17 +309,50 @@
     }
   }
 
-  function runTeachersEvListsForEditing(id) {
-    // console.log(handBook.teacherEvolutionsLists);
-    let adres = id.split("-"),
-      buffer = filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(adres[1]));
+  function runTeachersEvListsForEditing(idAndRecordNumber) {
+    let buffer = filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(idAndRecordNumber[1]));
     recordData = cloneObj(buffer[0]);
     document.getElementById("filter").style.display = "none";
     generateForm();
     document.getElementById("formWrap").style.display = "block";
   }
 
+  function deleteTeacherEvList(idAndRecordNumber) {
+    let buffer = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(idAndRecordNumber[
+      1])));
+    dialogBox("Ви справді бажаєте видалити відомість?", (bool) => {
+      console.log("bybyb");
+      if (bool === true) {
+        createSpinner();
+        buffer[0].status = -1;
+        setRecordData(buffer[0])
+          .then((data) => {
+            // успіх
+            getTeacherEvolutionsLists(recordData
+                .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
+              .then((data) => {
+                // успіх
+                handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
+                generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+              })
+              .catch((e) => {
+                // помилка
+                console.log(e);
+              })
+            deleteSpinner();
+              
+            console.log(data);
+          })
+          .catch((e) => {
+            // при помилці
+            console.log(e);
+          })
+      }
+    })
+  }
+
   function scanningFormInputs(id) {
+    saveOrNotSave = 0; // вказівник на те що відбулися зміни
     switch (id) {
       case "studyCredits":
         let credit = +document.getElementById(`${id}`).value;
@@ -327,6 +378,7 @@
       adres = id.split("-"),
       marksSum;
 
+    saveOrNotSave = 0; // вказівник на те що відбулися зміни
     recordData.evaluationListData.students[adres[1] - 1][adres[0]] = marks;
 
     marksSum = (adres[0] == "currentGrade") ? +document.getElementById(`semesterGrade-${adres[1]}`).value : +
@@ -348,56 +400,50 @@
     });
   }
 
-  function getDataGroupsStudents(groupId) {
-    return new Promise((resolve, reject) => {
-      google.script.run
-        .withSuccessHandler(res => {
-          //deleteSpinner();
-          resolve(res);
-        })
-        .withFailureHandler(reject)
-        .getDataStudents(groupId); // це функцыя з responnses
-    });
-  }
-
   function filterResources(arr, key, query) {
     return arr.filter(function (element) {
       return (element[key] === query) ? true : false; //елемент співпадає з рядком запиту
     });
   }
 
-  function createEvaluationListData() {
-    let buffer = cloneObj(handBook),
-      allGroupInfo = filterResources(buffer.filteredGroupsByFormTraining, "groupId", recordData.groupId);
+  function letterSort(lang, letters) {
+    letters.sort((a, b) => new Intl.Collator(lang).compare(a.name, b.name));
+    return letters;
+  }
 
-    allGroupInfo = cloneObj(allGroupInfo[0]);
-
-    allGroupInfo.groupName = allGroupInfo.name;
-    delete allGroupInfo.name;
-    delete allGroupInfo.groupId;
-    delete allGroupInfo.instituteId;
-
-    recordData.evaluationListData.institute = buffer.institutes[recordData.instituteId].nameinstitute;
-    recordData.evaluationListData.studyYearAndSemester = buffer.сurrentStudyYearAndSemester;
+  function createEvaluationListData(allGroupInfo) {
+    recordData.evaluationListData.institute = handBook.institutes[recordData.instituteId].nameinstitute;
+    recordData.evaluationListData.educationalDegree = handBook.educational_degree[recordData.educationalDegreeId]
+      .educationaldegreename;
+    recordData.evaluationListData.educationalForm = handBook.form_of_training[recordData.formTrainingId]
+      .formtrainingname;
+    recordData.evaluationListData.studyYearAndSemester = handBook.сurrentStudyYearAndSemester;
     recordData.evaluationListData.date = Date.now();
     recordData.emailTeacher = handBook.user.email;
     recordData.recordNumber = -1;
+    recordData.parent = 0;
     recordData.pdfId = "";
     recordData.spreadsheetId = "";
     recordData.uid = "";
 
-    for (let key in allGroupInfo) {
-      recordData.evaluationListData[key] = allGroupInfo[key];
-    }
+    allGroupInfo.groupName = allGroupInfo.name;
+    delete allGroupInfo.name;
+    delete allGroupInfo.groupId;
+    delete allGroupInfo.divisionId;
+    delete allGroupInfo.educationalDegreeId;
+    delete allGroupInfo.educationalFormId;
 
-    buffer.students.forEach(element => {
-      delete element.groupId;
+    allGroupInfo.students = cloneObj(letterSort('uk', allGroupInfo.students));
+
+    allGroupInfo.students.forEach(element => {
       element.currentGrade = "";
       element.semesterGrade = "";
       element.gradeSum = "";
     });
-    recordData.evaluationListData.students = buffer.students;
-    // console.log(recordData);
+
+    for (let key in allGroupInfo) {
+      recordData.evaluationListData[key] = allGroupInfo[key];
+    }
   }
 
   function clearnEvaluationListData() {
@@ -483,7 +529,7 @@
   function createSpinner() {
     var div = document.createElement("div");
     var faspin = document.createElement("span");
-    faspin.className = "fa fa-spinner fa-spin";
+    faspin.className = "fa fa-spinner fa-pulse";
     div.append(faspin);
     div.className = "modalBlock";
     div.id = "modalBlock";

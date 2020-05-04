@@ -118,10 +118,10 @@ const testEvaluationListData = { //Тестові данні для створе
     },
   ]
 }
-  
+
 //
-             
-             // function sendEmail(spredsheetId, email, pdfName, messageTitle, messageBody, organization) {
+
+// function sendEmail(spredsheetId, email, pdfName, messageTitle, messageBody, organization) {
 //   const ss = SpreadsheetApp.openById(spredsheetId);
 //   let sheet = ss.getSheets()[0];
 //   let sheetPdf = ss.getSheets()[1];
@@ -182,9 +182,9 @@ function sendEmailOLD(id, email, pdfName, messageTitle, messageBody, organizatio
 }
 
 */
-             
-             
-             /*
+
+
+/*
 function spreedshetToPDF(SpreadsheetId, pdfFileName){
    try {
              let folder = DriveApp.getFolderById(router.pdfFolder); 
@@ -216,4 +216,10 @@ function sendEmail(email, messageTitle, messageBody, organization, attachmentFil
              let attachmentFileId = spreedshetToPDF(SpreadsheetId, pdfFileName);
              sendEmail(email, messageTitle, messageBody, organization, attachmentFileId);
              } 
-*/           
+*/
+
+const lola = "label";
+
+let arr = lola.split("");
+
+console.log(arr);

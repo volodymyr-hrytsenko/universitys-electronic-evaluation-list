@@ -12,7 +12,7 @@
     });
     institutes.unshift({
       key: 0,
-      value: "Виберіть інститут"
+      value: "Інститут /Факультет"
     });
     document.getElementById("institute").innerHTML = generateSelect(institutes, "select-institute");
   }
@@ -26,7 +26,7 @@
     });
     educationalDegree.unshift({
       key: 0,
-      value: "Виберіть освітній рівень"
+      value: "Освітній рівень"
     });
     document.getElementById("educationalDegree").innerHTML = generateSelect(educationalDegree,
       "select-educationalDegree");
@@ -41,7 +41,7 @@
     });
     formTraining.unshift({
       key: 0,
-      value: "Виберіть форму навчання"
+      value: "Форма навчання"
     });
     document.getElementById("formTraining").innerHTML = generateSelect(formTraining, "select-formTraining");
   }
@@ -49,30 +49,47 @@
   function generateCoursSelect(data) { // створюємо випадний список для вибору курсу навчання
     const formTraining = Object.values(data).map(el => {
       return {
-        key: el.formtrainingid,
-        value: el.formtrainingname
+        key: el.courseid,
+        value: el.coursename
       }
     });
     formTraining.unshift({
       key: 0,
-      value: "Виберіть форму навчання"
+      value: "Курс"
     });
-    document.getElementById("formTraining").innerHTML = generateSelect(formTraining, "select-formTraining");
+    document.getElementById("cours").innerHTML = generateSelect(formTraining, "select-cours");
   }
 
 
   function generateGroupsSelect(data) { // створюємо випадний список для вибору групи
     const groups = Object.values(data).map(el => {
+      let buffer = [el.name, el.speciality, el.specialization_label];
       return {
         key: el.groupId,
-        value: el.name
+        value: buffer.filter(el => {
+          return el != ""
+        }).join(" &rarr; ")
       }
     });
     groups.unshift({
       key: 0,
-      value: "Виберіть групу"
+      value: "Група"
     });
     document.getElementById("groups").innerHTML = generateSelect(groups, "select-groups");
+  }
+
+  function generateControlFormSelect(data) {
+    const controlForm = Object.values(data).map(el => {
+      return {
+        key: el.id,
+        value: el.value
+      }
+    });
+    controlForm.unshift({
+      key: 0,
+      value: "Форма підсумкового контролю"
+    });
+    return generateSelect(controlForm, "controlForm");
   }
 
   function generateTeacherEvolutionsLists(teachersEvLists) {
@@ -81,28 +98,85 @@
       document.getElementById("teacherEvolutionsLists").innerHTML = "";
     } else {
       teachersEvLists.forEach(el => {
-        evLists += `<div class="evList">
-        <button name="edit" id="edit-${el.recordNumber}">${el.evaluationListData.academicDiscipline + ", " + el.evaluationListData.groupName}</button>
-        <button>X</button>
-        </div>`;
+        let borderColorId = `edit-${el.evaluationListType}-${el.status}`;
+        switch (borderColorId) {
+          case "edit-1-0":
+            evLists +=
+              `<div class="wrappEvList border-gray">
+              <button id="edit-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+              <i id="delete-${el.recordNumber}" class="fa fa-times"></i>
+            </div>`;
+            break;
+            break;
+          case "edit-2-0":
+            evLists +=
+              `<div class="wrappEvList border-yellow">
+              <button id="edit-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+              <i id="delete-${el.recordNumber}" class="fa fa-times"></i>
+            </div>`;
+            break;
+            break;
+          default:
+            evLists +=
+              `<div class="wrappEvList border-blue">
+                <button>${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+                <i id="openSubMenu-${el.recordNumber}" class="fa fa-sort-desc"></i>
+                <div id="evList-subMenu-${el.recordNumber}" class="evList-subMenu">
+                  <ul>
+                    <li><a href="${el.pdfId}" target="_blank"><i class="fa fa-file-pdf-o"></i>Переглянути</a></li>
+                    <li><button><i class="fa fa-plus"></i>Повтрону відомість</button></li>
+                  </ul>
+                </div>
+              </div>`;
+            break;
+        }
       });
       document.getElementById("teacherEvolutionsLists").innerHTML = evLists;
     }
   }
 
-  function generateActionsButtons(names) {
-    let buttons = [];
-    names.forEach(el => {
-      buttons.push(Object.keys(el).map(function (key) {
-        return `<button name="actionsButtons" id='${key}'>${el[key]}</button>`;
-      }).join(""));
-    });
-    document.getElementById("buttonsActionUnderForm").innerHTML = buttons.join("");
+  function openSubMenu(id) {
+    showOrNotShow = true;
+    id.splice(0, 1, "evList-subMenu");
+    document.getElementById(id.join("-")).style.display = "block";
   }
+
+  function closeSubMenu(){
+    showOrNotShow = false;
+    let x = document.getElementsByClassName("evList-subMenu");
+    if(x.length !== 0){
+      for (let i = 0; i<x.length; i++){
+        x[i].style.display = "none";
+      }
+    } 
+    // x.forEach(el => el.style.display = "none");
+  }
+
+  function generateButtonNewEvList(view) {
+    let button;
+    if (view) {
+      button = `<button name="actionsButtons" id='createFirstForm' style='opacity:100%;'>Відомість</button>`
+    } else {
+      button = `<button name="actionsButtons" id='createFirstForm' style='opacity:70%;' disabled>Відомість</button>`
+    }
+    document.getElementById("buttonsActionUnderForm").innerHTML = button;
+  }
+
+  // function generateActionsButtons(bool) {
+  //   let names = [{
+  //       createFirstForm: "Відомість"
+  //     }],
+  //     buttons = [];
+  //   names.forEach(el => {
+  //     buttons.push(Object.keys(el).map(function (key) {
+  //       return `<button name="actionsButtons" id='${key}'>${el[key]}</button>`;
+  //     }).join(""));
+  //   });
+  //   document.getElementById("buttonsActionUnderForm").innerHTML = buttons.join("");
+  // }
 
   function generateForm() {
     let data = cloneObj(recordData.evaluationListData),
-      controlFormData = cloneObj(handBook.controlForm),
       formButtons,
       form,
       tableHeader = ["№", "Прізвище, ініціали студента", "Поточний контроль", "Підсумковий семестровий контроль",
@@ -114,7 +188,8 @@
 
     formButtons = `<button name="actionsButtons" id='closeForm'>Закрити</button>
       <button name="actionsButtons" id='saveForm'>Зберегти</button>
-      <button name="actionsButtons" id='subscribe'>Підписати</button>`;
+      <button name="actionsButtons" id='subscribe'>Підписати</button>
+      <button name="actionsButtons" id='createSecondForm'>Повторна</button>`;
 
     form =
       `<div class="row">
@@ -125,11 +200,8 @@
         <label for="studyCredits">Кількість кредитів</label>
         <input type="number" name="formInput" id="studyCredits" name="number" min="1" max="36" step="1" value="${data.studyCredits}">
       </div>`;
-    controlFormData.unshift({
-      key: 0,
-      value: "Форма підсумкового контролю"
-    });
-    form += `<div class="row">${generateSelect(controlFormData, "controlForm")}</div>`
+
+    form += `<div class="row">${generateControlFormSelect(handBook.controlForm)}</div>`
 
     let date = new Date(Number(data.date)).toISOString().slice(0, 10);
     form +=
