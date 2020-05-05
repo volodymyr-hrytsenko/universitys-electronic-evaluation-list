@@ -89,11 +89,6 @@
         vertical-align: baseline;
     }
 
-    html,
-    body {
-        background-color: #2B2E3B;
-    }
-
     a:focus,
     button:focus,
     textarea:focus,
@@ -161,6 +156,13 @@
         height: 100%;
     }
 
+    .underline {
+        display: block;
+        width: 100%;
+        height: 1px;
+        background-color: #E0E0E0;
+    }
+
     .header {
         width: 100%;
         display: flex;
@@ -202,7 +204,7 @@
     }
 
     select {
-        background-color: #E0E0E0;
+        background-color: #F2F2F2;
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
         border: none;
         border-radius: 2px;
@@ -298,7 +300,6 @@
     #buttonsActionUnderForm {
         display: flex;
         justify-content: center;
-        border-bottom: 1px solid #E0E0E0;
         width: 100%;
     }
 
@@ -324,12 +325,10 @@
         box-shadow: 0px 0px 4px rgba(0, 0, 0, 0);
     }
 
-    #createFirstForm:before {
-        content: '+';
-        font-weight: 700;
-        color: #4F4F4F;
-        font-size: 24px;
-        padding-right: 7px;
+    #createFirstForm:after {
+        content: 'Відомість';
+        font-size: 28px;
+        padding-left: 7px;
     }
 
     #teacherEvolutionsLists {
@@ -338,7 +337,9 @@
         justify-content: flex-start;
         flex-direction: row;
         flex-wrap: wrap;
-        margin: 40px 0px;
+        padding: 40px 0px;
+        border-top: 1px solid #E0E0E0;
+        transition: 2s;
     }
 
     .wrappEvList {
@@ -460,14 +461,232 @@
         border: none;
     }
 
+
     /*----------------------------------------------------*/
-    .row {
-        margin-top: 20px;
+
+    #formButtons {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 20px;
+        background-color: #ffffff;
     }
 
-    tr,
-    td {
+    #closeForm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 40px;
+        width: 40px;
+        border: none;
+        border-radius: 50%;
+        background-color: transparent;
+        cursor: pointer;
+        z-index: 9;
+        transition: .25s;
+    }
+
+    #closeForm:hover {
+        background-color: #F2F2F2;
+    }
+
+    .close {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        opacity: 0.5;
+        cursor: pointer;
+        transition: .25s;
+        z-index: -1;
+    }
+
+    #closeForm:hover .close {
+        opacity: 1;
+    }
+
+    .close:before,
+    .close:after {
+        position: absolute;
+        left: 13px;
+        content: ' ';
+        height: 32px;
+        width: 2px;
+        background-color: #4f4f4f;
+    }
+
+    .close:before {
+        transform: rotate(45deg);
+    }
+
+    .close:after {
+        transform: rotate(-45deg);
+    }
+
+    .button-save-subscribe {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .button-save-subscribe button>i {
+        margin: 0 10px 0 10px;
+        z-index: -1;
+    }
+
+    #saveForm,
+    #subscribe {
+        width: max-content;
+        min-height: 40px;
+        padding-right: 10px;
+        background: #F2F2F2;
+        color: #4f4f4f;
+        font: 500 20px Arial;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        -webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+        -moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+        box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+        transition: .25s;
+    }
+
+    #saveForm {
+        margin-right: 20px;
+    }
+
+    #saveForm:hover,
+    #subscribe:hover {
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
+
+    /*--------------------------------------------*/
+
+    .form__group {
+        width: 100%;
+        position: relative;
+        padding: 15px 0 0;
+        margin: 20px 0 20px 0;
+
+    }
+
+    .form__field {
+        font-family: Roboto-Regular;
+        width: 100%;
+        border: 0;
+        border-bottom: 2px solid #4f4f4f;
+        outline: 0;
+        font: 500 1.3em Arial;
+        color: #4f4f4f;
+        padding: 7px 0;
+        background: transparent;
+        transition: border-color 0.2s;
+    }
+
+    .form__field::placeholder {
+        color: transparent;
+    }
+
+    .form__field:placeholder-shown~.form__label {
+        font: 500 1.3em Arial;
+        cursor: text;
+        top: 20px;
+        color: #4f4f4f;
+    }
+
+    .form__label {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        display: block;
+        transition: 0.2s;
+        font: 400 1em Arial;
+        color: #4f4f4f;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .form__field:focus~.form__label {
+        position: absolute;
+        top: 0;
+        display: block;
+        transition: 0.2s;
+        font: 400 1em Arial;
+        color: #2F80ED;
+    }
+
+    .form__field:focus {
+        padding-bottom: 6px;
+        font-weight: 400;
+        border-width: 3px;
+        border-image: linear-gradient(90deg, rgba(40, 123, 235, 1) 0%, rgba(45, 156, 219, 1) 50%);
+        border-image-slice: 1;
+    }
+
+    .form__field {
+        box-shadow: none;
+    }
+
+    .form__field:required {
+        box-shadow: none;
+    }
+
+    .form__field:invalid {
+        box-shadow: none;
+    }
+
+    .inputWrapp-number-selector-date {
+        width: 100%;
+        padding: 15px 0 0;
+        margin: 20px 0 20px 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .inputWrapp-number-selector-date label {
+        font: 500 1.3em Arial;
+        color: #4f4f4f;
+    }
+
+    /*----------------------------------------------------*/
+
+    #formTable {
+        font: 500 1em Arial;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #formTable tr td {
         border: 1px solid #000;
+        height: 40px;
+        vertical-align: middle;
+        padding-left: 10px;
+    }
+
+    #formTable tr td:first-child {
+        padding: 0 10px 0 10px;
+        text-align: center;
+    }
+
+    #formTable tr:first-child>td {
+        text-align: left;
+        background-color: #4f4f4f;
+        color: white;
+    }
+
+    #formTable tr:hover {
+        background-color: #ddd;
+    }
+
+    table input {
+        border: none;
+        background-color: transparent;
+        height: inherit;
+        width: 100%;
+        font-size: 16px;
     }
 
     /* ---------------- modal block style ------------- */
@@ -491,7 +710,8 @@
     .dialogBox {
         width: 480px;
         background: #fff;
-        color: #000;
+        font: 500 1em Arial;
+        color: #4f4f4f;
         border-radius: 20px;
         box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
     }
@@ -501,7 +721,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 20px;
+        padding: 20px 0 20px;
     }
 
     .question>label {

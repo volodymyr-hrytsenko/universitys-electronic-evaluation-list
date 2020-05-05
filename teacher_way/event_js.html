@@ -62,7 +62,7 @@
     });
 
     page.addEventListener('click', function (el) {
-      if(showOrNotShow) closeSubMenu();
+      if (showOrNotShow) closeSubMenu();
       let adres = el.target.id.split("-");
       if (el.target && el.target.name == "actionsButtons") { //details
         scanningActionsButtons(el.target.id);
@@ -278,23 +278,22 @@
 
             // console.log(recordData);
 
-            getTeacherEvolutionsLists(recordData
-                .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
-              .then((data) => {
-                // успіх
-                handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
-                generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
-              })
-              .catch((e) => {
-                // помилка
-                console.log(e);
-              })
-            deleteSpinner();
-
             sendEmail(recordData)
               .then((data) => {
                 // успіх
                 console.log(data);
+                getTeacherEvolutionsLists(recordData
+                    .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
+                  .then((data) => {
+                    // успіх
+                    handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
+                    generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+                    deleteSpinner();
+                  })
+                  .catch((e) => {
+                    // помилка
+                    console.log(e);
+                  })
               })
               .catch((e) => {
                 // при помилці
@@ -321,7 +320,6 @@
     let buffer = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(idAndRecordNumber[
       1])));
     dialogBox("Ви справді бажаєте видалити відомість?", (bool) => {
-      console.log("bybyb");
       if (bool === true) {
         createSpinner();
         buffer[0].status = -1;
@@ -340,7 +338,7 @@
                 console.log(e);
               })
             deleteSpinner();
-              
+
             console.log(data);
           })
           .catch((e) => {
@@ -411,6 +409,12 @@
     return letters;
   }
 
+  function removeDuplicates(myArr, prop) {
+    return myArr.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+    });
+  }
+
   function createEvaluationListData(allGroupInfo) {
     recordData.evaluationListData.institute = handBook.institutes[recordData.instituteId].nameinstitute;
     recordData.evaluationListData.educationalDegree = handBook.educational_degree[recordData.educationalDegreeId]
@@ -434,6 +438,8 @@
     delete allGroupInfo.educationalFormId;
 
     allGroupInfo.students = cloneObj(letterSort('uk', allGroupInfo.students));
+
+    allGroupInfo.students = cloneObj(removeDuplicates(allGroupInfo.students, "sudentId"));
 
     allGroupInfo.students.forEach(element => {
       element.currentGrade = "";

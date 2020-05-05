@@ -124,7 +124,7 @@
                 <div id="evList-subMenu-${el.recordNumber}" class="evList-subMenu">
                   <ul>
                     <li><a href="${el.pdfId}" target="_blank"><i class="fa fa-file-pdf-o"></i>Переглянути</a></li>
-                    <li><button><i class="fa fa-plus"></i>Повтрону відомість</button></li>
+                    <li><button><i class="fa fa-plus"></i>Повторну відомість</button></li>
                   </ul>
                 </div>
               </div>`;
@@ -155,9 +155,9 @@
   function generateButtonNewEvList(view) {
     let button;
     if (view) {
-      button = `<button name="actionsButtons" id='createFirstForm' style='opacity:100%;'>Відомість</button>`
+      button = `<button name="actionsButtons" id='createFirstForm' style='opacity:100%;' class="fa fa-plus"></button>`
     } else {
-      button = `<button name="actionsButtons" id='createFirstForm' style='opacity:70%;' disabled>Відомість</button>`
+      button = `<button name="actionsButtons" id='createFirstForm' style='opacity:70%;' class="fa fa-plus" disabled></button>`
     }
     document.getElementById("buttonsActionUnderForm").innerHTML = button;
   }
@@ -186,36 +186,40 @@
       tableMain = [],
       num = 1;
 
-    formButtons = `<button name="actionsButtons" id='closeForm'>Закрити</button>
-      <button name="actionsButtons" id='saveForm'>Зберегти</button>
-      <button name="actionsButtons" id='subscribe'>Підписати</button>
-      <button name="actionsButtons" id='createSecondForm'>Повторна</button>`;
+    formButtons = `
+       <button name="actionsButtons" id='closeForm'><span class="close"></span></button>
+       <div class="button-save-subscribe">
+        <button name="actionsButtons" id='saveForm'><i class="fa fa-floppy-o"></i>Зберегти</button>
+        <button name="actionsButtons" id='subscribe'><i class="fa fa-pencil-square-o"></i>Підписати</button>
+       </div>`;
 
     form =
-      `<div class="row">
-        <label for="academicDiscipline">Навчальна дисципліна</label>
-        <input type="text" name="formInput" id="academicDiscipline" placeholder="повна назва дисципліни за навчальним планом" value="${data.academicDiscipline}">
+      `<div class="form__group">
+        <input type="input" name="formInput" class="form__field" id="academicDiscipline" placeholder="Навчальна дисципліна" value="${data.academicDiscipline}">
+        <label for="academicDiscipline" class="form__label">Навчальна дисципліна</label>
       </div>
-      <div class="row">
-        <label for="studyCredits">Кількість кредитів</label>
-        <input type="number" name="formInput" id="studyCredits" name="number" min="1" max="36" step="1" value="${data.studyCredits}">
-      </div>`;
+      <div class="inputWrapp-number-selector-date">
+        <div class="form__number">
+          <label for="studyCredits">Кількість кредитів</label>
+          <input type="number" name="formInput" id="studyCredits" name="number" min="1" max="36" step="1" value="${data.studyCredits}">
+        </div>`;
 
-    form += `<div class="row">${generateControlFormSelect(handBook.controlForm)}</div>`
+    form += `<div class="form__select">${generateControlFormSelect(handBook.controlForm)}</div>`
 
     let date = new Date(Number(data.date)).toISOString().slice(0, 10);
     form +=
-      `<div class="row">
+      `<div class="form__date">
         <label for="date">Дата контролю</label>
         <input type="date" name="formInput" id="date" value="${date}">
       </div>
-      <div class="row">
-        <label for="teacherFullName">посади і ПІБ викладачів, які виставляють підсумкову оцінку</label>
-        <input type="text" name="formInput" id="teacherFullName" value="${data.teacherFullName}">
       </div>
-      <div class="row">
-        <label for="aditionalTeachers">посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль</label>
-        <input type="text" name="formInput" id="aditionalTeachers" placeholder="введіть через кому" value="${data.aditionalTeachers.join(", ")}">
+      <div class="form__group">
+        <input type="input" name="formInput" class="form__field" id="teacherFullName" placeholder="Посади і ПІБ викладачів, які виставляють підсумкову оцінку" value="${data.teacherFullName}">
+        <label for="teacherFullName" class="form__label">Посади і ПІБ викладачів, які виставляють підсумкову оцінку</label>
+      </div>
+      <div class="form__group">
+        <input type="input" name="formInput" class="form__field" id="aditionalTeachers" placeholder="Посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль" value="${data.aditionalTeachers.join(", ")}">
+        <label for="aditionalTeachers" class="form__label">Посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль</label>
       </div>`;
 
     let arrFildTabie = ["name", "currentGrade", "semesterGrade", "gradeSum"];

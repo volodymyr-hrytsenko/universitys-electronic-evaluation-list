@@ -1,43 +1,43 @@
-function getUser(){
+function getUser() {
   var obj = {};
   var email = getUserEmail();
-  // email = 'grytsenko@vu.cdu.edu.ua';
-  email = 'volodyk753@vu.cdu.edu.ua';
-  // email = 'iot@vu.cdu.edu.ua';
-  switch (email){
-    case 'admin@vu.cdu.edu.ua':
-    case 'nmv@vu.cdu.edu.ua':
-      obj = {"level": 1, "role": "administrator"};
-    break;
-    case 'iot@vu.cdu.edu.ua':
-      obj = {"level": 2, "role": "secretary", "idDepartment": 5};
-    break;
-    case 'anonymous':
-      obj = {"level": 1000000, "role": "anonymous"};
-    break;      
-    default: obj = {"level": 3, "role": "teacher"};
+  if (email === "anonymous") {
+    obj = {
+      "role": "anonymous"
+    };
+  } else {
+    let allUsers = getDataJsonFromFile(router.idFolderDB, router.userJsonData).users;
+    obj.role = allUsers[email].role;
+    obj.email = email;
+    switch (allUsers[email].role) {
+      case "admin_aisevlist":
+        obj.role = "teacher";
+        break;
+        case "teacher":
+          obj.role = "teacher";
+          break;
+      default:
+        obj.role = "anonymous";
+    }
   }
-  obj.email = email;
   return obj;
 }
 
-function getDataFromRouterLists(){
-    // const elementId = "handBook";
-    // const cache = CacheService.getScriptCache();
-    // // let handBook = {};
-    // // const cached = cache.get(elementId); //отримуємо запис про ресурс з кешу
-    
-    // if (cached != null) {
-    // if (false) {
-    //   handBook = JSON.parse(cached);
-    //  console.log('Дані з кешу');
-    // } else {
-    //   handBook = getDataJsonFromFile(router.idFolderDB, router.nameJsonData);
-    //   // log(handBook);
-    //   // cache.put(elementId, JSON.stringify(handBook)); //кешуємо об'єкти ресурсів
-    //   console.log('Дані з файлу');
-    // }
-    return getDataJsonFromFile(router.idFolderDB, router.nameJsonData);  // handBook
+function getDataFromRouterLists() {
+  // const elementId = "handBook";
+  // const cache = CacheService.getScriptCache();
+  // // let handBook = {};
+  // // const cached = cache.get(elementId); //отримуємо запис про ресурс з кешу
+
+  // if (cached != null) {
+  // if (false) {
+  //   handBook = JSON.parse(cached);
+  //  console.log('Дані з кешу');
+  // } else {
+  //   handBook = getDataJsonFromFile(router.idFolderDB, router.nameJsonData);
+  //   // log(handBook);
+  //   // cache.put(elementId, JSON.stringify(handBook)); //кешуємо об'єкти ресурсів
+  //   console.log('Дані з файлу');
+  // }
+  return getDataJsonFromFile(router.idFolderDB, router.nameJsonData); // handBook
 }
-
-
