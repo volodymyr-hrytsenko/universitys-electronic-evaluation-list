@@ -771,4 +771,165 @@
         box-shadow: inset 0px 0px 5px 1px rgba(0, 0, 0, 0);
 
     }
+
+    /*----------------- message style --------------*/
+
+    #message {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 360px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        z-index: 999;
+    }
+
+    .message {
+        width: 80%;
+        height: max-content;
+        margin-bottom: 40px;
+        position: relative;
+        background: #27AE60;
+        color: #F2F2F2;
+        border-radius: 10px;
+        -webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+        -moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+        box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+    }
+
+    .message::before {
+        bottom: -10px;
+        right: 0;
+        content: "";
+        position: absolute;
+        border-left: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-right: 10px solid #27AE60;
+        border-top: 10px solid transparent;
+    }
+
+    .close-message-button {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .close-message-button>button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 25px;
+        width: 25px;
+        margin: 3px 3px 0 0;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background-color: transparent;
+        cursor: pointer;
+        z-index: 9;
+        transition: .25s;
+        font-size: 1.1em;
+        color: #4f4f4f;
+        opacity: 0.75;
+    }
+
+    .close-message-button>button:hover {
+        background-color: #219653;
+        color: #F2F2F2;
+        opacity: 1;
+    }
+
+    .close-message-button>button i {
+        z-index: -1;
+    }
+
+    .message-text {
+        width: inherit;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .message-text>label {
+        width: 90%;
+        font: 500 1.1em Arial;
+    }
+
+    .slideUp {
+        animation-name: slideUp;
+        -webkit-animation-name: slideUp;
+
+        animation-duration: 1s;
+        -webkit-animation-duration: 1s;
+
+        animation-timing-function: ease;
+        -webkit-animation-timing-function: ease;
+
+        visibility: visible !important;
+    }
+
+    @keyframes slideUp {
+        0% {
+            /* opacity: 0; */
+            transform: translateY(30%);
+        }
+
+        50% {
+            /* opacity: 0.4; */
+            transform: translateY(8%);
+        }
+
+        65% {
+            /* opacity: 0.7; */
+            transform: translateY(6%);
+        }
+
+        80% {
+            /* opacity: 0.8; */
+            transform: translateY(4%);
+        }
+
+        95% {
+            /* opacity: 0.9; */
+            transform: translateY(2%);
+        }
+
+        100% {
+            /* opacity: 1; */
+            transform: translateY(0%);
+        }
+    }
+
+    @-webkit-keyframes slideUp {
+        0% {
+            opacity: 0;
+            -webkit-transform: translateY(10%);
+        }
+
+        50% {
+            opacity: 0.4;
+            -webkit-transform: translateY(8%);
+        }
+
+        65% {
+            opacity: 0.7;
+            -webkit-transform: translateY(6%);
+        }
+
+        80% {
+            opacity: 0.8;
+            -webkit-transform: translateY(4%);
+        }
+
+        95% {
+            opacity: 0.9;
+            -webkit-transform: translateY(2%);
+        }
+
+        100% {
+            opacity: 1;
+            -webkit-transform: translateY(0%);
+        }
+    }
 </style>

@@ -72,6 +72,9 @@
         deleteTeacherEvList(adres);
       } else if (el.target && adres[0] == "openSubMenu") {
         openSubMenu(adres);
+      } else if (el.target && adres[0] == "closeMessage") {
+        adres.shift();
+        document.getElementById(adres.join("-")).remove();
       }
     });
   }
@@ -258,6 +261,7 @@
             recordData.recordNumber = data.recordNumber;
             recordData.uid = data.uid;
             deleteSpinner();
+            messageBox("Дані збережено");
             console.log(recordData);
           })
           .catch((e) => {
@@ -273,21 +277,24 @@
           .then((data) => {
             // успіх
             recordData = cloneObj(data);
-            document.getElementById("formWrap").style.display = "none";
-            document.getElementById("filter").style.display = "flex";
-
-            // console.log(recordData);
+            messageBox("Дані збережено");
 
             sendEmail(recordData)
               .then((data) => {
                 // успіх
                 console.log(data);
+                messageBox("PDF документ відомості створено");
+                
                 getTeacherEvolutionsLists(recordData
                     .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
                   .then((data) => {
                     // успіх
                     handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
                     generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+
+                    messageBox("Лист з відомістю надіслано");
+                    document.getElementById("formWrap").style.display = "none";
+                    document.getElementById("filter").style.display = "flex";
                     deleteSpinner();
                   })
                   .catch((e) => {

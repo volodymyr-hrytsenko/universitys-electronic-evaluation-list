@@ -141,14 +141,14 @@
     document.getElementById(id.join("-")).style.display = "block";
   }
 
-  function closeSubMenu(){
+  function closeSubMenu() {
     showOrNotShow = false;
     let x = document.getElementsByClassName("evList-subMenu");
-    if(x.length !== 0){
-      for (let i = 0; i<x.length; i++){
+    if (x.length !== 0) {
+      for (let i = 0; i < x.length; i++) {
         x[i].style.display = "none";
       }
-    } 
+    }
     // x.forEach(el => el.style.display = "none");
   }
 
@@ -157,23 +157,11 @@
     if (view) {
       button = `<button name="actionsButtons" id='createFirstForm' style='opacity:100%;' class="fa fa-plus"></button>`
     } else {
-      button = `<button name="actionsButtons" id='createFirstForm' style='opacity:70%;' class="fa fa-plus" disabled></button>`
+      button =
+        `<button name="actionsButtons" id='createFirstForm' style='opacity:70%;' class="fa fa-plus" disabled></button>`
     }
     document.getElementById("buttonsActionUnderForm").innerHTML = button;
   }
-
-  // function generateActionsButtons(bool) {
-  //   let names = [{
-  //       createFirstForm: "Відомість"
-  //     }],
-  //     buttons = [];
-  //   names.forEach(el => {
-  //     buttons.push(Object.keys(el).map(function (key) {
-  //       return `<button name="actionsButtons" id='${key}'>${el[key]}</button>`;
-  //     }).join(""));
-  //   });
-  //   document.getElementById("buttonsActionUnderForm").innerHTML = buttons.join("");
-  // }
 
   function generateForm() {
     let data = cloneObj(recordData.evaluationListData),
@@ -277,5 +265,32 @@
         dialog.innerHTML = '';
       }
     })
+  }
+
+  let id = 0;
+  async function messageBox(messageText) {
+    id++;
+    let message =
+      `<div id="messageNum-${id}" class="message slideShow">
+        <div class="close-message-button"><button id="closeMessage-messageNum-${id}"><i class="fa fa-times"></i></button></div>
+        <div class="message-text"><label>${messageText}</label></div>
+        </div>`;
+    document.getElementById("message").innerHTML += message;
+    await delMessage(id);
+  }
+
+  function delMessage(idMesMun) {
+    let idMes = `messageNum-${idMesMun}`;
+    return new Promise(() => {
+      setTimeout(() => {
+        let x = document.getElementById(idMes);
+        if (x != null) {
+          x.remove();
+        }
+        // let list = document.getElementById("message");
+        // list.removeChild(list.childNodes[0]);
+      }, 7000);
+    });
+
   }
 </script>

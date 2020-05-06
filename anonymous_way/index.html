@@ -8,11 +8,80 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        .warning {
-            height: 90vh;
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .wrapp {
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
+        }
+
+        label {
+            font: 500 1.3em Arial;
+        }
+
+        button {
+            width: max-content;
+            min-height: 40px;
+            margin-top: 20px;
+            padding-right: 10px;
+            background: #F2F2F2;
+            color: #4f4f4f;
+            font: 500 20px Arial;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            -webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+            -moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+            box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+            transition: .25s;
+        }
+
+        button:hover {
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+        }
+
+        button:focus{
+            outline: none;
+        }
+
+        .warning {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fa-exclamation-triangle {
+            margin-bottom: 20px;
+            font-size: 48px;
+            color: #ffbf00
+        }
+
+        #reload {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .fa-refresh {
+            margin-top: 20px;
+            font-size: 36px;
+            color: #4f4f4f;
+            cursor: pointer;
+            transition: 2s;
+        }
+
+        .fa-refresh:hover {
+            transform: rotate(360deg);
         }
     </style>
 
@@ -20,18 +89,27 @@
 
 <body>
 
-    <class class="warning">
-        <span class="fa fa-exclamation-triangle" style="font-size:36px;color:#ffbf00"></span>
-        <lable style="font-size:24px; margin-left:3px;">Для відображення відомостей слід авторизуватися в
-            корпоративному
-            акаунті <button class="authorization" name="eu" onclick="singin(this)">@vu.cdu.edu.ua</button></lable>
-    </class>
+    <div class="wrapp">
+        <div class="warning">
+            <i class="fa fa-exclamation-triangle"></i>
+            <label>Для відображення відомостей слід авторизуватися в
+                корпоративному
+                акаунті
+            </label>
+            <button class="authorization" name="eu" onclick="singin(this)">@vu.cdu.edu.ua</button>
+        </div>
+        <div id="reload">
+            <label>Будь ласка оновіть сторінку</label>
+            <a href="https://exam.cdu.edu.ua/"><i class="fa fa-refresh"></i></a>
+        </div>
+    </div>
 
     <script>
         function singin() {
             var myWindow = window.open(
                 "https://accounts.google.com/signin/v2/identifier?hd=vu.cdu.edu.ua&continue=https://mail.google.com/mail/u/0/#inbox",
                 "_blank");
+            document.getElementById("reload").style.display = "flex";
         }
     </script>
 
