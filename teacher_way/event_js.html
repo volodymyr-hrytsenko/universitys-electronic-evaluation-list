@@ -295,6 +295,7 @@
                     messageBox("Лист з відомістю надіслано");
                     document.getElementById("formWrap").style.display = "none";
                     document.getElementById("filter").style.display = "flex";
+                    clearnEvaluationListData();
                     deleteSpinner();
                   })
                   .catch((e) => {
@@ -333,20 +334,19 @@
         setRecordData(buffer[0])
           .then((data) => {
             // успіх
+            messageBox("Відомість видалино");
             getTeacherEvolutionsLists(recordData
                 .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
               .then((data) => {
                 // успіх
                 handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
                 generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+                deleteSpinner();
               })
               .catch((e) => {
                 // помилка
                 console.log(e);
               })
-            deleteSpinner();
-
-            console.log(data);
           })
           .catch((e) => {
             // при помилці

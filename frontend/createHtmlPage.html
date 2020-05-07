@@ -267,20 +267,20 @@
     })
   }
 
-  let id = 0;
+  let numMessage = 0;
   async function messageBox(messageText) {
-    id++;
+    numMessage++;
     let message =
-      `<div id="messageNum-${id}" class="message slideShow">
-        <div class="close-message-button"><button id="closeMessage-messageNum-${id}"><i class="fa fa-times"></i></button></div>
+      `<div id="messageNum-${numMessage}" class="message slideUp">
+        <div class="close-message-button"><button id="closeMessage-messageNum-${numMessage}"><i class="fa fa-times"></i></button></div>
         <div class="message-text"><label>${messageText}</label></div>
         </div>`;
     document.getElementById("message").innerHTML += message;
-    await delMessage(id);
+    await delMessage(numMessage);
   }
 
-  function delMessage(idMesMun) {
-    let idMes = `messageNum-${idMesMun}`;
+  function delMessage(idMesNun) {
+    let idMes = `messageNum-${idMesNun}`;
     return new Promise(() => {
       setTimeout(() => {
         let x = document.getElementById(idMes);
@@ -291,6 +291,5 @@
         // list.removeChild(list.childNodes[0]);
       }, 7000);
     });
-
   }
 </script>
