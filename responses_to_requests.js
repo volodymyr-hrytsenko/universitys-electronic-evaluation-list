@@ -75,3 +75,17 @@ function filterResources(arr, key, query) {
 function moveFileBadDocs(fileId) {
   moveFileToFolder(fileId, router.idFolderBadDocs);
 }
+
+function getTeacherList() {
+  let allUsers = getDataJsonFromFile(router.idFolderDB, router.userJsonData).users,
+    arr = [];
+  for (let key in allUsers) {
+    if (allUsers[key].role === "teacher") {
+      arr.push({
+        email: key,
+        name: [allUsers[key].lastName, allUsers[key].firstName].join(" ")
+      });
+    }
+  }
+  return arr;
+}

@@ -7,17 +7,20 @@ function getUser() {
     };
   } else {
     let allUsers = getDataJsonFromFile(router.idFolderDB, router.userJsonData).users;
-    obj.role = allUsers[email].role;
+    obj.role = (typeof allUsers[email] !== "undefined") ? allUsers[email].role : "notwork";
+    //obj.role = allUsers[email].role;
     obj.email = email;
-    switch (allUsers[email].role) {
+    obj.proFunctional = usersSetup.permissionRevokeSignature;//true; // дозвіл на відкликання підпису
+    switch (obj.role) {
+      case "admin":
       case "admin_aisevlist":
         obj.role = "teacher";
         break;
-        case "teacher":
-          obj.role = "teacher";
-          break;
+      case "teacher":
+        obj.role = "teacher";
+        break;
       default:
-        obj.role = "anonymous";
+        obj.role = "anonymous"; //notwork !!! ЗМІНИТИ НА ВІКНО: У ВАС НЕ ДОСТАТЬО ПРАВ ДЛЯ ВИКОРИСТАННЯ ДАНОГО РЕСУРСУ
     }
   }
   return obj;

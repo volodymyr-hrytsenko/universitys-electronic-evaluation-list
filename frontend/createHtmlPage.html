@@ -123,8 +123,9 @@
                 <i id="openSubMenu-${el.recordNumber}" class="fa fa-sort-desc"></i>
                 <div id="evList-subMenu-${el.recordNumber}" class="evList-subMenu">
                   <ul>
-                    <li><a href="${el.pdfId}" target="_blank"><i class="fa fa-file-pdf-o"></i>Переглянути</a></li>
-                    <li><button><i class="fa fa-plus"></i>Повторну відомість</button></li>
+                    <li><a href="${el.pdfUrl}" target="_blank"><i class="fa fa-file-pdf-o"></i>Переглянути</a></li>
+                    <li><button id="createSecondForm"><i class="fa fa-plus"></i>Повторна відомість</button></li>
+                    <li><button id="cancelSignature-${el.recordNumber}"><i class="fa fa-reply-all"></i>Відкликати підпис</button></li>
                   </ul>
                 </div>
               </div>`;
@@ -149,16 +150,15 @@
         x[i].style.display = "none";
       }
     }
-    // x.forEach(el => el.style.display = "none");
   }
 
   function generateButtonNewEvList(view) {
     let button;
     if (view) {
-      button = `<button name="actionsButtons" id='createFirstForm' style='opacity:100%;' class="fa fa-plus"></button>`
+      button = `<button id='actionsButtons-createFirstForm' style='opacity: 1; cursor: pointer;' class="fa fa-plus"></button>`
     } else {
       button =
-        `<button name="actionsButtons" id='createFirstForm' style='opacity:70%;' class="fa fa-plus" disabled></button>`
+        `<button id='actionsButtons-createFirstForm' style='opacity: 0.25; cursor: not-allowed;' class="fa fa-plus" disabled></button>`
     }
     document.getElementById("buttonsActionUnderForm").innerHTML = button;
   }
@@ -175,10 +175,11 @@
       num = 1;
 
     formButtons = `
-       <button name="actionsButtons" id='closeForm'><span class="close"></span></button>
-       <div class="button-save-subscribe">
-        <button name="actionsButtons" id='saveForm'><i class="fa fa-floppy-o"></i>Зберегти</button>
-        <button name="actionsButtons" id='subscribe'><i class="fa fa-pencil-square-o"></i>Підписати</button>
+       <button id='closeForm'><span class="close"></span></button>
+       <div class="wrap-form-actions-button">
+        <button id='actionsButtons-saveForm' class="form-actions-button"><i class="fa fa-floppy-o"></i>Зберегти</button>
+        <button id='actionsButtons-subscribe' class="form-actions-button"><i class="fa fa-pencil-square-o"></i>Підписати</button>
+        <button id='actionsButtons-addMembers' class="form-actions-button"><i class="fa fa-user-plus"></i>Спільний доступ</button>
        </div>`;
 
     form =
@@ -238,7 +239,7 @@
     document.getElementById("controlForm").value = +data.controlFormId;
   }
 
-  function dialogBox(quest, callback) {
+  function dialogBox(quest, okButtonId) {
     const dialogBox =
       `<div class="modalBlock">
         <div class="dialogBox">
@@ -246,40 +247,59 @@
             <label>${quest}</label>
           </div>
           <div class="yesNoButtons">
-            <div id = 'ok'>Так</div>
-            <div id = 'cancel'>Ні</div>
+            <div id = '${okButtonId}-ok' class="buttonOk">Так</div>
+            <div id = 'cancel' class="buttonCancel">Ні</div>
           </>
         </div>
       </div>`;
-
-    let dialog = document.getElementById('customAlert');
-
-    dialog.innerHTML = dialogBox;
-
-    dialog.addEventListener('click', (event) => {
-      if (event.target.id === 'ok') {
-        callback(true);
-        dialog.innerHTML = '';
-      } else if (event.target.id === 'cancel') {
-        callback(false);
-        dialog.innerHTML = '';
-      }
-    })
+  document.getElementById('customAlert').innerHTML = dialogBox;
+  return false;
   }
 
+  function delDialogBox(){
+    document.getElementById('customAlert').innerHTML = "";
+    return false;
+  }
+
+  function generateAddMembersBox(){
+    const membersBox = 
+    `<div class="modalBlock">
+        <div class="abbMembersBox">
+          <label>Додати користувача для спільного редагування</label>
+          <input type="text" autofocus="true" name="autofocus sample" placeholder="Search by Country" id="autocomplete-input"></input>
+          <ul id="autocomplete-results"></ul>
+        </div>
+      </div>`
+  }
+
+  /*----------------------------------------------------------------------------------*/
+
   let numMessage = 0;
-  async function messageBox(messageText) {
+  async function messageBox(messageText, typeOfMessage) {
     numMessage++;
-    let message =
+    let message,
+      root = document.querySelector(':root');
+    switch (typeOfMessage) {
+      case "warning":
+        root.style.setProperty('--message-color', '#F2C94C'); //warning
+        break;
+      case "error":
+        root.style.setProperty('--message-color', '#EB5757'); //error
+        break;
+      case "success":
+      root.style.setProperty('--message-color', '#27AE60'); //success
+        break;
+    }
+    message =
       `<div id="messageNum-${numMessage}" class="message slideUp">
         <div class="close-message-button"><button id="closeMessage-messageNum-${numMessage}"><i class="fa fa-times"></i></button></div>
         <div class="message-text"><label>${messageText}</label></div>
-        </div>`;
+      </div>`;
     document.getElementById("message").innerHTML += message;
-    await delMessage(numMessage);
+    await delMessageBox(numMessage);
   }
 
-  function delMessage(idMesNun) {
+  function delMessageBox(idMesNun) {
     let idMes = `messageNum-${idMesNun}`;
     return new Promise(() => {
       setTimeout(() => {
@@ -287,9 +307,8 @@
         if (x != null) {
           x.remove();
         }
-        // let list = document.getElementById("message");
-        // list.removeChild(list.childNodes[0]);
-      }, 7000);
+      }, 10000);
     });
+
   }
 </script>

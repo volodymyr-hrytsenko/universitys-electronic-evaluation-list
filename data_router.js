@@ -23,6 +23,11 @@ function writeDataToInstituteRouter(obj) {
       obj.recordNumber = searchRecordInSheet(obj.uid, currentSheet);
       currentSheet.getRange(obj.recordNumber, 1).setValue(JSON.stringify(obj));
     }
+    log({
+      recordNumber: obj.recordNumber,
+      uid: obj.uid,
+      status: obj.status
+    });
     return {
       recordNumber: obj.recordNumber,
       uid: obj.uid,
@@ -93,8 +98,7 @@ function spreedshetToPDF(SpreadsheetId, pdfFileName) {
     // DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);//видалення файлу в корзину
     let urlFile = DriveApp.getFolderById(newFileId).getUrl();
     DriveApp.getFileById(newFileId).setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW); //розшарювання файлу
-   // return newFileId;
-    return urlFile;
+    return {"url": urlFile, "id": newFileId};
   } catch (e) {
     return 'Error: sending mail ' + e.toString();
   }
@@ -121,6 +125,24 @@ function subscribeEvolutionsList(obj) {
     return 'Error: ' + e.toString();
   }
 }
+//NEW!!!
+function cancelSignatureEvolutionsList(obj) {
+  try {
+    let spreadSheetId = obj.spreadsheetId,
+        pdfId = obj.pdfId;
+    obj.status = 0;
+    obj.pdfUrl = "";
+    obj.pdfId = "";
+    obj.spreadsheetId = "";
+    writeDataToInstituteRouter(obj);
+    DriveApp.getFileById(spreadSheetId).setTrashed(true);//видалення файлу в корзину
+    DriveApp.getFileById(pdfId).setTrashed(true);
+    return obj;
+  } catch (e) {
+    return 'Error: ' + e.toString();
+  }
+}
+
 
 function sendPdfToEmail(obj) {
   try {
@@ -130,7 +152,10 @@ function sendPdfToEmail(obj) {
       description: "Роздрукуйте і підпишить. Передайте до дирекції " + obj.evaluationListData.institute,
       resourseName: "е-Відомість ЧНУ"
     };
-    obj.pdfId = spreedshetToPDF(obj.spreadsheetId, emailParametrs.pdfName);
+    
+    let filePDF = spreedshetToPDF(obj.spreadsheetId, emailParametrs.pdfName);
+    obj.pdfId = filePDF.id;
+    obj.pdfUrl = filePDF.url;
     writeDataToInstituteRouter(obj);
     sendEmail(getUser().email, emailParametrs.title, emailParametrs.description, emailParametrs.resourseName, obj.pdfId);
     return true;
@@ -138,6 +163,7 @@ function sendPdfToEmail(obj) {
     return 'Error: ' + e.toString();
   }
 }
+
 //============================================================
 
 function uuidv4() {
