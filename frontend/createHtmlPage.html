@@ -155,7 +155,8 @@
   function generateButtonNewEvList(view) {
     let button;
     if (view) {
-      button = `<button id='actionsButtons-createFirstForm' style='opacity: 1; cursor: pointer;' class="fa fa-plus"></button>`
+      button =
+        `<button id='actionsButtons-createFirstForm' style='opacity: 1; cursor: pointer;' class="fa fa-plus"></button>`
     } else {
       button =
         `<button id='actionsButtons-createFirstForm' style='opacity: 0.25; cursor: not-allowed;' class="fa fa-plus" disabled></button>`
@@ -252,26 +253,65 @@
           </>
         </div>
       </div>`;
-  document.getElementById('customAlert').innerHTML = dialogBox;
-  return false;
+    document.getElementById('customAlert').innerHTML = dialogBox;
+    return false;
   }
 
-  function delDialogBox(){
+  function delDialogBox() {
     document.getElementById('customAlert').innerHTML = "";
     return false;
   }
 
-  function generateAddMembersBox(){
-    const membersBox = 
-    `<div class="modalBlock">
+ /*----------------------------------------------------------------------------------*/
+  function generateAddMembersBox() {
+    const membersBox =
+      `<div class="modalBlock">
         <div class="abbMembersBox">
+          <div><button>Close</button></div>
           <label>Додати користувача для спільного редагування</label>
-          <input type="text" autofocus="true" name="autofocus sample" placeholder="Search by Country" id="autocomplete-input"></input>
-          <ul id="autocomplete-results"></ul>
+          <div class="chooseTeacher">
+            <input type="text" name="autofocus sample" placeholder="Search by Country" id="autocomplete__input"></input>
+            <ul id="autocomplete__results"></ul>
+            <button id="addTeacher-to-chosen">Додати</button>
+          </div>
+          <div class="wrap-chosen-teacher">
+            <ul id="chosen__teacher"></ul>
+          </div>
+          <div>
+            <button>Готово</button>
+          </div>
         </div>
       </div>`
+    document.getElementById('modalBox').innerHTML = membersBox;
   }
 
+  function autocomplete(val) {
+    var countries_returned = [];
+
+    for (i = 0; i < teachers.length; i++) {
+      if (val === teachers[i].name.toLowerCase().slice(0, val.length)) {
+        countries_returned.push(teachers[i]);
+      }
+    }
+    return countries_returned;
+  }
+
+  function scaningAvtocomplite(val) {
+    let autocomplete_results = document.getElementById("autocomplete__results"),
+      countries_to_show = [];
+    if (val.length > 0) {
+      autocomplete_results.innerHTML = "";
+      countries_to_show = autocomplete(val);
+
+      for (i = 0; i < countries_to_show.length; i++) {
+        autocomplete_results.innerHTML += `<li class="list-item" data-id="${countries_to_show[i].email}">${countries_to_show[i].name}</li>`;
+      }
+      autocomplete_results.style.display = "block";
+    } else {
+      countries_to_show = [];
+      autocomplete_results.innerHTML = "";
+    }
+  }
   /*----------------------------------------------------------------------------------*/
 
   let numMessage = 0;
@@ -287,7 +327,7 @@
         root.style.setProperty('--message-color', '#EB5757'); //error
         break;
       case "success":
-      root.style.setProperty('--message-color', '#27AE60'); //success
+        root.style.setProperty('--message-color', '#27AE60'); //success
         break;
     }
     message =

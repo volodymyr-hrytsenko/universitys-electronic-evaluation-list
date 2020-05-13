@@ -51,6 +51,12 @@ function searchRecordInSheet(uId, currentSheet) {
   return recordNumber;
 }
 
+/*
+*************************************************
+НАСТУПНІ ФУНКЦІЇ ТРЕБА ВИОКРЕМИТИ У ФАЙЛ
+*************************************************
+*/
+
 function createEvaluationList(data, newFileName) {
   let evList = JSON.parse(JSON.stringify(data));
   const evaluationListId = createCopySpreadsheet(router.idEvaluationListsFolder, router.templateId, newFileName);
@@ -125,7 +131,7 @@ function subscribeEvolutionsList(obj) {
     return 'Error: ' + e.toString();
   }
 }
-//NEW!!!
+
 function cancelSignatureEvolutionsList(obj) {
   try {
     let spreadSheetId = obj.spreadsheetId,

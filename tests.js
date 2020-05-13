@@ -1,3 +1,8 @@
+function runTeam(){
+  log(getEvolutionListsByTeacherTeams(5));
+  log(getEvolutionListsByTeacherTeams(5).length);
+}
+
 const testEvaluationListData = { //Тестові данні для створення відомості
   listNumber: 1,
   institute: "Навчально-науковий інститут інформаційних та освітніх технологій",

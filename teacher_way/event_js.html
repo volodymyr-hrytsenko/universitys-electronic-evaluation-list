@@ -1,5 +1,6 @@
 <script>
   let handBook = {},
+    teachers = [],
     saveOrNotSave = -1, // вказівник на те що відбулися зміни
     showOrNotShow = false; // вказівник на необхідність викликання функції закриття підменю відомостей
 
@@ -50,7 +51,8 @@
   }
 
   function setEventScaner() {
-    const page = document.getElementById("data");
+    const page = document.getElementById("data"),
+      modalBox = document.getElementById("modalBox");
     page.addEventListener('change', function (el) {
       if (el.target && el.target.type == "select-one") { //details
         scanningSelectorsEvents(el.target.id);
@@ -58,6 +60,33 @@
         scanningFormInputs(el.target.id);
       } else if (el.target && el.target.name == "tableInput") {
         scanningFormTable(el.target.id);
+      }
+    });
+
+    modalBox.addEventListener("keyup", el => {
+      if (el.target && el.target.id == "autocomplete__input") {
+        scaningAvtocomplite(document.getElementById(el.target.id).value.toLowerCase());
+      }
+    });
+
+    modalBox.addEventListener("click", el => {
+      if (el.target && el.target.nodeName == "LI") {
+        document.getElementById("chosen__teacher").append(el.target); // += `${el.target}`;
+        console.log(el.target.dataset.id);
+        
+        console.log(typeof(recordData.authorsTeam));
+        recordData.authorsTeam.push(el.target.dataset.id);
+        console.log(recordData.authorsTeam);
+        // document.getElementById("autocomplete__input").value = el.target.innerHTML;
+        document.getElementById("autocomplete__results").innerHTML = null;
+        document.getElementById("autocomplete__input").value = "";
+
+      } else if (el.target && el.target.id == "addTeacher-to-chosen") {
+        let x = document.getElementById("autocomplete__input").value;
+        if (x.length > 0) {
+          document.getElementById("chosen__teacher").innerHTML += `<li>${x}</li>`;
+          x = "";
+        }
       }
     });
 
@@ -110,6 +139,9 @@
         case "cancel": // затираємо кастомний alert
           delDialogBox();
           break;
+          // case "autocomplete__results": // затираємо кастомний alert
+          // console.log(e.target);
+          // break;
       }
     });
   }
@@ -166,7 +198,8 @@
       case "select-educationalDegree":
         recordData.educationalDegreeId = +document.getElementById("select-educationalDegree").value;
 
-        document.getElementById("select-formTraining").value = 0; // обнуляємо селектори, якщо вони були вибрані раніше
+        document.getElementById("select-formTraining").value =
+          0; // обнуляємо селектори, якщо вони були вибрані раніше
         document.getElementById("select-cours").value = 0;
         document.getElementById("select-groups").value = 0;
         generateButtonNewEvList(false);
@@ -178,7 +211,8 @@
         handBook.filteredEvListsByGroup = [];
 
         //відфільтровуємо дані відповідно до вибраного параметра
-        handBook.filteredGroupsByEducationalDegree = filterResources(handBook.groups, "educationalDegreeId", conformity
+        handBook.filteredGroupsByEducationalDegree = filterResources(handBook.groups, "educationalDegreeId",
+          conformity
           .educationalDegree[recordData.educationalDegreeId]);
         handBook.filteredEvListsByEducationalDegree = filterResources(handBook.teacherEvolutionsLists,
           "educationalDegreeId", recordData.educationalDegreeId);
@@ -193,7 +227,8 @@
         document.getElementById("select-groups").value = 0;
         generateButtonNewEvList(false);
 
-        handBook.filteredGroupsByCours = []; // затираємо дані відфільтровані нижчими повідношенню до даного селекторами
+        handBook
+          .filteredGroupsByCours = []; // затираємо дані відфільтровані нижчими повідношенню до даного селекторами
         handBook.filteredEvListsByGroup = [];
 
         handBook.filteredGroupsByFormTraining = filterResources(handBook.filteredGroupsByEducationalDegree,
@@ -210,14 +245,16 @@
         document.getElementById("select-groups").value = 0; // обнуляємо селектори, якщо вони були вибрані раніше
         generateButtonNewEvList(false);
 
-        handBook.filteredGroupsByCours = filterResources(handBook.filteredGroupsByFormTraining, "course", (recordData
+        handBook.filteredGroupsByCours = filterResources(handBook.filteredGroupsByFormTraining, "course", (
+          recordData
           .courseId).toString());
         generateGroupsSelect(handBook.filteredGroupsByCours);
         break;
       case "select-groups":
         recordData.groupId = +document.getElementById("select-groups").value;
 
-        handBook.filteredEvListsByGroup = filterResources(handBook.filteredEvListsByFormTraining, "groupId", recordData
+        handBook.filteredEvListsByGroup = filterResources(handBook.filteredEvListsByFormTraining, "groupId",
+          recordData
           .groupId)
         generateTeacherEvolutionsLists(handBook.filteredEvListsByGroup);
 
@@ -228,7 +265,8 @@
         saveOrNotSave = 0;
         recordData.evaluationListData.controlFormId = document.getElementById("controlForm").value;
         console.log(recordData.evaluationListData.controlFormId);
-        recordData.evaluationListData.controlForm = conformity.controlForm[recordData.evaluationListData.controlFormId];
+        recordData.evaluationListData.controlForm = conformity.controlForm[recordData.evaluationListData
+          .controlFormId];
         break;
     }
   }
@@ -244,18 +282,6 @@
         recordData.evaluationListType = 1; // признак основної відомості
         document.getElementById("formWrap").style.display = "block";
         // console.log(recordData);
-        break;
-      case "addMembers":
-        generateAddMembersBox();
-        getListOfTeachers()
-            .then((data) => {
-              // успіх
-              console.log(data);
-            })
-            .catch((e) => {
-              // при помилці
-              console.log(e);
-            })
         break;
       case "saveForm":
         if (saveOrNotSave !== 0) {
@@ -297,7 +323,8 @@
                   messageBox("PDF документ відомості створено", "success");
 
                   getTeacherEvolutionsLists(recordData
-                      .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
+                      .instituteId
+                    ) // отримуємо відомості викладача по інституту для виведення актуальних даних
                     .then((data) => {
                       // успіх
                       handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
@@ -323,10 +350,21 @@
               // при помилці
               console.log(e);
             })
-        }else{
+        } else {
           messageBox("Дія неможлива. Не всі поля заповнено!", "error")
         }
-
+        break;
+      case "addMembers":
+        generateAddMembersBox();
+        getListOfTeachers()
+          .then((data) => {
+            // успіх
+            teachers = data;
+          })
+          .catch((e) => {
+            // при помилці
+            console.log(e);
+          })
         break;
     }
   }
@@ -357,7 +395,9 @@
   }
 
   function runTeachersEvListsForEditing(recordNumber) {
-    recordData = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(recordNumber)))[0];
+    recordData = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(
+      recordNumber)))[0];
+    if(typeof recordData.authorsTeam === "undefined") recordData.authorsTeam = [];
     console.log(recordData);
     document.getElementById("filter").style.display = "none";
     generateForm();
@@ -394,7 +434,8 @@
   }
 
   function cancelSignature(recordNumber) {
-    let evList = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(recordNumber)));
+    let evList = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(
+      recordNumber)));
     delDialogBox();
     createSpinner();
     //evList[0].status = 0;
@@ -518,6 +559,7 @@
     recordData.pdfId = "";
     recordData.spreadsheetId = "";
     recordData.uid = "";
+    recordData.authorsTeam = [];
 
     allGroupInfo.groupName = allGroupInfo.name;
     delete allGroupInfo.name;
@@ -573,7 +615,7 @@
           resolve(res);
         })
         .withFailureHandler(reject)
-        .subscribeEvolutionsList(data); 
+        .subscribeEvolutionsList(data);
     });
   }
 
@@ -612,7 +654,6 @@
         .getEvolutionListsByTeacher(id); // це функцыя з responnses
     });
   }
-  
 
   function filterTeachersDelatedEvLists(list) {
     return filterResources(list, "status", 0).concat(filterResources(list, "status", 1));
