@@ -111,5 +111,6 @@ function getTeacherList() {
       });
     }
   }
+  arr.push({email: "volodyk753@vu.cdu.edu.ua", name: "Гриценко Володимир Валерійович"});
   return arr;
 }

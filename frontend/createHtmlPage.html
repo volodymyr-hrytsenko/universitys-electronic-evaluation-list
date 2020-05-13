@@ -262,28 +262,52 @@
     return false;
   }
 
- /*----------------------------------------------------------------------------------*/
+  /*----------------------------------------------------------------------------------*/
   function generateAddMembersBox() {
     const membersBox =
       `<div class="modalBlock">
         <div class="abbMembersBox">
-          <div><button>Close</button></div>
+          <div><button id="close-abbMembersBox">Close</button></div>
           <label>Додати користувача для спільного редагування</label>
           <div class="chooseTeacher">
-            <input type="text" name="autofocus sample" placeholder="Search by Country" id="autocomplete__input"></input>
+            <input type="text" name="autofocus sample" placeholder="Прізвище, ім'я та по батькові" id="autocomplete__input"></input>
             <ul id="autocomplete__results"></ul>
-            <button id="addTeacher-to-chosen">Додати</button>
           </div>
           <div class="wrap-chosen-teacher">
             <ul id="chosen__teacher"></ul>
           </div>
           <div>
-            <button>Готово</button>
+            <button id="finishChoosingTeam">Готово</button>
           </div>
         </div>
       </div>`
-    document.getElementById('modalBox').innerHTML = membersBox;
+    document.getElementById('modalBox').innerHTML = membersBox;    
+    document.getElementById('autocomplete__input').focus();    
+
+    if (recordData.authorsTeam.length > 0) {
+      let chosenTeacher = document.getElementById('chosen__teacher');
+      recordData.authorsTeam.forEach(el => {
+        let buffer = teachers.filter(elm => {
+          return (elm.email === el && el !== handBook.user.email) ? true : false;
+        });
+
+        if (buffer.length > 0) {
+          const item = document.createElement("li"),
+            delIttemButton = document.createElement("i");
+          item.className = "chosen-teacher-list-item";
+          item.setAttribute("data-id", buffer[0].email);
+          item.textContent = buffer[0].name;
+
+          delIttemButton.className = "fa fa-times";
+          delIttemButton.setAttribute("data-del", "del-teacher-item");
+
+          item.append(delIttemButton);
+          chosenTeacher.append(item);
+        }
+      });
+    }
   }
+
 
   function autocomplete(val) {
     var countries_returned = [];
@@ -304,7 +328,8 @@
       countries_to_show = autocomplete(val);
 
       for (i = 0; i < countries_to_show.length; i++) {
-        autocomplete_results.innerHTML += `<li class="list-item" data-id="${countries_to_show[i].email}">${countries_to_show[i].name}</li>`;
+        autocomplete_results.innerHTML +=
+          `<li class="teacher-list-item" data-id="${countries_to_show[i].email}">${countries_to_show[i].name}</li>`;
       }
       autocomplete_results.style.display = "block";
     } else {

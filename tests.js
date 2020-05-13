@@ -223,8 +223,6 @@ function sendEmail(email, messageTitle, messageBody, organization, attachmentFil
              } 
 */
 
-const lola = "label";
+const arr = [];
 
-let arr = lola.split("");
-
-console.log(arr);
+if (arr.length > 0) arr.forEach();

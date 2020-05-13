@@ -1,7 +1,7 @@
 <script>
   let handBook = {},
     teachers = [],
-    saveOrNotSave = -1, // вказівник на те що відбулися зміни
+    saveOrNotSave = -1, //-1 ніяких змін, 0 змінибули але не збережені, 1 зміни були збережені
     showOrNotShow = false; // вказівник на необхідність викликання функції закриття підменю відомостей
 
   const conformity = {
@@ -70,23 +70,51 @@
     });
 
     modalBox.addEventListener("click", el => {
-      if (el.target && el.target.nodeName == "LI") {
-        document.getElementById("chosen__teacher").append(el.target); // += `${el.target}`;
-        console.log(el.target.dataset.id);
-        
-        console.log(typeof(recordData.authorsTeam));
-        recordData.authorsTeam.push(el.target.dataset.id);
-        console.log(recordData.authorsTeam);
-        // document.getElementById("autocomplete__input").value = el.target.innerHTML;
-        document.getElementById("autocomplete__results").innerHTML = null;
-        document.getElementById("autocomplete__input").value = "";
-
-      } else if (el.target && el.target.id == "addTeacher-to-chosen") {
-        let x = document.getElementById("autocomplete__input").value;
-        if (x.length > 0) {
-          document.getElementById("chosen__teacher").innerHTML += `<li>${x}</li>`;
-          x = "";
+      let list = document.getElementById("chosen__teacher").getElementsByTagName("li"),
+        rezult = false;
+      const autocompleteInput = document.getElementById("autocomplete__input");
+      if (el.target && el.target.className == "teacher-list-item") {
+        if (list.length > 0) {
+          Object.values(list).forEach(elm => {
+            if (el.target.dataset.id === elm.dataset.id) {
+              messageBox("Користувача вже вибрано", "warning");
+              rezult = true;
+              return rezult;
+            }
+          });
         }
+        if (!rezult) {
+          let currentEl = el.target;
+          currentEl.className = "";
+          currentEl.className = "chosen-teacher-list-item";
+          const delButton = document.createElement("i");
+          delButton.className = "fa fa-times";
+          delButton.setAttribute("data-del", "del-teacher-item")
+          currentEl.append(delButton);
+          document.getElementById("chosen__teacher").append(currentEl);
+        }
+        document.getElementById("autocomplete__results").innerHTML = null;
+        autocompleteInput.value = "";
+        autocompleteInput.focus();
+      } else if (el.target && el.target.dataset.del == "del-teacher-item") {
+        el.target.parentElement.remove();
+        autocompleteInput.focus();
+      } else if (el.target && el.target.id == "close-abbMembersBox") {
+        modalBox.innerHTML = "";
+      } else if (el.target && el.target.id == "finishChoosingTeam") {
+        saveOrNotSave = 0; // вказівник на те що відбулися зміни
+        if (list.length > 0) {
+          recordData.authorsTeam = Object.values(list).map(elm => {
+            return elm.dataset.id;
+          });
+          recordData.authorsTeam.push(handBook.user.email);
+          recordData.emailTeacher = "";
+        } else {
+          recordData.authorsTeam = [];
+          recordData.emailTeacher = handBook.user.email;
+        }
+        modalBox.innerHTML = "";
+        console.log(recordData);
       }
     });
 
@@ -355,11 +383,13 @@
         }
         break;
       case "addMembers":
-        generateAddMembersBox();
+        createSpinner();
         getListOfTeachers()
           .then((data) => {
             // успіх
             teachers = data;
+            deleteSpinner();
+            generateAddMembersBox();
           })
           .catch((e) => {
             // при помилці
@@ -397,7 +427,7 @@
   function runTeachersEvListsForEditing(recordNumber) {
     recordData = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(
       recordNumber)))[0];
-    if(typeof recordData.authorsTeam === "undefined") recordData.authorsTeam = [];
+    if (typeof recordData.authorsTeam === "undefined") recordData.authorsTeam = [];
     console.log(recordData);
     document.getElementById("filter").style.display = "none";
     generateForm();
