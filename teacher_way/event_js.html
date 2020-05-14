@@ -127,7 +127,6 @@
           scanningActionsButtons(adres[1]);
           break;
         case "closeForm":
-          console.log(saveOrNotSave);
           if (saveOrNotSave === 1) {
             closeFormRefreshMain();
           } else if (saveOrNotSave === -1) {
@@ -137,19 +136,35 @@
               "Ви справді бажеєте залишити форму не зберігши дані?", adres.join("-"));
           }
           break;
-        case "edit": //редагування відомості
-          runTeachersEvListsForEditing(adres[1]);
+        case "editTeacherEvList": //редагування відомості
+          runEvListsForEditing(adres[1], handBook.teacherEvolutionsLists);
           break;
-        case "delete": //видалення відомості
-          (typeof adres[2] !== "undefined") ? delTeacherEvList(adres[1]): dialogBox(
-            "Ви справді бажаєте видалити відомість?", adres.join("-"));
+        case "editTeamEvList": //редагування відомості
+          runEvListsForEditing(adres[1], handBook.teamEvolutionsLists);
+          break;
+        case "deleteTeacherEvList": //видалення відомості
+          (typeof adres[2] !== "undefined") ? delEvList(adres, handBook.teacherEvolutionsLists):
+            dialogBox("Ви справді бажаєте видалити відомість?", adres.join("-"));
+          break;
+        case "deleteTeamEvList": //видалення відомості
+          (typeof adres[2] !== "undefined") ? delEvList(adres, handBook.teamEvolutionsLists):
+            dialogBox("Ви справді бажаєте видалити відомість?", adres.join("-"));
           break;
         case "openSubMenu": //відкрити меню підписаної відомості
           openSubMenu(adres);
           break;
-        case "cancelSignature": // відкликання підпису
+        case "cancelSignatureTeacherEvList": // відкликання підпису
           if (handBook.user.proFunctional) {
-            (typeof adres[2] !== "undefined") ? cancelSignature(adres[1]): dialogBox(
+            (typeof adres[2] !== "undefined") ? cancelSignature(adres[1], handBook.teacherEvolutionsLists):
+              dialogBox("Ви справді бажаєте відкликати підпис?", adres.join("-"));
+          } else {
+            messageBox("Наразі даний функціонал не доступний", "warning");
+          }
+          // (handBook.user.proFunctional) ? cancelSignature(adres[1]):
+          break;
+        case "cancelSignatureTeamEvList": // відкликання підпису
+          if (handBook.user.proFunctional) {
+            (typeof adres[2] !== "undefined") ? cancelSignature(adres[1], handBook.teamEvolutionsLists): dialogBox(
               "Ви справді бажаєте відкликати підпис?", adres.join("-"));
           } else {
             messageBox("Наразі даний функціонал не доступний", "warning");
@@ -167,9 +182,6 @@
         case "cancel": // затираємо кастомний alert
           delDialogBox();
           break;
-          // case "autocomplete__results": // затираємо кастомний alert
-          // console.log(e.target);
-          // break;
       }
     });
   }
@@ -206,10 +218,11 @@
 
             getTeacherEvolutionsLists(recordData
                 .instituteId) // отримуємо відомості викладача по інституту, якщо такі були створені раніше
-              .then((data) => {
+              .then((dataOne) => {
                 // успіх
-                handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
-                generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+                handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(dataOne);
+                generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists, "TeacherEvList",
+                  "teacherEvolutionsLists");
                 deleteSpinner();
               })
               .catch((e) => {
@@ -217,6 +230,18 @@
                 console.log(e);
               });
 
+            getTeamsEvList(recordData
+                .instituteId) // отримуємо доступні для викладача по інституту, якщо такі були створені раніше
+              .then((dataTwo) => {
+                // успіх
+                handBook.teamEvolutionsLists = filterTeachersDelatedEvLists(dataTwo);
+                generateTeacherEvolutionsLists(handBook.teamEvolutionsLists, "TeamEvList", "teamEvolutionsLists");
+                deleteSpinner();
+              })
+              .catch((e) => {
+                // помилка
+                console.log(e);
+              });
           })
           .catch((e) => {
             // помилка
@@ -246,7 +271,8 @@
           "educationalDegreeId", recordData.educationalDegreeId);
 
         generateGroupsSelect([]); // виводимо групи, що вдповідають вибраному параметру
-        generateTeacherEvolutionsLists(handBook.filteredEvListsByEducationalDegree); // виводимо відомості ...
+        generateTeacherEvolutionsLists(handBook.filteredEvListsByEducationalDegree, "TeacherEvList",
+          "teacherEvolutionsLists"); // виводимо відомості ...
         break;
       case "select-formTraining":
         recordData.formTrainingId = +document.getElementById("select-formTraining").value;
@@ -265,7 +291,8 @@
           "formTrainingId", recordData.formTrainingId)
 
         generateGroupsSelect([]);
-        generateTeacherEvolutionsLists(handBook.filteredEvListsByFormTraining);
+        generateTeacherEvolutionsLists(handBook.filteredEvListsByFormTraining, "TeacherEvList",
+          "teacherEvolutionsLists");
         break;
       case "select-cours":
         recordData.courseId = +document.getElementById("select-cours").value;
@@ -284,7 +311,7 @@
         handBook.filteredEvListsByGroup = filterResources(handBook.filteredEvListsByFormTraining, "groupId",
           recordData
           .groupId)
-        generateTeacherEvolutionsLists(handBook.filteredEvListsByGroup);
+        generateTeacherEvolutionsLists(handBook.filteredEvListsByGroup, "TeacherEvList", "teacherEvolutionsLists");
 
         generateButtonNewEvList(true);
 
@@ -336,13 +363,16 @@
       case "subscribe":
         if (scanningFillGaps(recordData.evaluationListData)) {
           recordData.status = 1; // признак підписати
-          saveOrNotSave = 1; // вказівник на те що відбулися зміни
+          saveOrNotSave = -1; // вказівник на те що відбулися зміни
           createSpinner();
+          console.log(recordData);
+
           subscrideEvList(recordData)
             .then((data) => {
               // успіх
               recordData = cloneObj(data);
               messageBox("Дані збережено", "success");
+              console.log(recordData);
 
               sendEmail(recordData)
                 .then((data) => {
@@ -356,18 +386,31 @@
                     .then((data) => {
                       // успіх
                       handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
-                      generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+                      generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists, "TeacherEvList",
+                        "teacherEvolutionsLists");
 
                       messageBox("Лист з відомістю надіслано", "success");
                       document.getElementById("formWrap").style.display = "none";
                       document.getElementById("filter").style.display = "flex";
                       clearnEvaluationListData();
-                      deleteSpinner();
                     })
                     .catch((e) => {
                       // помилка
                       console.log(e);
                     })
+                  getTeamsEvList(recordData
+                      .instituteId) // отримуємо доступні для викладача по інституту, якщо такі були створені раніше
+                    .then((data) => {
+                      // успіх
+                      handBook.teamEvolutionsLists = filterTeachersDelatedEvLists(data);
+                      generateTeacherEvolutionsLists(handBook.teamEvolutionsLists, "TeamEvList",
+                        "teamEvolutionsLists");
+                      deleteSpinner();
+                    })
+                    .catch((e) => {
+                      // помилка
+                      console.log(e);
+                    });
                 })
                 .catch((e) => {
                   // при помилці
@@ -412,21 +455,31 @@
     saveOrNotSave = closeFormOpenMain();
     getTeacherEvolutionsLists(recordData
         .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
+      .then((dataOne) => {
+        // успіх
+        handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(dataOne);
+        generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists, "TeacherEvList", "teacherEvolutionsLists");
+      })
+      .catch((e) => {
+        // помилка
+        console.log(e);
+      });
+    getTeamsEvList(recordData
+        .instituteId) // отримуємо доступні для викладача по інституту, якщо такі були створені раніше
       .then((data) => {
         // успіх
-        handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
-        generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
+        handBook.teamEvolutionsLists = filterTeachersDelatedEvLists(data);
+        generateTeacherEvolutionsLists(handBook.teamEvolutionsLists, "TeamEvList", "teamEvolutionsLists");
         deleteSpinner();
       })
       .catch((e) => {
         // помилка
         console.log(e);
-      })
+      });
   }
 
-  function runTeachersEvListsForEditing(recordNumber) {
-    recordData = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(
-      recordNumber)))[0];
+  function runEvListsForEditing(recordNumber, arr) {
+    recordData = cloneObj(filterResources(arr, "recordNumber", parseInt(recordNumber)))[0];
     if (typeof recordData.authorsTeam === "undefined") recordData.authorsTeam = [];
     console.log(recordData);
     document.getElementById("filter").style.display = "none";
@@ -434,28 +487,44 @@
     document.getElementById("formWrap").style.display = "block";
   }
 
-  function delTeacherEvList(recordNumber) {
-    let evList = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(
-      recordNumber)));
+  function delEvList(idAndrecordNumber, arr) {
+    let evList = cloneObj(filterResources(arr, "recordNumber", parseInt(idAndrecordNumber[1])));
     delDialogBox();
     createSpinner();
     evList[0].status = -1;
     setRecordData(evList[0])
       .then((data) => {
         // успіх
-        getTeacherEvolutionsLists(recordData
-            .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
-          .then((data) => {
-            // успіх
-            handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
-            generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
-            messageBox("Відомість видалено", "success");
-            deleteSpinner();
-          })
-          .catch((e) => {
-            // помилка
-            console.log(e);
-          })
+        if (idAndrecordNumber[0] === "deleteTeacherEvList") {
+          getTeacherEvolutionsLists(recordData
+              .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
+            .then((data) => {
+              // успіх
+              handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
+              generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists, "TeacherEvList",
+                "teacherEvolutionsLists");
+              messageBox("Відомість видалено", "success");
+              deleteSpinner();
+            })
+            .catch((e) => {
+              // помилка
+              console.log(e);
+            });
+        } else {
+          getTeamsEvList(recordData
+              .instituteId) // отримуємо доступні для викладача по інституту, якщо такі були створені раніше
+            .then((data) => {
+              // успіх
+              handBook.teamEvolutionsLists = filterTeachersDelatedEvLists(data);
+              generateTeacherEvolutionsLists(handBook.teamEvolutionsLists, "TeamEvList", "teamEvolutionsLists");
+              messageBox("Відомість видалено", "success");
+              deleteSpinner();
+            })
+            .catch((e) => {
+              // помилка
+              console.log(e);
+            });
+        }
       })
       .catch((e) => {
         // при помилці
@@ -463,33 +532,40 @@
       })
   }
 
-  function cancelSignature(recordNumber) {
-    let evList = cloneObj(filterResources(handBook.teacherEvolutionsLists, "recordNumber", parseInt(
-      recordNumber)));
+  function cancelSignature(recordNumber, arr) {
+    let evList = cloneObj(filterResources(arr, "recordNumber", parseInt(recordNumber)));
     delDialogBox();
     createSpinner();
-    //evList[0].status = 0;
-    //evList[0].pdfUrl = "";
-    //evList[0].pdfId = "";
-    //evList[0].spreadsheetId = "";
 
-    //setRecordData(evList[0])
     cancelSignatureEvList(evList[0])
       .then((data) => {
         // успіх
+        messageBox("Підпис відомості відкликано", "success");
         getTeacherEvolutionsLists(recordData
             .instituteId) // отримуємо відомості викладача по інституту для виведення актуальних даних
           .then((data) => {
             // успіх
             handBook.teacherEvolutionsLists = filterTeachersDelatedEvLists(data);
-            generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists);
-            messageBox("Підпис відомості відкликано", "success");
+            generateTeacherEvolutionsLists(handBook.teacherEvolutionsLists, "TeacherEvList",
+              "teacherEvolutionsLists");
             deleteSpinner();
           })
           .catch((e) => {
             // помилка
             console.log(e);
           })
+        getTeamsEvList(recordData
+            .instituteId) // отримуємо доступні для викладача по інституту, якщо такі були створені раніше
+          .then((data) => {
+            // успіх
+            handBook.teamEvolutionsLists = filterTeachersDelatedEvLists(data);
+            generateTeacherEvolutionsLists(handBook.teamEvolutionsLists, "TeamEvList", "teamEvolutionsLists");
+            deleteSpinner();
+          })
+          .catch((e) => {
+            // помилка
+            console.log(e);
+          });
       })
       .catch((e) => {
         // при помилці
@@ -682,6 +758,18 @@
         })
         .withFailureHandler(reject)
         .getEvolutionListsByTeacher(id); // це функцыя з responnses
+    });
+  }
+
+  function getTeamsEvList(id) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(res => {
+          //deleteSpinner();
+          resolve(res);
+        })
+        .withFailureHandler(reject)
+        .getEvolutionListsByTeacherTeams(id); // це функцыя з responnses
     });
   }
 

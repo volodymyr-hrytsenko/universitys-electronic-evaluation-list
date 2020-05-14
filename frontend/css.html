@@ -331,7 +331,8 @@
         padding-left: 7px;
     }
 
-    #teacherEvolutionsLists {
+    #teacherEvolutionsLists,
+    #teamEvolutionsLists {
         width: 100%;
         display: flex;
         justify-content: flex-start;
@@ -557,7 +558,7 @@
         margin-left: 20px;
     }
 
-   .form-actions-button:hover {
+    .form-actions-button:hover {
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;
@@ -931,5 +932,75 @@
             opacity: 1;
             -webkit-transform: translateY(0%);
         }
+    }
+
+    /*------------------------- addMambersBox ------------------------------------*/
+
+    .abbMembersBox {
+        width: 600px;
+        background-color: #fff;
+        color: black;
+        padding: 15px;
+    }
+
+    .wrap-close-abbMembersBox {
+        width: inherit;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .abbMembersBox>label {
+        font: 500 0.8em Arial;
+    }
+
+    .chooseTeacher {
+        width: 600px;
+        position: relative;
+    }
+
+    .chooseTeacher>input {
+        width: inherit;
+        margin-top: 20px;
+    }
+
+    .chooseTeacher>ul {
+        width: inherit;
+        max-height: 150px;
+        overflow-y: auto;
+        display: block;
+        position: absolute;
+        background: #e0e0e0;
+        font: 500 0.7em Arial;
+    }
+
+    .chooseTeacher>ul li:hover{
+        background-color: white;
+        cursor: pointer;
+    }
+
+    .wrap-chosen-teacher {
+        width: 600px;
+        max-height: 100px;
+        margin-top: 20px;
+        overflow-y: auto;
+        font: 500 0.7em Arial;
+    }
+
+    .wrap-chosen-teacher > ul li{
+        width: 600px;
+        position: relative;
+        border-bottom: 0.5px solid #e0e0e0;
+    }
+
+    .wrap-chosen-teacher li> i{
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+    }
+
+    .wrap-finishChoosingTeam{
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
     }
 </style>

@@ -92,27 +92,28 @@
     return generateSelect(controlForm, "controlForm");
   }
 
-  function generateTeacherEvolutionsLists(teachersEvLists) {
+  function generateTeacherEvolutionsLists(teachersEvLists, id, parent) {
+    console.log(teachersEvLists);
     let evLists = "";
-    if (teachersEvLists.length < 1) {
-      document.getElementById("teacherEvolutionsLists").innerHTML = "";
+    if (teachersEvLists.length === 0) {
+      document.getElementById(parent).innerHTML = "";
     } else {
       teachersEvLists.forEach(el => {
-        let borderColorId = `edit-${el.evaluationListType}-${el.status}`;
+        let borderColorId = `edit${id}-${el.evaluationListType}-${el.status}`;
         switch (borderColorId) {
-          case "edit-1-0":
+          case `edit${id}-1-0`:
             evLists +=
               `<div class="wrappEvList border-gray">
-              <button id="edit-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
-              <i id="delete-${el.recordNumber}" class="fa fa-times"></i>
+              <button id="edit${id}-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+              <i id="delete${id}-${el.recordNumber}" class="fa fa-times"></i>
             </div>`;
             break;
             break;
-          case "edit-2-0":
+          case `edit${id}-2-0`:
             evLists +=
               `<div class="wrappEvList border-yellow">
-              <button id="edit-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
-              <i id="delete-${el.recordNumber}" class="fa fa-times"></i>
+              <button id="edit${id}-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+              <i id="delete${id}-${el.recordNumber}" class="fa fa-times"></i>
             </div>`;
             break;
             break;
@@ -125,14 +126,14 @@
                   <ul>
                     <li><a href="${el.pdfUrl}" target="_blank"><i class="fa fa-file-pdf-o"></i>Переглянути</a></li>
                     <li><button id="createSecondForm"><i class="fa fa-plus"></i>Повторна відомість</button></li>
-                    <li><button id="cancelSignature-${el.recordNumber}"><i class="fa fa-reply-all"></i>Відкликати підпис</button></li>
+                    <li><button id="cancelSignature${id}-${el.recordNumber}"><i class="fa fa-reply-all"></i>Відкликати підпис</button></li>
                   </ul>
                 </div>
               </div>`;
             break;
         }
       });
-      document.getElementById("teacherEvolutionsLists").innerHTML = evLists;
+      document.getElementById(parent).innerHTML = evLists;
     }
   }
 
@@ -267,22 +268,22 @@
     const membersBox =
       `<div class="modalBlock">
         <div class="abbMembersBox">
-          <div><button id="close-abbMembersBox">Close</button></div>
+          <div class="wrap-close-abbMembersBox"><button id="close-abbMembersBox">Закрити </button></div>
           <label>Додати користувача для спільного редагування</label>
+          <div class="wrap-chosen-teacher">
+            <ul id="chosen__teacher"></ul>
+          </div>
           <div class="chooseTeacher">
             <input type="text" name="autofocus sample" placeholder="Прізвище, ім'я та по батькові" id="autocomplete__input"></input>
             <ul id="autocomplete__results"></ul>
           </div>
-          <div class="wrap-chosen-teacher">
-            <ul id="chosen__teacher"></ul>
-          </div>
-          <div>
+          <div class="wrap-finishChoosingTeam">
             <button id="finishChoosingTeam">Готово</button>
           </div>
         </div>
       </div>`
-    document.getElementById('modalBox').innerHTML = membersBox;    
-    document.getElementById('autocomplete__input').focus();    
+    document.getElementById('modalBox').innerHTML = membersBox;
+    document.getElementById('autocomplete__input').focus();
 
     if (recordData.authorsTeam.length > 0) {
       let chosenTeacher = document.getElementById('chosen__teacher');
