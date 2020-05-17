@@ -377,4 +377,59 @@
     });
 
   }
+
+  //--------------------------------------
+  function generateEvaluationListTable(data, place, type) {
+    if(!data || !data.length) return;
+    let table = document.getElementById(place);
+    let filteredData = data
+                       .filter((elem) => elem.status === 1)
+                       .map((elem) => elem.evaluationListData);
+    console.log(filteredData);
+    let tableArray = [['', '', ''], ['№' ,'ПІБ', 'Залікова книжка']];
+    let exams = filteredData.filter((elem) => +elem.controlFormId === 1);
+    if(exams.length) {
+      tableArray[0].push('Екзамени')
+      exams.forEach((elem, ind) => {
+        if(ind !== 0) tableArray[0].push('')
+      })
+    } 
+    let tests = filteredData.filter((elem) => +elem.controlFormId === 2)
+    if(tests.length) tableArray[0].push('Заліки')
+    filteredData = [...exams, ...tests];
+    // console.log(filteredData);
+    filteredData.forEach((elem, ind) => tableArray[1].push(elem.academicDiscipline + '<a href="'+ data[ind].pdfUrl +'"> => </a>')) //Заповнюємо таблиці
+    // console.log(filteredData);
+    let students = filteredData[0].students
+    
+    let studentObj = {}
+    students.forEach((student, ind) => {
+      studentObj[student.sudentId] = [ind + 1, student.name, student.gradebookNumber]
+    })
+    
+    filteredData.forEach((elem, index) => {
+     elem.students.forEach((student, index) => {
+        studentObj[student.sudentId].push(student.currentGrade)
+      })
+    })
+    
+    let studentsData = Object.values(studentObj).sort((a, b) => a[0] - b[0])
+     let average = studentsData.map((elem,index) => {
+         let grade = elem.slice(3).reduce((acc,reducer) => acc + reducer)/(elem.length - 3);
+         let studentsAve = [elem[1],grade]
+         return studentsAve
+    })
+    
+    tableArray = [...tableArray, ...studentsData]
+    let tableHtml = createTable(tableArray, 'summaryEvList')
+    table.innerHTML = '<h1>' + type + '</h1>' + tableHtml;
+    return tableHtml
+  }
+  
+  function genereateTables(data) {
+    let main = data.filter((list) => list.parent === 0)
+    let additional = data.filter((list) => list.parent !== 0)
+    generateEvaluationListTable(main, 'mainEvList', 'Основні відомості');
+    generateEvaluationListTable(additional, 'additionalEvList', 'Додаткові відомості');
+  }
 </script>

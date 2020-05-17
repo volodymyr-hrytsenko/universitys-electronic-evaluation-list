@@ -3,12 +3,8 @@
 
   const conformity = {
     educationalDegree: {
-      1: "Бакалавр",
-      2: "Магістр"
-    },
-    formTraining: {
-      1: "Денна",
-      2: "Заочна"
+      1: "6",
+      2: "8"
     }
   };
 
@@ -26,12 +22,12 @@
         handBook = data;
         console.log(data);
         handBook.filteredGroupsByFormTraining = [];
-        currentOption.instituteId = handBook.user.idDepartment;
 
-        let buffer = filterResources(Object.values(handBook.institutes), "idinstitute", handBook.user.idDepartment);
-        showUser(buffer[0].nameinstitute);
-
-        getDataInstituteGroups(handBook.user.idDepartment) // отримуємо всі групи інституту
+        let buffer = filterResources(Object.values(handBook.institutes), "emailinstitute", handBook.user.email)[0];
+        currentOption.instituteId = buffer.idinstitute; // id внутрішнього довідника інститутів
+        showUser(buffer.nameinstitute);
+        // отримуємо всі групи інституту
+        getDataInstituteGroups(buffer.iddivision) //id зовнішнього довідника інститутів()
           .then((data) => {
             // успіх
             handBook.groups = data;
@@ -106,9 +102,9 @@
           .filteredGroupsByFormTraining = []; // затираємо дані відфільтровані нижчими повідношенню до даного селекторами
 
         //відфільтровуємо дані відповідно до вибраного параметра
-        handBook.filteredGroupsByEducationalDegree = filterResources(handBook.groups, "educationalDegree", conformity
+        handBook.filteredGroupsByEducationalDegree = filterResources(handBook.groups, "educationalDegreeId", conformity
           .educationalDegree[currentOption.educationalDegreeId]);
-
+        console.log(handBook.filteredGroupsByEducationalDegree);
         generateGroupsSelect([]);
 
         break;
@@ -116,17 +112,17 @@
         currentOption.formTrainingId = +document.getElementById("select-formTraining").value;
 
         handBook.filteredGroupsByFormTraining = filterResources(handBook.filteredGroupsByEducationalDegree,
-          "educationalForm", conformity.formTraining[currentOption.formTrainingId]);
+          "educationalFormId", currentOption.formTrainingId.toString());
         generateGroupsSelect(handBook.filteredGroupsByFormTraining);
         break;
       case "select-groups":
         currentOption.groupId = +document.getElementById("select-groups").value;
-
         createSpinner();
         getAllEvListsByGroup(currentOption.instituteId, currentOption.groupId) // для секретаря
           .then((data) => {
             // успіх
-            handBook.allEvListsByGroup = data;  // записуємо в handbook дані для ствонення загальної відомості
+            handBook.allEvListsByGroup = data; // записуємо в handbook дані для ствонення загальної відомості
+            genereateTables(data);
             console.log(handBook.allEvListsByGroup);
             deleteSpinner();
           })
