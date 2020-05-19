@@ -93,7 +93,6 @@
   }
 
   function generateTeacherEvolutionsLists(teachersEvLists, id, parent) {
-    console.log(teachersEvLists);
     let evLists = "";
     if (teachersEvLists.length === 0) {
       document.getElementById(parent).innerHTML = "";
@@ -226,6 +225,10 @@
             tableRow.push(
               `<input type="text" name="tableInput" id="${key + "-" + num}" value="${el[key]}" disabled>`);
             break;
+          case "semesterGrade":
+            tableRow.push(`<input type="text" name="tableInput" id="${key + "-" + num}" value="${el[key]}">
+              <i id="lose-${key + "-" + num}" class="fa fa-tag"></i>`);
+            break;
           default:
             tableRow.push(`<input type="text" name="tableInput" id="${key + "-" + num}" value="${el[key]}">`);
         }
@@ -240,6 +243,7 @@
     document.getElementById("form").innerHTML = form;
     document.getElementById("controlForm").value = +data.controlFormId;
   }
+  /*----------------- dialogBox("quest", "okButtonId") ----------------------------------------*/
 
   function dialogBox(quest, okButtonId) {
     const dialogBox =
@@ -263,7 +267,8 @@
     return false;
   }
 
-  /*----------------------------------------------------------------------------------*/
+  /*----------------- add members box with autocomplite ----------------------------------------*/
+
   function generateAddMembersBox() {
     const membersBox =
       `<div class="modalBlock">
@@ -309,7 +314,6 @@
     }
   }
 
-
   function autocomplete(val) {
     var countries_returned = [];
 
@@ -338,7 +342,7 @@
       autocomplete_results.innerHTML = "";
     }
   }
-  /*----------------------------------------------------------------------------------*/
+  /*---------- messageBox("text", "[warning, error, success]")----------------------*/
 
   let numMessage = 0;
   async function messageBox(messageText, typeOfMessage) {
@@ -378,54 +382,72 @@
 
   }
 
-  //--------------------------------------
+  /*----------------------------- secretary ---------------------------------------*/
+
   function generateEvaluationListTable(data, place, type) {
-    if(!data || !data.length) return;
     let table = document.getElementById(place);
+    table.innerHTML = '';
+    if (!data || !data.length) {
+      table.innerHTML = '<h1>' + type + '</h1>' + '<h2>' + 'Відсутні' + '</h2>';
+      return;
+    }
     let filteredData = data
-                       .filter((elem) => elem.status === 1)
-                       .map((elem) => elem.evaluationListData);
-    console.log(filteredData);
-    let tableArray = [['', '', ''], ['№' ,'ПІБ', 'Залікова книжка']];
+      .filter((elem) => elem.status === 1)
+      .map((elem) => {
+        elem.evaluationListData.url = elem.pdfUrl;
+        return elem.evaluationListData
+      });
+    let tableArray = [
+      ['', '', ''],
+      ['№', 'ПІБ', 'Залікова книжка']
+    ];
     let exams = filteredData.filter((elem) => +elem.controlFormId === 1);
-    if(exams.length) {
+    if (exams.length) {
       tableArray[0].push('Екзамени')
       exams.forEach((elem, ind) => {
-        if(ind !== 0) tableArray[0].push('')
+        if (ind !== 0) tableArray[0].push('')
       })
-    } 
+    }
     let tests = filteredData.filter((elem) => +elem.controlFormId === 2)
-    if(tests.length) tableArray[0].push('Заліки')
+    if (tests.length) {
+      tableArray[0].push('Заліки')
+      tests.forEach((elem, ind) => {
+        if (ind !== 0) tableArray[0].push('')
+      })
+    }
     filteredData = [...exams, ...tests];
-    // console.log(filteredData);
-    filteredData.forEach((elem, ind) => tableArray[1].push(elem.academicDiscipline + '<a href="'+ data[ind].pdfUrl +'"> => </a>')) //Заповнюємо таблиці
-    // console.log(filteredData);
+    if (!filteredData || !filteredData.length) {
+      table.innerHTML = '<h1>' + type + '</h1>' + '<h2>' + 'Відсутні' + '</h2>';
+      return;
+    }
+    filteredData.forEach((elem, ind) => tableArray[1].push(elem.academicDiscipline + '<a href="' + elem.url +
+      '" target="_blank"><i class="fa fa-file-pdf-o"></i></a>')) //Заповнюємо таблиці
     let students = filteredData[0].students
-    
+
     let studentObj = {}
     students.forEach((student, ind) => {
       studentObj[student.sudentId] = [ind + 1, student.name, student.gradebookNumber]
     })
-    
+
     filteredData.forEach((elem, index) => {
-     elem.students.forEach((student, index) => {
-        studentObj[student.sudentId].push(student.currentGrade)
+      elem.students.forEach((student, index) => {
+        studentObj[student.sudentId].push(student.gradeSum)
       })
     })
-    
+
     let studentsData = Object.values(studentObj).sort((a, b) => a[0] - b[0])
-     let average = studentsData.map((elem,index) => {
-         let grade = elem.slice(3).reduce((acc,reducer) => acc + reducer)/(elem.length - 3);
-         let studentsAve = [elem[1],grade]
-         return studentsAve
+    let average = studentsData.map((elem, index) => {
+      let grade = elem.slice(3).reduce((acc, reducer) => acc + reducer) / (elem.length - 3);
+      let studentsAve = [elem[1], grade]
+      return studentsAve
     })
-    
+
     tableArray = [...tableArray, ...studentsData]
     let tableHtml = createTable(tableArray, 'summaryEvList')
     table.innerHTML = '<h1>' + type + '</h1>' + tableHtml;
     return tableHtml
   }
-  
+
   function genereateTables(data) {
     let main = data.filter((list) => list.parent === 0)
     let additional = data.filter((list) => list.parent !== 0)

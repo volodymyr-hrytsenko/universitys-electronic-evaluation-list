@@ -9,14 +9,15 @@ function getUser() {
     let allUsers = getDataJsonFromFile(router.idFolderDB, router.userJsonData).users;
     obj.role = (typeof allUsers[email] !== "undefined") ? allUsers[email].role : "notwork";
     //obj.role = allUsers[email].role;
-    // obj.email = email;
-    obj.email = "infoteh@vu.cdu.edu.ua";
-    obj.proFunctional = usersSetup.permissionRevokeSignature;//true; // дозвіл на відкликання підпису
+    obj.email = email;
+    //obj.email = "infoteh@vu.cdu.edu.ua";
+    // obj.email = "iim@vu.cdu.edu.ua";
+    obj.proFunctional = usersSetup.permissionRevokeSignature; //true; // дозвіл на відкликання підпису
     switch (obj.role) {
       case "admin":
       case "admin_aisevlist":
-        obj.role = "secretary";
-        // obj.role = "teacher";
+        // obj.role = "secretary";
+        obj.role = "teacher";
         break;
       case "teacher":
         obj.role = "teacher";

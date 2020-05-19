@@ -657,25 +657,40 @@
 
     /*----------------------------------------------------*/
 
-    #formTable {
+    #formTable,
+    #summaryEvList {
         font: 500 1em Arial;
         border-collapse: collapse;
         width: 100%;
     }
 
-    #formTable tr td {
+    #formTable tr td,
+    #summaryEvList tr td {
         border: 1px solid #000;
         height: 40px;
         vertical-align: middle;
         padding-left: 10px;
     }
 
-    #formTable tr td:first-child {
+    #formTable tr td:first-child,
+    #summaryEvList tr td:first-child {
         padding: 0 10px 0 10px;
         text-align: center;
     }
 
-    #formTable tr:first-child>td {
+    #formTable tr:first-child>td,
+    #summaryEvList tr:first-child>td {
+        text-align: left;
+        background-color: #4f4f4f;
+        color: white;
+    }
+    
+    #summaryEvList tr td>a{
+      color: #fff;
+      margin-left: 20px;
+    } 
+
+    #summaryEvList tr:nth-child(2) >td {
         text-align: left;
         background-color: #4f4f4f;
         color: white;
@@ -689,8 +704,18 @@
         border: none;
         background-color: transparent;
         height: inherit;
-        width: 100%;
+        width: 88%;
         font-size: 16px;
+    }
+
+    table .fa-tag{
+        color: #828282;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    table .fa-tag:hover{
+        font-size: 18px;
     }
 
     /* ---------------- modal block style ------------- */

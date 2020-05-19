@@ -59,7 +59,17 @@
       } else if (el.target && el.target.name == "formInput") {
         scanningFormInputs(el.target.id);
       } else if (el.target && el.target.name == "tableInput") {
-        scanningFormTable(el.target.id);
+        const controlForm = recordData.evaluationListData.controlFormId,
+          adres = el.target.id.split("-");
+        if (controlForm === "" || controlForm === "0") {
+          messageBox("Виберіть форму контролю", "warning");
+          document.getElementById(el.target.id).value = "";
+        } else if (controlForm === "2" && adres[0] === "semesterGrade") {
+          messageBox("Дане поле не доступне для редагування, оскільки форма контролю \"Залік\"", "warning");
+          document.getElementById(el.target.id).value = "";
+        } else {
+          scanningFormTable(adres);
+        }
       }
     });
 
@@ -114,7 +124,6 @@
           recordData.emailTeacher = handBook.user.email;
         }
         modalBox.innerHTML = "";
-        console.log(recordData);
       }
     });
 
@@ -160,7 +169,6 @@
           } else {
             messageBox("Наразі даний функціонал не доступний", "warning");
           }
-          // (handBook.user.proFunctional) ? cancelSignature(adres[1]):
           break;
         case "cancelSignatureTeamEvList": // відкликання підпису
           if (handBook.user.proFunctional) {
@@ -169,9 +177,20 @@
           } else {
             messageBox("Наразі даний функціонал не доступний", "warning");
           }
-          // (handBook.user.proFunctional) ? cancelSignature(adres[1]):
           break;
-
+        case "lose": // записуємо в форму значення "не з'явився"
+          adres.shift();
+          const controlForm = recordData.evaluationListData.controlFormId;
+          if (controlForm === "" || controlForm === "0") {
+            messageBox("Виберіть форму контролю", "warning");
+            document.getElementById(el.target.id).value = "";
+          } else if (controlForm === "2" && adres[0] === "semesterGrade") {
+            messageBox("Дане поле не доступне для редагування, оскільки форма контролю \"Залік\"", "warning");
+            document.getElementById(adres.join("-")).value = "";
+          } else {
+            scanningButtonsIventInFormTable(adres);
+          }
+          break;
         case "createSecondForm":
           messageBox("Наразі даний функціонал не доступний", "warning");
           break;
@@ -319,7 +338,6 @@
       case "controlForm":
         saveOrNotSave = 0;
         recordData.evaluationListData.controlFormId = document.getElementById("controlForm").value;
-        console.log(recordData.evaluationListData.controlFormId);
         recordData.evaluationListData.controlForm = conformity.controlForm[recordData.evaluationListData
           .controlFormId];
         break;
@@ -336,7 +354,6 @@
         document.getElementById("filter").style.display = "none";
         recordData.evaluationListType = 1; // признак основної відомості
         document.getElementById("formWrap").style.display = "block";
-        // console.log(recordData);
         break;
       case "saveForm":
         if (saveOrNotSave !== 0) {
@@ -352,7 +369,6 @@
               recordData.uid = data.uid;
               deleteSpinner();
               messageBox("Дані збережено", "success");
-              console.log(recordData);
             })
             .catch((e) => {
               // при помилці
@@ -365,19 +381,16 @@
           recordData.status = 1; // признак підписати
           saveOrNotSave = -1; // вказівник на те що відбулися зміни
           createSpinner();
-          console.log(recordData);
 
           subscrideEvList(recordData)
             .then((data) => {
               // успіх
               recordData = cloneObj(data);
               messageBox("Дані збережено", "success");
-              console.log(recordData);
 
               sendEmail(recordData)
                 .then((data) => {
                   // успіх
-                  console.log(data);
                   messageBox("PDF документ відомості створено", "success");
 
                   getTeacherEvolutionsLists(recordData
@@ -481,7 +494,6 @@
   function runEvListsForEditing(recordNumber, arr) {
     recordData = cloneObj(filterResources(arr, "recordNumber", parseInt(recordNumber)))[0];
     if (typeof recordData.authorsTeam === "undefined") recordData.authorsTeam = [];
-    console.log(recordData);
     document.getElementById("filter").style.display = "none";
     generateForm();
     document.getElementById("formWrap").style.display = "block";
@@ -596,29 +608,72 @@
   }
 
   function scanningFormTable(id) {
-    let marks = +document.getElementById(id).value,
-      adres = id.split("-"),
-      marksSum;
-
     saveOrNotSave = 0; // вказівник на те що відбулися зміни
-    recordData.evaluationListData.students[adres[1] - 1][adres[0]] = marks;
+    let marks = document.getElementById(id.join("-")).value,
+      marksSum;
+    const currentGrade = document.getElementById(`currentGrade-${id[1]}`),
+      semesterGrade = document.getElementById(`semesterGrade-${id[1]}`),
+      gradeSum = document.getElementById(`gradeSum-${id[1]}`);
 
-    marksSum = (adres[0] == "currentGrade") ? +document.getElementById(`semesterGrade-${adres[1]}`).value : +
-      document.getElementById(`currentGrade-${adres[1]}`).value;
-    marksSum += marks;
-    document.getElementById(`gradeSum-${adres[1]}`).value = marksSum;
-    recordData.evaluationListData.students[adres[1] - 1]["gradeSum"] = marksSum;
+    if (isNaN(+currentGrade.value)) {
+      messageBox("Введіть число", "warning");
+      gradeSum.value = "";
+    } else if (semesterGrade.value !== "не з'явився" && isNaN(+semesterGrade.value)) {
+      messageBox("Введіть число, або 'не з'явився'", "warning");
+      gradeSum.value = "";
+    } else if ((Number(+currentGrade.value) || currentGrade.value === "") && (Number(+semesterGrade.value) ||
+        semesterGrade.value === "")) {
+      marksSum = +currentGrade.value + (+semesterGrade.value);
+      recordData.evaluationListData.students[id[1] - 1][id[0]] = (marks === "") ? marks : +marks;
+      recordData.evaluationListData.students[id[1] - 1]["gradeSum"] = (marksSum === 0) ? "" : marksSum;
+      gradeSum.value = (marksSum === 0) ? "" : marksSum;
+    } else if ((Number(+currentGrade.value) || currentGrade.value === "") && semesterGrade.value === "не з'явився") {
+      recordData.evaluationListData.students[id[1] - 1][id[0]] = (marks === "не з'явився") ? marks : +marks;
+      recordData.evaluationListData.students[id[1] - 1]["gradeSum"] = "не з'явився";
+      gradeSum.value = "не з'явився";
+    } else {
+      messageBox("Система не розпізнала введені вами дані", "error");
+    }
+    console.log(recordData.evaluationListData.students);
+  }
+
+  function scanningButtonsIventInFormTable(id) {
+    const currentGrade = document.getElementById(`currentGrade-${id[1]}`),
+      semesterGrade = document.getElementById(`semesterGrade-${id[1]}`),
+      gradeSum = document.getElementById(`gradeSum-${id[1]}`);
+
+    if (semesterGrade.value === "не з'явився") {
+      recordData.evaluationListData.students[id[1] - 1][id[0]] = "";
+      recordData.evaluationListData.students[id[1] - 1]["gradeSum"] = +currentGrade.value;
+      semesterGrade.value = "";
+      gradeSum.value = currentGrade.value;
+    } else {
+      recordData.evaluationListData.students[id[1] - 1][id[0]] = "не з'явився";
+      recordData.evaluationListData.students[id[1] - 1]["gradeSum"] = "не з'явився";
+      semesterGrade.value = "не з'явився";
+      gradeSum.value = "не з'явився";
+    }
+    console.log(recordData.evaluationListData.students);
   }
 
   function scanningFillGaps(evList) {
     const arr = ["academicDiscipline", "studyCredits", "controlForm", "teacherFullName"];
-    let result = true;
+    let result = true,
+      columnForCheck;
     arr.forEach(el => {
       if (typeof evList[el] === "undefined" || evList[el] === "" || evList[el] === 0 || evList[el] == null) {
         result = false;
         return result;
       }
     });
+
+    (evList.controlFormId === "1") ? columnForCheck = "semesterGrade": columnForCheck = "currentGrade";
+    evList.students.forEach(el => {
+      if (el[columnForCheck] === ""){
+        result = false;
+        return result;
+      }
+    })
     return result;
   }
 

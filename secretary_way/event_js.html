@@ -40,6 +40,7 @@
 
         generateEducationalDegreeSelect(handBook.educational_degree);
         generateFormTrainingSelect(handBook.form_of_training);
+        generateCoursSelect(handBook.course_number);
         generateGroupsSelect(handBook.filteredGroupsByFormTraining);
       })
       .catch((e) => {})
@@ -100,20 +101,34 @@
 
         handBook
           .filteredGroupsByFormTraining = []; // затираємо дані відфільтровані нижчими повідношенню до даного селекторами
+        document.getElementById("select-formTraining").value = 0;
+        document.getElementById("select-cours").value = 0;
+        document.getElementById("select-groups").value = 0;
 
         //відфільтровуємо дані відповідно до вибраного параметра
         handBook.filteredGroupsByEducationalDegree = filterResources(handBook.groups, "educationalDegreeId", conformity
           .educationalDegree[currentOption.educationalDegreeId]);
-        console.log(handBook.filteredGroupsByEducationalDegree);
         generateGroupsSelect([]);
 
         break;
       case "select-formTraining":
         currentOption.formTrainingId = +document.getElementById("select-formTraining").value;
 
+        document.getElementById("select-cours").value = 0;
+        document.getElementById("select-groups").value = 0;
+
         handBook.filteredGroupsByFormTraining = filterResources(handBook.filteredGroupsByEducationalDegree,
           "educationalFormId", currentOption.formTrainingId.toString());
-        generateGroupsSelect(handBook.filteredGroupsByFormTraining);
+        generateGroupsSelect([]);
+        break;
+      case "select-cours":
+        currentOption.courseId = +document.getElementById("select-cours").value;
+
+        document.getElementById("select-groups").value = 0; // обнуляємо селектори, якщо вони були вибрані раніше
+
+        handBook.filteredGroupsByCours = filterResources(handBook.filteredGroupsByFormTraining, "course", (currentOption
+          .courseId).toString());
+        generateGroupsSelect(handBook.filteredGroupsByCours);
         break;
       case "select-groups":
         currentOption.groupId = +document.getElementById("select-groups").value;
@@ -123,7 +138,6 @@
             // успіх
             handBook.allEvListsByGroup = data; // записуємо в handbook дані для ствонення загальної відомості
             genereateTables(data);
-            console.log(handBook.allEvListsByGroup);
             deleteSpinner();
           })
           .catch((e) => {
