@@ -164,32 +164,5 @@
         .getEvListsByGroup(idInstitute, idGroup); // це функцыя з responnses
     });
   }
-  /*--------------------------------------------------------------------------------------------------------*/
-  // function showInfoFromDocument(data) {
-  //   deleteSpinner();
-  //   let message = document.getElementById("message");
-  //   message.innerHTML = '<h4>' + data.name + '</h4>' + createTable(data.table1) + '<br>' + createTable(data.table2);
-  //   // message.innerHTML = '<h4>'+data.name+'</h4>'+createTable(data.table1)+createTable(data.table2);
-  //   message.style.display = "block";
-  // }
-
-  // function hiddenMessagesBlock() {
-  //   let message = document.getElementById("message");
-  //   message.style.display = "none";
-  //   message.innerHTML = '';
-  // }
-
-  function createSpinner() {
-    var div = document.createElement("div");
-    var faspin = document.createElement("span");
-    faspin.className = "fa fa-spinner fa-spin";
-    div.append(faspin);
-    div.className = "modalBlock";
-    div.id = "modalBlock";
-    document.getElementById("data").appendChild(div);
-  }
-
-  function deleteSpinner() {
-    if (document.getElementById("modalBlock")) document.getElementById("modalBlock").remove();
-  }
+  
 </script>

@@ -92,27 +92,28 @@
     return generateSelect(controlForm, "controlForm");
   }
 
-  function generateTeacherEvolutionsLists(teachersEvLists, id, parent) {
+  function generateTeacherEvolutionsLists(teachersEvLists, type) {
     let evLists = "";
     if (teachersEvLists.length === 0) {
-      document.getElementById(parent).innerHTML = "";
+      document.getElementById(type).innerHTML = "";
     } else {
       teachersEvLists.forEach(el => {
-        let borderColorId = `edit${id}-${el.evaluationListType}-${el.status}`;
+        if (typeof el.parent === "undefined") el.parent = 0;
+        let borderColorId = `edit-${type}-${el.evaluationListType}-${el.status}`;
         switch (borderColorId) {
-          case `edit${id}-1-0`:
+          case `edit-${type}-1-0`:
             evLists +=
               `<div class="wrappEvList border-gray">
-              <button id="edit${id}-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
-              <i id="delete${id}-${el.recordNumber}" class="fa fa-times"></i>
+              <button id="edit-${type}-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+              <i id="delete-${type}-${el.recordNumber}" class="fa fa-times"></i>
             </div>`;
             break;
             break;
-          case `edit${id}-2-0`:
+          case `edit-${type}-2-0`:
             evLists +=
               `<div class="wrappEvList border-yellow">
-              <button id="edit${id}-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
-              <i id="delete${id}-${el.recordNumber}" class="fa fa-times"></i>
+              <button id="edit-${type}-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+              <i id="delete-${type}-${el.recordNumber}" class="fa fa-times"></i>
             </div>`;
             break;
             break;
@@ -124,15 +125,15 @@
                 <div id="evList-subMenu-${el.recordNumber}" class="evList-subMenu">
                   <ul>
                     <li><a href="${el.pdfUrl}" target="_blank"><i class="fa fa-file-pdf-o"></i>Переглянути</a></li>
-                    <li><button id="createSecondForm"><i class="fa fa-plus"></i>Повторна відомість</button></li>
-                    <li><button id="cancelSignature${id}-${el.recordNumber}"><i class="fa fa-reply-all"></i>Відкликати підпис</button></li>
+                    <li><button id="createSecondForm-${type}-${el.recordNumber}-${el.parent}"><i class="fa fa-plus"></i>Повторна відомість</button></li>
+                    <li><button id="cancelSignature-${type}-${el.recordNumber}"><i class="fa fa-reply-all"></i>Відкликати підпис</button></li>
                   </ul>
                 </div>
               </div>`;
             break;
         }
       });
-      document.getElementById(parent).innerHTML = evLists;
+      document.getElementById(type).innerHTML = evLists;
     }
   }
 
@@ -165,8 +166,9 @@
   }
 
   function generateForm() {
-    let data = cloneObj(recordData.evaluationListData),
-      formButtons,
+    const evList = cloneObj(recordData),
+      data = evList.evaluationListData;
+    let formButtons,
       form,
       tableHeader = ["№", "Прізвище, ініціали студента", "Поточний контроль", "Підсумковий семестровий контроль",
         "Загальна оцінка"
@@ -179,7 +181,7 @@
        <button id='closeForm'><span class="close"></span></button>
        <div class="wrap-form-actions-button">
         <button id='actionsButtons-saveForm' class="form-actions-button"><i class="fa fa-floppy-o"></i>Зберегти</button>
-        <button id='actionsButtons-subscribe' class="form-actions-button"><i class="fa fa-pencil-square-o"></i>Підписати</button>
+        <button id='subscribe-${evList.evaluationListType}' class="form-actions-button"><i class="fa fa-pencil-square-o"></i>Підписати</button>
         <button id='actionsButtons-addMembers' class="form-actions-button"><i class="fa fa-user-plus"></i>Спільний доступ</button>
        </div>`;
 
@@ -382,6 +384,21 @@
 
   }
 
+  /*----------------------------- createSpiner() ---------------------------------------*/
+
+  function createSpinner() {
+    var div = document.createElement("div");
+    var faspin = document.createElement("span");
+    faspin.className = "fa fa-spinner fa-pulse";
+    div.append(faspin);
+    div.className = "modalBlock";
+    div.id = "modalBlock";
+    document.getElementById("data").appendChild(div);
+  }
+
+  function deleteSpinner() {
+    if (document.getElementById("modalBlock")) document.getElementById("modalBlock").remove();
+  }
   /*----------------------------- secretary ---------------------------------------*/
 
   function generateEvaluationListTable(data, place, type) {
