@@ -104,7 +104,7 @@
           case `edit-${type}-1-0`:
             evLists +=
               `<div class="wrappEvList border-gray">
-              <button id="edit-${type}-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+              <button id="edit-${type}-${el.recordNumber}-main">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
               <i id="delete-${type}-${el.recordNumber}" class="fa fa-times"></i>
             </div>`;
             break;
@@ -112,7 +112,7 @@
           case `edit-${type}-2-0`:
             evLists +=
               `<div class="wrappEvList border-yellow">
-              <button id="edit-${type}-${el.recordNumber}">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+              <button id="edit-${type}-${el.recordNumber}-additional">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
               <i id="delete-${type}-${el.recordNumber}" class="fa fa-times"></i>
             </div>`;
             break;
