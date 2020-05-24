@@ -8,10 +8,6 @@
     educationalDegree: {
       1: "6",
       2: "8"
-    },
-    controlForm: {
-      1: "Екзамен",
-      2: "Залік"
     }
   };
 
@@ -66,6 +62,11 @@
           document.getElementById(el.target.id).value = "";
         } else if (controlForm === "2" && adres[0] === "semesterGrade") {
           messageBox("Дане поле не доступне для редагування, оскільки форма контролю \"Залік\"", "warning");
+          document.getElementById(el.target.id).value = "";
+        } else if (controlForm === "3" && adres[0] === "currentGrade") {
+          messageBox(
+            "Дане поле не доступне для редагування, оскільки форма контролю \"Залік (курсова робота/практика)\"",
+            "warning");
           document.getElementById(el.target.id).value = "";
         } else {
           scanningFormTable(adres);
@@ -154,6 +155,14 @@
         case "delete": //видалення відомості
           (typeof adres[3] !== "undefined") ? delEvList(adres):
             dialogBox("Ви справді бажаєте видалити відомість?", adres.join("-"));
+          break;
+        case "first":
+          slide = 0;
+          currentSlide();
+          break;
+        case "second":
+          slide = 1;
+          currentSlide();
           break;
         case "openSubMenu": //відкрити меню підписаної відомості
           openSubMenu(adres);
@@ -329,8 +338,8 @@
       case "controlForm":
         saveOrNotSave = 0;
         recordData.evaluationListData.controlFormId = document.getElementById("controlForm").value;
-        recordData.evaluationListData.controlForm = conformity.controlForm[recordData.evaluationListData
-          .controlFormId];
+        recordData.evaluationListData.controlForm = handBook.controlForm[recordData.evaluationListData.controlFormId]
+          .value;
         break;
     }
   }
@@ -405,7 +414,7 @@
     setRecordData(mainEvList)
       .then((data) => {
         // успіх
-        messageBox("Основну відомість оновлено", "success");
+        messageBox("Дані збережено", "success");
       })
       .catch((e) => {
         // при помилці
@@ -552,7 +561,7 @@
       createSpinner();
       const evList = cloneObj(filterResources(handBook[id[1]], "recordNumber", parseInt(id[2])))[0];
       evList.evaluationListData.students.forEach(el => {
-        if (typeof el.excellent === "undefined"){
+        if (typeof el.excellent === "undefined") {
           (Number(el.gradeSum) && el.gradeSum >= 60) ? el.excellent = true: el.excellent = false;
         }
       });

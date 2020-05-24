@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <?!= include('frontend/recordData'); ?>
   <?!= include('teacher_way/event_js'); ?>
-  <?!= include('frontend/createHtmlPage'); ?>
+  <!-- <?!= include('frontend/createHtmlPage'); ?> -->
   <?!= include('frontend/universalHtmlStructures'); ?>
   <?!= include('frontend/css'); ?>
 </head>
@@ -34,11 +34,20 @@
         <div id="cours"></div>
         <div id="groups"></div>
         <div id="buttonsActionUnderForm"></div>
-        <!-- <span class="underline"></span> -->
-        <label>Мої відомості</label>
-        <div id="teacherEvolutionsLists"></div>
-        <label>Спільні відомості</label>
-        <div id="teamEvolutionsLists"></div>
+        <div id="slideshow">
+          <ul id="slides">
+            <li class="slideActive">
+              <div id="teacherEvolutionsLists"></div>
+            </li>
+            <li>
+              <div id="teamEvolutionsLists"></div>
+            </li>
+          </ul>
+          <ul id="pagerMenu">
+            <li id="first" class="menuActive">Мої відомості</li>
+            <li id="second">Спільні відомості</li>
+          </ul>
+        </div>
       </div>
 
       <div id="formWrap">
@@ -46,10 +55,10 @@
         <!-- <span class="underline"></span> -->
         <div id="form"></div>
       </div>
+
     </div>
 
-  </div>
-
+    <?!= include('frontend/createHtmlPage'); ?>
 </body>
 
 </html>

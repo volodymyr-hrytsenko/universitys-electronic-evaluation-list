@@ -99,27 +99,39 @@
     } else {
       teachersEvLists.forEach(el => {
         if (typeof el.parent === "undefined") el.parent = 0;
-        let borderColorId = `edit-${type}-${el.evaluationListType}-${el.status}`;
+        let borderColorId = `edit-${el.evaluationListType}-${el.status}`;
         switch (borderColorId) {
-          case `edit-${type}-1-0`:
+          case `edit-1-0`:
             evLists +=
               `<div class="wrappEvList border-gray">
               <button id="edit-${type}-${el.recordNumber}-main">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
               <i id="delete-${type}-${el.recordNumber}" class="fa fa-times"></i>
             </div>`;
             break;
-            break;
-          case `edit-${type}-2-0`:
+          case `edit-2-0`:
             evLists +=
               `<div class="wrappEvList border-yellow">
               <button id="edit-${type}-${el.recordNumber}-additional">${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
               <i id="delete-${type}-${el.recordNumber}" class="fa fa-times"></i>
             </div>`;
             break;
-            break;
-          default:
+          case `edit-1-1`:
             evLists +=
-              `<div class="wrappEvList border-blue">
+              `<div class="wrappEvList border-gray background-blue">
+                <button>${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
+                <i id="openSubMenu-${el.recordNumber}" class="fa fa-sort-desc"></i>
+                <div id="evList-subMenu-${el.recordNumber}" class="evList-subMenu">
+                  <ul>
+                    <li><a href="${el.pdfUrl}" target="_blank"><i class="fa fa-file-pdf-o"></i>Переглянути</a></li>
+                    <li><button id="createSecondForm-${type}-${el.recordNumber}-${el.parent}"><i class="fa fa-plus"></i>Повторна відомість</button></li>
+                    <li><button id="cancelSignature-${type}-${el.recordNumber}"><i class="fa fa-reply-all"></i>Відкликати підпис</button></li>
+                  </ul>
+                </div>
+              </div>`;
+            break;
+          case `edit-2-1`:
+            evLists +=
+              `<div class="wrappEvList border-yellow background-blue">
                 <button>${el.evaluationListData.groupName}, ${el.evaluationListData.academicDiscipline}</button>
                 <i id="openSubMenu-${el.recordNumber}" class="fa fa-sort-desc"></i>
                 <div id="evList-subMenu-${el.recordNumber}" class="evList-subMenu">
@@ -399,6 +411,24 @@
   function deleteSpinner() {
     if (document.getElementById("modalBlock")) document.getElementById("modalBlock").remove();
   }
+
+  /*----------------------------- slider ---------------------------------------*/
+  let slide = 0,
+
+    currentSlide = function () {
+      let slides = document.querySelectorAll('#slides > li'),
+        menu = document.querySelectorAll('#pagerMenu > li'),
+        numSlides = slides.length,
+        itemToShow = Math.abs(slide % numSlides);
+      [].forEach.call(slides, function (el) {
+        el.classList.remove('slideActive')
+      });
+      [].forEach.call(menu, function (el) {
+        el.classList.remove('menuActive')
+      });
+      slides[itemToShow].classList.add('slideActive');
+      menu[itemToShow].classList.add('menuActive');
+    };
   /*----------------------------- secretary ---------------------------------------*/
 
   function generateEvaluationListTable(data, place, type) {

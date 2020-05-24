@@ -339,7 +339,6 @@
         flex-direction: row;
         flex-wrap: wrap;
         padding: 40px 0px;
-        border-top: 1px solid #E0E0E0;
         transition: 2s;
     }
 
@@ -362,7 +361,6 @@
     .wrappEvList>button {
         min-height: inherit;
         max-width: unset;
-        color: #4f4f4f;
         font-size: 20px;
         border: none;
         background-color: transparent;
@@ -379,7 +377,6 @@
         justify-content: center;
         align-items: center;
         font-size: 20px;
-        color: #4f4f4f;
         margin: 0 5px 0 10px;
         border: none;
         border-radius: 50%;
@@ -401,11 +398,15 @@
     }
 
     .border-yellow {
-        border-color: #F2C94C;
+        border-color: #F2994A;
     }
 
     .border-blue {
         border-color: #2F80ED;
+    }
+
+    .background-blue {
+        background-color: rgb(107, 172, 225, 0.2);
     }
 
     .evList-subMenu {
@@ -421,7 +422,7 @@
         z-index: 7;
     }
 
-    ul {
+    .evList-subMenu ul {
         list-style: none;
         margin: 0;
         padding: 0;
@@ -684,13 +685,13 @@
         background-color: #4f4f4f;
         color: white;
     }
-    
-    #summaryEvList tr td>a{
-      color: #fff;
-      margin-left: 20px;
-    } 
 
-    #summaryEvList tr:nth-child(2) >td {
+    #summaryEvList tr td>a {
+        color: #fff;
+        margin-left: 20px;
+    }
+
+    #summaryEvList tr:nth-child(2)>td {
         text-align: left;
         background-color: #4f4f4f;
         color: white;
@@ -708,13 +709,13 @@
         font-size: 16px;
     }
 
-    table .fa-tag{
+    table .fa-tag {
         color: #828282;
         cursor: pointer;
         transition: .3s;
     }
 
-    table .fa-tag:hover{
+    table .fa-tag:hover {
         font-size: 18px;
     }
 
@@ -998,7 +999,7 @@
         font: 500 0.7em Arial;
     }
 
-    .chooseTeacher>ul li:hover{
+    .chooseTeacher>ul li:hover {
         background-color: white;
         cursor: pointer;
     }
@@ -1011,21 +1012,88 @@
         font: 500 0.7em Arial;
     }
 
-    .wrap-chosen-teacher > ul li{
+    .wrap-chosen-teacher>ul li {
         width: 600px;
         position: relative;
         border-bottom: 0.5px solid #e0e0e0;
     }
 
-    .wrap-chosen-teacher li> i{
+    .wrap-chosen-teacher li>i {
         position: absolute;
         right: 0;
         cursor: pointer;
     }
 
-    .wrap-finishChoosingTeam{
+    .wrap-finishChoosingTeam {
         margin-top: 20px;
         display: flex;
         justify-content: center;
+    }
+
+
+    /*---------------------------------------*/
+    #slideshow {
+        width: 100%;
+        position: relative;
+    }
+
+    #slides {
+        padding: 0;
+        margin: 0;
+        overflow: hidden
+    }
+
+    #slides>li {
+        position: absolute;
+        top: 20px;
+        display: none;
+        clear: both;
+    }
+
+    #slides li.slideActive {
+        display: block;
+        z-index: 2;
+        transition: 1s;
+    }
+
+    /* .pager ul {
+        position: absolute;
+        display: flex;
+        width: 100%;
+        z-index: 9;
+        border-bottom: 1px solid #e0e0e0;
+    } */
+
+    #pagerMenu {
+        position: absolute;
+        display: flex;
+        width: 100%;
+        z-index: 9;
+        overflow: hidden;
+    }
+
+    #pagerMenu li {
+        width: 50%;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #4f4f4f;
+        font: 500 1.1em Arial;
+        text-decoration: none;
+        cursor: pointer;
+        border-bottom: 1px solid #e0e0e0;
+        transition: .3s ease-in-out;
+    }
+
+    #pagerMenu li:hover {
+        -webkit-transform: scale(1.05, 1);
+        -ms-transform: scale(1.05, 1);
+        transform: scale(1.05, 1);
+    }
+
+    #pagerMenu li.menuActive {
+        border-bottom: 2px solid #6BACE1;
+        color: #6BACE1;
     }
 </style>
