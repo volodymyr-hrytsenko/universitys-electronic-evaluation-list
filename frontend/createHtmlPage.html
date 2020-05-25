@@ -92,6 +92,22 @@
     return generateSelect(controlForm, "controlForm");
   }
 
+  const mainPageMenu = `<ul id="slides">
+            <li class="slideActive">
+              <div id="teacherEvolutionsLists"></div>
+            </li>
+            <li>
+              <div id="teamEvolutionsLists"></div>
+            </li>
+          </ul>
+          <ul id="pagerMenu">
+            <li id="first" class="menuActive">Мої відомості</li>
+            <li id="second">Спільні відомості</li>
+          </ul>`,
+          generatemainPageMenu = function(){
+            document.getElementById("evList").innerHTML = mainPageMenu;
+          };
+
   function generateTeacherEvolutionsLists(teachersEvLists, type) {
     let evLists = "";
     if (teachersEvLists.length === 0) {
@@ -190,7 +206,7 @@
       num = 1;
 
     formButtons = `
-       <button id='closeForm'><span class="close"></span></button>
+       <button id='closeForm'></button>
        <div class="wrap-form-actions-button">
         <button id='actionsButtons-saveForm' class="form-actions-button"><i class="fa fa-floppy-o"></i>Зберегти</button>
         <button id='subscribe-${evList.evaluationListType}' class="form-actions-button"><i class="fa fa-pencil-square-o"></i>Підписати</button>
@@ -376,7 +392,7 @@
     }
     message =
       `<div id="messageNum-${numMessage}" class="message slideUp">
-        <div class="close-message-button"><button id="closeMessage-messageNum-${numMessage}"><i class="fa fa-times"></i></button></div>
+        <div class="close-message-button"><button><i id="closeMessage-messageNum-${numMessage}" class="fa fa-times"></i></button></div>
         <div class="message-text"><label>${messageText}</label></div>
       </div>`;
     document.getElementById("message").innerHTML += message;

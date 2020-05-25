@@ -181,6 +181,8 @@
     .wrapper {
         max-width: 1440px;
         margin: 0 auto;
+        margin-left: calc(100vw - 100%);
+        margin-right: 0;
         padding: 40px calc((100% - 1200px)/2);
     }
 
@@ -223,7 +225,7 @@
 
     #institute {
         margin-right: 10px;
-        width: 47%;
+        width: calc(47% - 1px);
     }
 
     @media screen and (max-width: 1280px) {
@@ -493,40 +495,31 @@
         transition: .25s;
     }
 
-    #closeForm:hover {
-        background-color: #F2F2F2;
-    }
-
-    .close {
-        position: relative;
-        width: 32px;
-        height: 32px;
-        opacity: 0.5;
-        cursor: pointer;
-        transition: .25s;
-        z-index: -1;
-    }
-
-    #closeForm:hover .close {
-        opacity: 1;
-    }
-
-    .close:before,
-    .close:after {
+    #closeForm::before,
+    #closeForm::after{
         position: absolute;
-        left: 13px;
         content: ' ';
         height: 32px;
         width: 2px;
         background-color: #4f4f4f;
+        opacity: .55;
     }
 
-    .close:before {
+    #closeForm:before {
         transform: rotate(45deg);
     }
 
-    .close:after {
+    #closeForm:after {
         transform: rotate(-45deg);
+    }
+
+    #closeForm:hover {
+        background-color: #F2F2F2;
+    }
+
+    #closeForm:hover:before,
+    #closeForm:hover:after{
+        opacity: 1;
     }
 
     .wrap-form-actions-button {
@@ -873,11 +866,7 @@
         background-color: rgba(0, 0, 0, 0.25);
         color: #F2F2F2;
         opacity: 1;
-    }
-
-    .close-message-button>button i {
-        z-index: -1;
-    }
+    } 
 
     .message-text {
         width: inherit;
@@ -1031,8 +1020,8 @@
     }
 
 
-    /*---------------------------------------*/
-    #slideshow {
+    /*---------------slider menu main page------------------------*/
+    #evList {
         width: 100%;
         position: relative;
     }
@@ -1056,14 +1045,6 @@
         transition: 1s;
     }
 
-    /* .pager ul {
-        position: absolute;
-        display: flex;
-        width: 100%;
-        z-index: 9;
-        border-bottom: 1px solid #e0e0e0;
-    } */
-
     #pagerMenu {
         position: absolute;
         display: flex;
@@ -1078,7 +1059,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: #4f4f4f;
+        color: #BDBDBD;
+        text-transform: uppercase;
+        letter-spacing: .08em;
         font: 500 1.1em Arial;
         text-decoration: none;
         cursor: pointer;
@@ -1087,13 +1070,49 @@
     }
 
     #pagerMenu li:hover {
-        -webkit-transform: scale(1.05, 1);
-        -ms-transform: scale(1.05, 1);
-        transform: scale(1.05, 1);
+        color: #6BACE1;
+    }
+
+    #pagerMenu li::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        height: 2px;
+        width: 50%;
+        background: #6BACE1;
+        -webkit-transform: scale(0, 1);
+        transform: scale(0, 1);
+        -webkit-transition: all 0.5s linear;
+        transition: all 0.5s linear;
+    }
+
+    #pagerMenu li:hover:after {
+        transform: scale(1);
     }
 
     #pagerMenu li.menuActive {
-        border-bottom: 2px solid #6BACE1;
+        border-bottom: 2px solid #4f4f4f;
+        color: #4f4f4f;
+    }
+
+    #pagerMenu li.menuActive:hover {
         color: #6BACE1;
+    }
+
+    /*------------------castom scrolbar----------------------*/
+    ::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f2f2f2;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #BDBDBD;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #828282;
     }
 </style>

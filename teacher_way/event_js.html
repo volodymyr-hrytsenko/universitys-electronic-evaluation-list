@@ -171,7 +171,14 @@
           createSecondForm(adres);
           break;
         case "cancelSignature": // відкликання підпису
-          if (handBook.user.proFunctional) {
+          const arr = filterResources(handBook[adres[1]], "parent", parseInt(adres[2])),
+            listsNumber = filterResources(handBook[adres[1]], "recordNumber", parseInt(adres[2]))[0]
+            .evaluationListData.listNumber;
+          if (arr.length > 0 && handBook.user.proFunctional) {
+            messageBox("Функціонал не доступний, оскільки створено додаткову відомість", "warning");
+          } else if (listsNumber !== "" && handBook.user.proFunctional) {
+            messageBox("Функціонал не доступний, оскільки відомість зареєстровано", "warning");
+          } else if (handBook.user.proFunctional) {
             (typeof adres[3] !== "undefined") ? cancelSignature(adres):
               dialogBox("Ви справді бажаєте відкликати підпис?", adres.join("-"));
           } else {
@@ -232,7 +239,7 @@
           .then((data) => {
             // успіх
             handBook.groups = data;
-
+            generatemainPageMenu(); // метод що генерує меню
             getTeacherEvolutionsLists(recordData
                 .instituteId) // отримуємо відомості викладача по інституту, якщо такі були створені раніше
               .then((dataOne) => {
@@ -244,6 +251,8 @@
               .catch((e) => {
                 // помилка
                 console.log(e);
+                deleteSpinner();
+                messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
               });
 
             getTeamsEvList(recordData
@@ -252,16 +261,19 @@
                 // успіх
                 handBook.teamEvolutionsLists = filterTeachersDelatedEvLists(dataTwo);
                 generateTeacherEvolutionsLists(handBook.teamEvolutionsLists, "teamEvolutionsLists");
-                deleteSpinner();
               })
               .catch((e) => {
                 // помилка
                 console.log(e);
+                deleteSpinner();
+                messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
               });
           })
           .catch((e) => {
             // помилка
             console.log(e);
+            deleteSpinner();
+            messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
           });
         break;
       case "select-educationalDegree":
@@ -373,6 +385,8 @@
             .catch((e) => {
               // при помилці
               console.log(e);
+              deleteSpinner();
+              messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
             })
         }
         break;
@@ -388,6 +402,8 @@
           .catch((e) => {
             // при помилці
             console.log(e);
+            deleteSpinner();
+            messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
           })
         break;
     }
@@ -419,6 +435,8 @@
       .catch((e) => {
         // при помилці
         console.log(e);
+        deleteSpinner();
+        messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
       });
   }
 
@@ -444,11 +462,15 @@
             .catch((e) => {
               // при помилці
               console.log(e);
+              deleteSpinner();
+              messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
             })
         })
         .catch((e) => {
           // при помилці
           console.log(e);
+          deleteSpinner();
+          messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
         })
     } else {
       messageBox("Дія неможлива. Не всі поля заповнено!", "error")
@@ -477,6 +499,8 @@
       .catch((e) => {
         // помилка
         console.log(e);
+        deleteSpinner();
+        messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
       });
     getTeamsEvList(recordData
         .instituteId) // отримуємо доступні для викладача по інституту, якщо такі були створені раніше
@@ -489,6 +513,8 @@
       .catch((e) => {
         // помилка
         console.log(e);
+        deleteSpinner();
+        messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
       });
   }
 
@@ -496,8 +522,6 @@
     recordData = cloneObj(filterResources(handBook[id[1]], "recordNumber", parseInt(id[2])))[0];
     if (id[3] === "additional") handBook.parentEvList = cloneObj(filterResources(handBook[id[1]], "recordNumber",
       recordData.parent))[0];
-    console.log(recordData);
-    console.log(handBook.parentEvList);
     // тимчасові перевірки (не потрібні підчас наступної сесії)
     if (typeof recordData.authorsTeam === "undefined") recordData.authorsTeam = [];
     if (recordData.evaluationListData.controlFormId === "2") {
@@ -517,7 +541,6 @@
     delDialogBox();
     createSpinner();
     evList.status = -1;
-    console.log(evList);
     setRecordData(evList)
       .then((data) => {
         // успіх
@@ -534,6 +557,8 @@
             .catch((e) => {
               // помилка
               console.log(e);
+              deleteSpinner();
+              messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
             });
         } else {
           getTeamsEvList(recordData
@@ -547,12 +572,16 @@
             .catch((e) => {
               // помилка
               console.log(e);
+              deleteSpinner();
+              messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
             });
         }
       })
       .catch((e) => {
         // при помилці
         console.log(e);
+        deleteSpinner();
+        messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
       })
   }
 
@@ -583,9 +612,6 @@
           evList.uid = "";
           recordData = evList;
 
-          console.log(recordData);
-          console.log(handBook.parentEvList);
-
           document.getElementById("filter").style.display = "none";
           generateForm();
           document.getElementById("formWrap").style.display = "block";
@@ -595,6 +621,8 @@
         .catch((e) => {
           // при помилці
           console.log(e);
+          deleteSpinner();
+          messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
         })
     } else {
       messageBox("Даний функціонал недоступний для повторних відомостей", "warning")
@@ -605,7 +633,6 @@
     let evList = cloneObj(filterResources(handBook[id[1]], "recordNumber", parseInt(id[2])))[0];
     delDialogBox();
     createSpinner();
-    console.log(evList);
     cancelSignatureEvList(evList)
       .then((data) => {
         // успіх
@@ -622,6 +649,8 @@
             .catch((e) => {
               // помилка
               console.log(e);
+              deleteSpinner();
+              messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
             });
         } else {
           getTeamsEvList(recordData
@@ -635,12 +664,16 @@
             .catch((e) => {
               // помилка
               console.log(e);
+              deleteSpinner();
+              messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
             });
         }
       })
       .catch((e) => {
         // при помилці
         console.log(e);
+        deleteSpinner();
+        messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
       })
   }
 
@@ -695,7 +728,6 @@
       messageBox("Система не розпізнала введені вами дані", "error");
       document.getElementById(id.join("-")).value = recordData.evaluationListData.students[id[1] - 1][id[0]];
     }
-    console.log(recordData.evaluationListData.students);
   }
 
   function scanningButtonsIventInFormTable(id) {
@@ -714,7 +746,6 @@
       semesterGrade.value = "не з'явився";
       gradeSum.value = "не з'явився";
     }
-    console.log(recordData.evaluationListData.students);
   }
 
   function scanningFillGaps(evList) {

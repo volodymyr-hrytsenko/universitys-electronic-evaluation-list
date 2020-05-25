@@ -36,6 +36,8 @@
           .catch((e) => {
             // помилка
             console.log(e);
+                deleteSpinner();
+                messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
           });
 
         generateEducationalDegreeSelect(handBook.educational_degree);
@@ -143,6 +145,8 @@
           .catch((e) => {
             // при помилці
             console.log(e);
+                deleteSpinner();
+                messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
           })
         break;
     }
