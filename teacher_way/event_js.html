@@ -38,12 +38,8 @@
           resolve(res);
         })
         .withFailureHandler(reject)
-        .getDataFromHandbook(); // це функцыя з gs
+        .getDataFromHandbook(); // це функція з gs
     });
-  }
-
-  function cloneObj(obj) {
-    return JSON.parse(JSON.stringify(obj));
   }
 
   function setEventScaner() {
@@ -775,23 +771,6 @@
         })
         .withFailureHandler(reject)
         .getDataGroups(instituteId); // це функцыя з responnses
-    });
-  }
-
-  function filterResources(arr, key, query) {
-    return arr.filter(function (element) {
-      return (element[key] === query) ? true : false; //елемент співпадає з рядком запиту
-    });
-  }
-
-  function letterSort(lang, letters) {
-    letters.sort((a, b) => new Intl.Collator(lang).compare(a.name, b.name));
-    return letters;
-  }
-
-  function removeDuplicates(myArr, prop) {
-    return myArr.filter((obj, pos, arr) => {
-      return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
     });
   }
 

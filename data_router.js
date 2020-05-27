@@ -23,11 +23,13 @@ function writeDataToInstituteRouter(obj) {
       obj.recordNumber = searchRecordInSheet(obj.uid, currentSheet);
       currentSheet.getRange(obj.recordNumber, 1).setValue(JSON.stringify(obj));
     }
+    /*
     log({
       recordNumber: obj.recordNumber,
       uid: obj.uid,
       status: obj.status
     });
+    */
     return {
       recordNumber: obj.recordNumber,
       uid: obj.uid,
@@ -50,6 +52,27 @@ function searchRecordInSheet(uId, currentSheet) {
   }
   return recordNumber;
 }
+
+function writeRegistrationNumberToEvList(obj) {
+  try {
+    const routerInstituteId = getRouterInstituteId(obj.instituteId);
+    const sheetName = studyYear.getCurrentSheetsName();
+    let currentSheet = SpreadsheetApp.openById(routerInstituteId).getSheetByName(sheetName);
+    let record = currentSheet.getRange(obj.recordNumber, 1).getValue();
+    let recordObj = JSON.parse(record);
+    recordObj.evaluationListData.listNumber = obj.listNumber;
+    currentSheet.getRange(obj.recordNumber, 1).setValue(JSON.stringify(recordObj));
+  
+    return {
+      instituteId: obj.instituteId,
+      recordNumber: obj.recordNumber,
+      listNumber: obj.listNumber
+    };
+  } catch (e) {
+    return 'Error: ' + e.toString();
+  }
+}
+
 
 /*
 *************************************************

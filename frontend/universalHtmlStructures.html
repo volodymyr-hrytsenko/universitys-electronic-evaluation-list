@@ -15,4 +15,45 @@
       }).join("") }
       </table>`;
   }
+
+    function createTableBasedOnDataFromObjects(data, id) {
+    return `<table id="${id}">
+      ${ data.map((row) => {
+         return `<tr> ${ row.map((column) => {
+            if (typeof column === 'object')
+               return `<td ${column.parameters} > ${column.contents} </td>`;
+            return `<td> ${column} </td>`;
+         }).join("") } </tr>`; 
+      }).join("") }
+      </table>`;
+  }
+  
+  
+  /*
+  ==========================================
+     функціонал загального вжитку: universalFunction
+  ==========================================
+  */
+  
+  function cloneObj(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+  
+  function filterResources(arr, key, query) {//фільтрування елементів масиву об'єктів за полем key, що містить значення query 
+    return arr.filter(function (element) {
+      return (element[key] === query) ? true : false; //елемент співпадає з рядком запиту
+    });
+  }
+
+  function removeDuplicates(myArr, prop) {//видалення дублікатів масиву об'єктів за полем prop 
+    return myArr.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+    });
+  }
+
+  function letterSort(lang, letters) {//сортування масиву об'єктів за полем name (lang == 'uk')
+    letters.sort((a, b) => new Intl.Collator(lang).compare(a.name, b.name));
+    return letters;
+  }
+  
 </script>

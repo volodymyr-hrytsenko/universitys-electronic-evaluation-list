@@ -1,5 +1,6 @@
 <script>
-  let handBook = {};
+  let handBook = {},
+    lastListNumber = 0;
 
   const conformity = {
     educationalDegree: {
@@ -30,14 +31,15 @@
         getDataInstituteGroups(buffer.iddivision) //id зовнішнього довідника інститутів()
           .then((data) => {
             // успіх
+            //console.log(data);
             handBook.groups = data;
             deleteSpinner();
           })
           .catch((e) => {
             // помилка
             console.log(e);
-                deleteSpinner();
-                messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
+            deleteSpinner();
+            messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
           });
 
         generateEducationalDegreeSelect(handBook.educational_degree);
@@ -80,6 +82,7 @@
 
   function setEventScaner() {
     const page = document.getElementById("data");
+    const table = document.getElementById("mainEvList");
     page.addEventListener('change', function (el) {
       if (el.target && el.target.type == "select-one") { //details
         scanningSelectorsEvents(el.target.id); // обобка селекторів
@@ -87,8 +90,67 @@
     });
 
     page.addEventListener('click', function (el) {
-      if (el.target && el.target.type == "submit") { //details
-        // Обробка натискувань
+      let adres = el.target.id.split("-");
+      switch (adres[0]) {
+        case "first":
+          slide = 0;
+          currentSlide();
+          break;
+        case "second":
+          slide = 1;
+          currentSlide();
+          break;
+        case "editListNumber":
+          let input = document.getElementById(`listNumber-${adres[1]}`),
+            button = document.getElementById(`editListNumber-${adres[1]}`);
+
+          input.disabled = false;
+          input.focus();
+          button.parentNode.style.opacity = "1";
+          button.className = "fa fa-check";
+          button.id = `checkListNumber-${adres[1]}`;
+
+          lastListNumber = parseInt(adres[1]);
+          break;
+        case "checkListNumber":
+          let inp = document.getElementById(`listNumber-${adres[1]}`),
+            but = document.getElementById(`checkListNumber-${adres[1]}`);
+
+          const obj = {
+            instituteId: currentOption.instituteId,
+            recordNumber: parseInt(adres[1]),
+            listNumber: inp.value
+          }
+          inp.disabled = true;
+          but.className = "fa fa-refresh fa-spin";
+          but.id = "";
+
+          setRegistrationNumber(obj)
+            .then((data) => {
+              // успіх
+              console.log(data);
+              but.parentNode.style = "";
+              but.className = "fa fa-pencil";
+              but.id = `editListNumber-${adres[1]}`;
+
+              lastListNumber = 0;
+            })
+            .catch((e) => {
+              // при помилці
+              console.log(e.toString());
+              messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
+            })
+          break;
+        default:
+          if (lastListNumber > 0 && el.target.type !== "text") {
+            document.getElementById(`listNumber-${lastListNumber}`).disabled = true;
+            let b = document.getElementById(`checkListNumber-${lastListNumber}`);
+            b.parentNode.style = "";
+            b.className = "fa fa-pencil";
+            b.id = `editListNumber-${lastListNumber}`;
+            lastListNumber = 0;
+          }
+          break;
       }
     });
   }
@@ -134,28 +196,24 @@
         break;
       case "select-groups":
         currentOption.groupId = +document.getElementById("select-groups").value;
+        let currentGroup = filterResources(handBook.groups, "groupId", currentOption.groupId.toString());
+        let studentsList = (currentGroup.length) ? currentGroup[0].students : [];
         createSpinner();
         getAllEvListsByGroup(currentOption.instituteId, currentOption.groupId) // для секретаря
           .then((data) => {
             // успіх
             handBook.allEvListsByGroup = data; // записуємо в handbook дані для ствонення загальної відомості
-            genereateTables(data);
+            genereateTables(data, studentsList);
             deleteSpinner();
           })
           .catch((e) => {
             // при помилці
             console.log(e);
-                deleteSpinner();
-                messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
+            deleteSpinner();
+            messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
           })
         break;
     }
-  }
-
-  function filterResources(arr, key, query) {
-    return arr.filter(function (element) {
-      return (element[key] === query) ? true : false; //елемент співпадає з рядком запиту
-    });
   }
 
   function getAllEvListsByGroup(idInstitute, idGroup) {
@@ -168,5 +226,36 @@
         .getEvListsByGroup(idInstitute, idGroup); // це функцыя з responnses
     });
   }
-  
+
+  function setRegistrationNumber(myobj) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(res => {
+          resolve(res);
+        })
+        .withFailureHandler(reject)
+        .writeRegistrationNumberToEvList(myobj); // це функція з data_router
+    });
+  }
+
+  function qwe() {
+    let myobj = {
+      instituteId: currentOption.instituteId,
+      recordNumber: 39,
+      listNumber: "777"
+    }
+
+    // console.log(myobj);
+
+    setRegistrationNumber(myobj)
+      .then((data) => {
+        // успіх
+        console.log(data);
+      })
+      .catch((e) => {
+        // при помилці
+        console.log(e.toString());
+        messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
+      })
+  }
 </script>

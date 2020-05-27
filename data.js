@@ -6,6 +6,8 @@ function getUser() {
       "role": "anonymous"
     };
   } else {
+    //email = "main@vu.cdu.edu.ua";
+    //email = "volodyk753@vu.cdu.edu.ua";
     let allUsers = getDataJsonFromFile(router.idFolderDB, router.userJsonData).users;
     obj.role = (typeof allUsers[email] !== "undefined") ? allUsers[email].role : "notwork";
     //obj.role = allUsers[email].role;
@@ -16,8 +18,9 @@ function getUser() {
     switch (obj.role) {
       case "admin":
       case "admin_aisevlist":
-        // obj.role = "secretary";
-        obj.role = "teacher";
+        obj.role = "secretary";
+        obj.email = "infoteh@vu.cdu.edu.ua";
+        //obj.role = "teacher";
         break;
       case "teacher":
         obj.role = "teacher";
