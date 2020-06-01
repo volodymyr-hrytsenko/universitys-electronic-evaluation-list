@@ -455,7 +455,6 @@
         border: none;
     }
 
-    li a>i,
     li button>i {
         margin: 0 10px 0 20px;
     }
@@ -690,12 +689,17 @@
         color: white;
     }
 
+    .previewIcoWrap{
+        color: white;
+        display: inline;
+    }
+
     #summaryEvList tr td .icoWrap {
-        width: 24px;
-        height: 24px;
+        /* width: 24px;
+        height: 24px; */
         margin: 3px;
         opacity: 0;
-        display: inline-flex;
+        display: inline;
         justify-content: center;
         align-items: center;
         border-radius: 50%;
@@ -707,7 +711,7 @@
         opacity: 1;
     }
 
-    .icoWrap:hover{
+    .icoWrap:hover {
         background-color: #f2f2f2;
         cursor: pointer;
     }
@@ -716,7 +720,8 @@
         background-color: #ddd;
     }
 
-    table input {
+    table input,
+    .celContentWrap {
         border: none;
         background-color: transparent;
         height: inherit;
@@ -1053,7 +1058,7 @@
         position: relative;
     }
 
-    #generalEvList{
+    #generalEvList {
         margin-top: 20px;
     }
 
@@ -1070,7 +1075,7 @@
         clear: both;
     }
 
-    #generalEvList #slides>li{
+    #generalEvList #slides>li {
         top: 55px;
     }
 
@@ -1149,5 +1154,96 @@
 
     ::-webkit-scrollbar-thumb:hover {
         background: #828282;
+    }
+
+    /*-----------------evulation list html-----------------*/
+    .evList__Table__Wrap {
+        position: absolute;
+        top: 0;
+        width: 595pt;
+        min-height: 842pt;
+        margin: 50px 0 50px 0;
+        display: block;
+        background: #fff;
+        color: #000;
+        font-size: 16px;
+        -webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
+        box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
+    }
+
+    .header-table-evolution-list,
+    .table-evolution-list {
+        width: 85%;
+        margin: auto;
+        text-align: center;
+        vertical-align: middle;
+        table-layout: fixed;
+    }
+
+    .header-table-evolution-list tr,
+    .table-evolution-list tr {
+        height: 20px;
+    }
+
+    .header-table-evolution-list {
+        border: none;
+    }
+
+    .header-table-evolution-list td {
+        width: 65px;
+    }
+
+    .header-table-evolution-list td :first-child,
+    .table-evolution-list td:first-child {
+        width: 30px;
+    }
+
+    .header-table-evolution-list td :nth-child(2),
+    .table-evolution-list td:nth-child(2) {
+        width: 165px;
+    }
+
+
+    .table-evolution-list tr>td {
+        border: 1px solid black;
+    }
+
+    .cell-border-bottom {
+        border-bottom: 1px solid black;
+    }
+
+
+
+    .cell-content-left-align {
+        text-align: left;
+    }
+
+    .cell-content-right-align {
+        text-align: right;
+    }
+
+    .cell-content-center-align {
+        text-align: center;
+    }
+
+    .cell-content-top-valign {
+        vertical-align: top;
+    }
+
+    .cell-content-middle-valign {
+        vertical-align: middle;
+    }
+
+    .cell-content-bottom-valign {
+        vertical-align: bottom;
+    }
+
+    .cell-content-subtext {
+        font-size: 70%;
+    }
+
+    .cell-content-bold {
+        font-weight: bold;
     }
 </style>

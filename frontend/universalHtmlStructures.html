@@ -16,8 +16,9 @@
       </table>`;
   }
 
-    function createTableBasedOnDataFromObjects(data, id) {
-    return `<table id="${id}">
+  
+    function createTableBasedOnDataFromObjects(data, id, clas) {
+    return `<table id="${id}" class="${clas}">
       ${ data.map((row) => {
          return `<tr> ${ row.map((column) => {
             if (typeof column === 'object')
@@ -34,6 +35,34 @@
      функціонал загального вжитку: universalFunction
   ==========================================
   */
+  
+  function sumRating(a, b){
+    let result = "";
+    let ects = "";
+    if ((/^\d{1,}$/.test(a)) && (/^\d{1,}$/.test(b))) result = String(Number(a) + Number(b));// перевірка чи число
+    else 
+    if ((/^\d{1,}$/.test(a)) && !(/^\d{1,}$/.test(b))) result = a;
+    else 
+    if (!(/^\d{1,}$/.test(a)) && (/^\d{1,}$/.test(b))) result = b;
+    if(b === "не з'явився") result = "";
+    if(result !== ""){
+      let r =  Number(result);
+      if(r<35) ects = "F";
+      else
+      if(r<60) ects = "FX";
+      else
+      if(r<68) ects = "E";
+      else
+      if(r<75) ects = "D";
+      else
+      if(r<82) ects = "C";
+      else
+      if(r<90) ects = "B";
+      else
+      ects = "A";
+    }
+    return {"zvo": result, "ects": ects}
+  }
   
   function cloneObj(obj) {
     return JSON.parse(JSON.stringify(obj));

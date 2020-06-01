@@ -727,6 +727,7 @@
   }
 
   function scanningButtonsIventInFormTable(id) {
+    saveOrNotSave = 0; // вказівник на те що відбулися зміни
     const currentGrade = document.getElementById(`currentGrade-${id[1]}`),
       semesterGrade = document.getElementById(`semesterGrade-${id[1]}`),
       gradeSum = document.getElementById(`gradeSum-${id[1]}`);

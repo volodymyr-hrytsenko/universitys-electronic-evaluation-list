@@ -41,7 +41,7 @@
             deleteSpinner();
             messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
           });
-
+        //run();
         generateEducationalDegreeSelect(handBook.educational_degree);
         generateFormTrainingSelect(handBook.form_of_training);
         generateCoursSelect(handBook.course_number);
@@ -81,17 +81,34 @@
   }
 
   function setEventScaner() {
-    const page = document.getElementById("data");
-    const table = document.getElementById("mainEvList");
+    const page = document.getElementById("data"),
+      table = document.getElementById("mainEvList"),
+      modalBox = document.getElementById("modalBox");
     page.addEventListener('change', function (el) {
       if (el.target && el.target.type == "select-one") { //details
         scanningSelectorsEvents(el.target.id); // обобка селекторів
       }
     });
 
+    modalBox.addEventListener("click", el => {
+      if (el.target.className === "modalBlock") {
+        modalBox.innerHTML = "";
+      }
+    });
+
     page.addEventListener('click', function (el) {
       let adres = el.target.id.split("-");
       switch (adres[0]) {
+        case "viewEvList":
+          const b = document.createElement("div"),
+            c = document.createElement("div");
+          b.className = "modalBlock";
+          c.className = "evList__Table__Wrap";
+          c.id = "viewEvList";
+          b.append(c);
+          modalBox.append(b);
+          viewEvListHtml(filterResources(handBook.allEvListsByGroup, "recordNumber", parseInt(adres[1]))[0]);
+          break;
         case "first":
           slide = 0;
           currentSlide();
@@ -238,24 +255,25 @@
     });
   }
 
-  function qwe() {
-    let myobj = {
-      instituteId: currentOption.instituteId,
-      recordNumber: 39,
-      listNumber: "777"
-    }
 
-    // console.log(myobj);
+  // function qwe() {
+  //   let myobj = {
+  //     instituteId: currentOption.instituteId,
+  //     recordNumber: 39,
+  //     listNumber: "777"
+  //   }
 
-    setRegistrationNumber(myobj)
-      .then((data) => {
-        // успіх
-        console.log(data);
-      })
-      .catch((e) => {
-        // при помилці
-        console.log(e.toString());
-        messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
-      })
-  }
+  //   // console.log(myobj);
+
+  //   setRegistrationNumber(myobj)
+  //     .then((data) => {
+  //       // успіх
+  //       console.log(data);
+  //     })
+  //     .catch((e) => {
+  //       // при помилці
+  //       console.log(e.toString());
+  //       messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
+  //     })
+  // }
 </script>
