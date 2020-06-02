@@ -1,6 +1,7 @@
 <script>
   function showUser(data) {
-    document.getElementById("user").innerHTML = data;
+    document.querySelector('.user').innerHTML =
+      `<span>${data}</span><i class="fa fa-user-circle" id="addUserInfo"></i>`;
   }
 
   function generateInstituteSelect(data) { // створюємо випадний список для вибору інституту
@@ -104,9 +105,9 @@
             <li id="first" class="menuActive">Мої відомості</li>
             <li id="second">Спільні відомості</li>
           </ul>`,
-          generatemainPageMenu = function(){
-            document.getElementById("evList").innerHTML = mainPageMenu;
-          };
+    generatemainPageMenu = function () {
+      document.getElementById("evList").innerHTML = mainPageMenu;
+    };
 
   function generateTeacherEvolutionsLists(teachersEvLists, type) {
     let evLists = "";
@@ -206,7 +207,7 @@
       num = 1;
 
     formButtons = `
-       <button id='closeForm'></button>
+       <button class="closeForm" id='closeForm'></button>
        <div class="wrap-form-actions-button">
         <button id='actionsButtons-saveForm' class="form-actions-button"><i class="fa fa-floppy-o"></i>Зберегти</button>
         <button id='subscribe-${evList.evaluationListType}' class="form-actions-button"><i class="fa fa-pencil-square-o"></i>Підписати</button>
@@ -303,7 +304,7 @@
     const membersBox =
       `<div class="modalBlock">
         <div class="abbMembersBox">
-          <div class="wrap-close-abbMembersBox"><button id="close-abbMembersBox">Закрити </button></div>
+          <div class="wrap-close-abbMembersBox"><button class="closeForm" id='close-abbMembersBox' style="margin: 5px;"></button></div>
           <label>Додати користувача для спільного редагування</label>
           <div class="wrap-chosen-teacher">
             <ul id="chosen__teacher"></ul>
@@ -445,6 +446,30 @@
       slides[itemToShow].classList.add('slideActive');
       menu[itemToShow].classList.add('menuActive');
     };
+
+  /*----------------------------- add user info -----------------------------------*/
+
+  function generateAddUserInfoBox(){
+    const userInfoBox =
+      `<div class="modalBlock">
+        <div id="addUserInfoBox">
+          <div class="wrap-close-abbMembersBox"><button class="closeForm" id="closeUserInfoBox" style="margin: 5px;"></button></div>
+          <div class="form__group" style="width: 90%; margin: auto;">
+            <input type="input" name="formInput" class="form__field" id="director" placeholder="П.І.П." value="">
+            <label for="director" class="form__label">Директор</label>
+          </div>
+          <div class="form__group" style="width: 90%; margin: 20px auto;">
+            <input type="input" name="formInput" class="form__field" id="secretary" placeholder="П.І.П." value="">
+            <label for="secretary" class="form__label">Секретар</label>
+          </div>
+          <div class="wrap-finishChoosingTeam">
+            <button id="finishChoosingTeam">Готово</button>
+          </div>
+        </div>
+      </div>`
+    document.getElementById('modalBox').innerHTML = userInfoBox;
+  }
+
   /*----------------------------- secretary ---------------------------------------*/
 
   function generateEvaluationListTable(studentsList, data, place, type) {
@@ -463,30 +488,45 @@
         return elem.evaluationListData
       });
     let tableArray = [
-      [{parameters: 'colspan="3"', contents: ''}],
+      [{
+        parameters: 'colspan="3"',
+        contents: ''
+      }],
       ['№', 'ПІБ', 'Залікова книжка'],
-      [{parameters: 'colspan="3"', contents:'Реєстраційний №'}]
+      [{
+        parameters: 'colspan="3"',
+        contents: 'Реєстраційний №'
+      }]
     ];
     let exams = filteredData.filter((elem) => +elem.controlFormId === 1);
     if (exams.length) {
       if (exams.length === 1)
-         tableArray[0].push('Екзамени');
-      else 
-      tableArray[0].push({parameters: 'colspan="'+ exams.length +'"', contents:'Екзамени'});
+        tableArray[0].push('Екзамени');
+      else
+        tableArray[0].push({
+          parameters: 'colspan="' + exams.length + '"',
+          contents: 'Екзамени'
+        });
     }
     let tests = filteredData.filter((elem) => +elem.controlFormId === 2)
     if (tests.length) {
       if (tests.length === 1)
-         tableArray[0].push('Заліки');
-      else 
-      tableArray[0].push({parameters: 'colspan="'+ tests.length +'"', contents:'Заліки'});
+        tableArray[0].push('Заліки');
+      else
+        tableArray[0].push({
+          parameters: 'colspan="' + tests.length + '"',
+          contents: 'Заліки'
+        });
     }
     let creditСoursework = filteredData.filter((elem) => +elem.controlFormId === 3)
     if (creditСoursework.length) {
-       if (creditСoursework.length === 1)
-         tableArray[0].push('Заліки (курсова робота / практика)');
-       else 
-         tableArray[0].push({parameters: 'colspan="'+ creditСoursework.length +'"', contents:'Заліки (курсова робота / практика)'});
+      if (creditСoursework.length === 1)
+        tableArray[0].push('Заліки (курсова робота / практика)');
+      else
+        tableArray[0].push({
+          parameters: 'colspan="' + creditСoursework.length + '"',
+          contents: 'Заліки (курсова робота / практика)'
+        });
     }
     filteredData = [...exams, ...tests, ...creditСoursework];
     if (!filteredData || !filteredData.length) {
@@ -500,32 +540,33 @@
       tableArray[2].push(`<input type="text" id="listNumber-${elem.recordNum}" 
       placeholder="№" value="${elem.listNumber}" disabled> 
       <div class="icoWrap"><i id="editListNumber-${elem.recordNum}" class="fa fa-pencil"></i></div>`);
-      }); //Заповнюємо таблиці
-    
-   
+    }); //Заповнюємо таблиці
+
+
     let studentObj = {}
     studentsList.forEach((student, ind) => {
       studentObj[student.sudentId] = [ind + 1, student.name, student.gradebookNumber]
     })
 
     filteredData.forEach((elem, index) => {
-       Object.keys(studentObj).forEach(currentStudentId => {
-       let students = elem.students;
-       let found = students.filter(function (el) {
-           return el.sudentId === currentStudentId;
-       });
-       if (found.length) studentObj[currentStudentId].push(found[0].gradeSum); else studentObj[currentStudentId].push("") ;
+      Object.keys(studentObj).forEach(currentStudentId => {
+        let students = elem.students;
+        let found = students.filter(function (el) {
+          return el.sudentId === currentStudentId;
+        });
+        if (found.length) studentObj[currentStudentId].push(found[0].gradeSum);
+        else studentObj[currentStudentId].push("");
       })
     })
-    
+
 
     let studentsData = Object.values(studentObj).sort((a, b) => a[0] - b[0]);
-/*    let average = studentsData.map((elem, index) => {
-      let grade = elem.slice(3).reduce((acc, reducer) => acc + reducer) / (elem.length - 3);
-      let studentsAve = [elem[1], grade]
-      return studentsAve
-    })
-*/
+    /*    let average = studentsData.map((elem, index) => {
+          let grade = elem.slice(3).reduce((acc, reducer) => acc + reducer) / (elem.length - 3);
+          let studentsAve = [elem[1], grade]
+          return studentsAve
+        })
+    */
 
     tableArray = [...tableArray, ...studentsData]
     //let tableHtml = createTable(tableArray, 'summaryEvList')
@@ -541,182 +582,360 @@
     generateEvaluationListTable(studentsList, main, 'mainEvList', 'Основні відомості');
     generateEvaluationListTable(studentsList, additional, 'additionalEvList', 'Повторні відомості');
   }
-  
+
   /* ===================  Відомість HTML  ===================== */
-  
-  function createEvListHtml(tplContent, evListData, place){
-   let table = document.getElementById(place);
-   console.log(evListData);
-   let arrTemplate = [
-   ["","","","","","","","",""],
-   [{parameters: 'colspan="9"', contents: tplContent.title}],
-   [{parameters: 'colspan="9"', contents: evListData.institute}],
-   [{parameters: 'colspan="9"', contents: evListData.studyYearAndSemester}],
-   [{parameters: 'class="cell-content-right-align cell-content-bold" colspan="6"', contents: tplContent.titleFile},
-    {parameters: 'class="cell-border-bottom"', contents: evListData.listNumber},
-    "",""],
-   [{parameters: 'colspan="9"', contents: tplContent.result}],
-   [{parameters: 'class="cell-content-left-align" colspan="2"', contents: tplContent.discipline}, 
-    {parameters: 'class="cell-border-bottom cell-content-left-align" colspan="7"', contents: evListData.academicDiscipline}],
-   [{parameters: 'class="cell-border-bottom cell-content-left-align" colspan="7"', contents: evListData.academicDisciplineContinuation}, 
-    {parameters: 'class="cell-border-bottom" colspan="2"', contents: evListData.hourAndCredit}], 
-   [{parameters: 'class="cell-content-subtext" colspan="7"', contents: tplContent.fullNameDisc}, 
-    {parameters: 'class="cell-content-subtext" colspan="2"', contents: tplContent.ects}],     
-   [{parameters: 'class="cell-content-left-align" colspan="3"', contents: tplContent.formResult}, 
-    {parameters: 'class="cell-border-bottom" colspan="2"', contents: evListData.controlForm},
-    {parameters: 'class="cell-content-right-align" colspan="2"', contents: tplContent.dateControl},
-    {parameters: 'class="cell-border-bottom" colspan="2"', contents: evListData.date}],    
-   [{parameters: 'colspan="3"', contents: ""}, 
-    {parameters: 'class="cell-content-subtext" colspan="2"', contents: tplContent.exam},  
-    {parameters: 'colspan="4"', contents: ""}],
-   [{parameters: 'class="cell-content-left-align" colspan="2"', contents: tplContent.specialty}, 
-     {parameters: 'class="cell-border-bottom" colspan="7"', contents: evListData.speciality}],
-   [{parameters: 'colspan="2"', contents: ""}, 
-     {parameters: 'class="cell-content-subtext" colspan="7"', contents: tplContent.subSpec}],
-   [{parameters: 'class="cell-content-left-align" colspan="2"', contents: tplContent.edProgram}, 
-     {parameters: 'class="cell-border-bottom" colspan="7"', contents: evListData.educationalProgram}],
-   [{parameters: 'colspan="2"', contents: ""}, 
-     {parameters: 'class="cell-content-subtext" colspan="7"', contents: tplContent.subEdProg}],
-   [{parameters: 'class="cell-content-left-align" colspan="2"', contents: tplContent.edDegree}, 
-      {parameters: 'class="cell-border-bottom" colspan="2"', contents: evListData.educationalDegree}, 
-      {parameters: 'colspan="2"', contents: tplContent.formOfStudy}, 
-      {parameters: 'class="cell-border-bottom"', contents: evListData.educationalForm},
-      {parameters: '', contents: tplContent.group},
-      {parameters: 'class="cell-border-bottom"', contents: evListData.groupName}],
-   [{parameters: 'colspan="2"', contents: ""}, 
-      {parameters: 'class="cell-content-subtext" colspan="2"', contents: tplContent.subEdDegree}, 
-      {parameters: 'colspan="2"', contents: ""}, 
-      {parameters: 'class="cell-content-subtext"', contents: tplContent.subFormOfStudy},
-      {parameters: '', contents: ""},
-      {parameters: '', contents: ""}],
-   [{parameters: 'class="cell-border-bottom" colspan="9"', contents: evListData.teacherFullName}],
-   [{parameters: 'class="cell-content-subtext" colspan="9"', contents: tplContent.nameSurName}],
-   [{parameters: 'class="cell-border-bottom" colspan="9"', contents: evListData.teachers}],
-   [{parameters: 'class="cell-content-subtext" colspan="9"', contents: tplContent.subNameSurName}],
-    
-   ];
-   let tableHtml = createTableBasedOnDataFromObjects(arrTemplate, 'headerTableEvList', 'header-table-evolution-list');
-   arrTemplate = [
-    [{parameters: 'rowspan="2"', contents: "№"}, 
-      {parameters: 'rowspan="2" colspan="2"', contents: tplContent.lastNameSudent}, 
-      {parameters: 'rowspan="2"', contents: tplContent.studentGradebook}, 
-      {parameters: 'colspan="2"', contents: tplContent.numberOfPoints},
-      {parameters: 'colspan="2"', contents: tplContent.overallAssessment},
-      {parameters: 'rowspan="2"', contents: tplContent.teachersSignature}],
-    [tplContent.currentControl, 
-      tplContent.finalSemesterControl, 
-      tplContent.overallAssessmentZVO, 
-      tplContent.overallAssessmentECTS]    
-   ];
-   
-   evListData.students.forEach((student, ind) =>{
-     let studentRating = sumRating(student.currentGrade, student.semesterGrade);
-     arrTemplate.push(
-       [ind + 1, 
-       {parameters: 'colspan="2"', contents: getLastNameAndInitials(student.name)},
-       student.gradebookNumber,
-       student.currentGrade,
-       student.semesterGrade,
-       studentRating.zvo,
-       studentRating.ects,
-       ""
+
+  function createEvListHtml(tplContent, evListData, place) {
+    let table = document.getElementById(place);
+    console.log(evListData);
+    let arrTemplate = [
+      ["", "", "", "", "", "", "", "", ""],
+      [{
+        parameters: 'colspan="9"',
+        contents: tplContent.title
+      }],
+      [{
+        parameters: 'colspan="9"',
+        contents: evListData.institute
+      }],
+      [{
+        parameters: 'colspan="9"',
+        contents: evListData.studyYearAndSemester
+      }],
+      [{
+          parameters: 'class="cell-content-right-align cell-content-bold" colspan="6"',
+          contents: tplContent.titleFile
+        },
+        {
+          parameters: 'class="cell-border-bottom"',
+          contents: evListData.listNumber
+        },
+        "", ""
+      ],
+      [{
+        parameters: 'colspan="9"',
+        contents: tplContent.result
+      }],
+      [{
+          parameters: 'class="cell-content-left-align" colspan="2"',
+          contents: tplContent.discipline
+        },
+        {
+          parameters: 'class="cell-border-bottom cell-content-left-align" colspan="7"',
+          contents: evListData.academicDiscipline
+        }
+      ],
+      [{
+          parameters: 'class="cell-border-bottom cell-content-left-align" colspan="7"',
+          contents: evListData.academicDisciplineContinuation
+        },
+        {
+          parameters: 'class="cell-border-bottom" colspan="2"',
+          contents: evListData.hourAndCredit
+        }
+      ],
+      [{
+          parameters: 'class="cell-content-subtext" colspan="7"',
+          contents: tplContent.fullNameDisc
+        },
+        {
+          parameters: 'class="cell-content-subtext" colspan="2"',
+          contents: tplContent.ects
+        }
+      ],
+      [{
+          parameters: 'class="cell-content-left-align" colspan="3"',
+          contents: tplContent.formResult
+        },
+        {
+          parameters: 'class="cell-border-bottom" colspan="2"',
+          contents: evListData.controlForm
+        },
+        {
+          parameters: 'class="cell-content-right-align" colspan="2"',
+          contents: tplContent.dateControl
+        },
+        {
+          parameters: 'class="cell-border-bottom" colspan="2"',
+          contents: evListData.date
+        }
+      ],
+      [{
+          parameters: 'colspan="3"',
+          contents: ""
+        },
+        {
+          parameters: 'class="cell-content-subtext" colspan="2"',
+          contents: tplContent.exam
+        },
+        {
+          parameters: 'colspan="4"',
+          contents: ""
+        }
+      ],
+      [{
+          parameters: 'class="cell-content-left-align" colspan="2"',
+          contents: tplContent.specialty
+        },
+        {
+          parameters: 'class="cell-border-bottom" colspan="7"',
+          contents: evListData.speciality
+        }
+      ],
+      [{
+          parameters: 'colspan="2"',
+          contents: ""
+        },
+        {
+          parameters: 'class="cell-content-subtext" colspan="7"',
+          contents: tplContent.subSpec
+        }
+      ],
+      [{
+          parameters: 'class="cell-content-left-align" colspan="2"',
+          contents: tplContent.edProgram
+        },
+        {
+          parameters: 'class="cell-border-bottom" colspan="7"',
+          contents: evListData.educationalProgram
+        }
+      ],
+      [{
+          parameters: 'colspan="2"',
+          contents: ""
+        },
+        {
+          parameters: 'class="cell-content-subtext" colspan="7"',
+          contents: tplContent.subEdProg
+        }
+      ],
+      [{
+          parameters: 'class="cell-content-left-align" colspan="2"',
+          contents: tplContent.edDegree
+        },
+        {
+          parameters: 'class="cell-border-bottom" colspan="2"',
+          contents: evListData.educationalDegree
+        },
+        {
+          parameters: 'colspan="2"',
+          contents: tplContent.formOfStudy
+        },
+        {
+          parameters: 'class="cell-border-bottom"',
+          contents: evListData.educationalForm
+        },
+        {
+          parameters: '',
+          contents: tplContent.group
+        },
+        {
+          parameters: 'class="cell-border-bottom"',
+          contents: evListData.groupName
+        }
+      ],
+      [{
+          parameters: 'colspan="2"',
+          contents: ""
+        },
+        {
+          parameters: 'class="cell-content-subtext" colspan="2"',
+          contents: tplContent.subEdDegree
+        },
+        {
+          parameters: 'colspan="2"',
+          contents: ""
+        },
+        {
+          parameters: 'class="cell-content-subtext"',
+          contents: tplContent.subFormOfStudy
+        },
+        {
+          parameters: '',
+          contents: ""
+        },
+        {
+          parameters: '',
+          contents: ""
+        }
+      ],
+      [{
+        parameters: 'class="cell-border-bottom" colspan="9"',
+        contents: evListData.teacherFullName
+      }],
+      [{
+        parameters: 'class="cell-content-subtext" colspan="9"',
+        contents: tplContent.nameSurName
+      }],
+      [{
+        parameters: 'class="cell-border-bottom" colspan="9"',
+        contents: evListData.teachers
+      }],
+      [{
+        parameters: 'class="cell-content-subtext" colspan="9"',
+        contents: tplContent.subNameSurName
+      }],
+
+    ];
+    let tableHtml = createTableBasedOnDataFromObjects(arrTemplate, 'headerTableEvList', 'header-table-evolution-list');
+    arrTemplate = [
+      [{
+          parameters: 'rowspan="2"',
+          contents: "№"
+        },
+        {
+          parameters: 'rowspan="2" colspan="2"',
+          contents: tplContent.lastNameSudent
+        },
+        {
+          parameters: 'rowspan="2"',
+          contents: tplContent.studentGradebook
+        },
+        {
+          parameters: 'colspan="2"',
+          contents: tplContent.numberOfPoints
+        },
+        {
+          parameters: 'colspan="2"',
+          contents: tplContent.overallAssessment
+        },
+        {
+          parameters: 'rowspan="2"',
+          contents: tplContent.teachersSignature
+        }
+      ],
+      [tplContent.currentControl,
+        tplContent.finalSemesterControl,
+        tplContent.overallAssessmentZVO,
+        tplContent.overallAssessmentECTS
       ]
-    );
-   });
-  
+    ];
+
+    evListData.students.forEach((student, ind) => {
+      let studentRating = sumRating(student.currentGrade, student.semesterGrade);
+      arrTemplate.push(
+        [ind + 1,
+          {
+            parameters: 'colspan="2"',
+            contents: getLastNameAndInitials(student.name)
+          },
+          student.gradebookNumber,
+          student.currentGrade,
+          student.semesterGrade,
+          studentRating.zvo,
+          studentRating.ects,
+          ""
+        ]
+      );
+    });
+
     tableHtml += "<br>";
-   tableHtml += createTableBasedOnDataFromObjects(arrTemplate, 'tableEvList', 'table-evolution-list');
-   table.innerHTML = tableHtml;
- }
-
-function  viewEvListHtml(data){
-  const titleContentEvList = {
-    title: "МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ ЧЕРКАСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ ІМЕНІ БОГДАНА ХМЕЛЬНИЦЬКОГО",
-    titleFile: "ВІДОМІСТЬ ОБЛІКУ УСПІШНОСТІ №",
-    result: "за результатами поточного і підсумкового контролів",
-    discipline: "з навчальної дисципліни",
-    fullNameDisc: "повна назва дисципліни за навчальним планом",
-    ects: "годин (кредитів ECTS)",
-    formResult: "Форма підсумкового контролю",
-    dateControl: "Дата контролю",
-    exam: "екзамен/залік",
-    specialty: "Спеціальність",
-    subSpec: "шифр і назва спеціальності",
-    edProgram: "Освітня програма",
-    subEdProg: "назва освітньої програми",
-    edDegree: "Освітній ступінь",
-    formOfStudy: "Форма навчання",
-    group: "Група",
-    subEdDegree: "бакалавр/магістр",
-    subFormOfStudy: "денна/заочна",
-    nameSurName: "посади і ПІБ викладачів, які виставляють підсумкову оцінку",
-    subNameSurName: "посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль",
-    lastNameSudent: "Прізвище, ініціали студента",
-    studentGradebook: "№ інд. навч. плану (залікової книжки) студента",
-    numberOfPoints: "Кількість балів за",
-    overallAssessment: "Загальна оцінка за шкалою",
-    teachersSignature: "Підпис викладача, який виставив оцінку",
-    currentControl: "Поточний контроль",
-    finalSemesterControl: "Підсумковий семестровий контроль",
-    overallAssessmentZVO: "ЗВО",
-    overallAssessmentECTS: "ECTS",
+    tableHtml += createTableBasedOnDataFromObjects(arrTemplate, 'tableEvList', 'table-evolution-list');
+    table.innerHTML = tableHtml;
   }
-  
-  const evList = cloneObj(data.evaluationListData);
-    
-  //===============================
-  evList.date = formatDate(evList.date);
-  evList.institute = evList.institute.toUpperCase();// текст великими літерами
-  evList.controlForm = evList.controlForm.toLowerCase();//текст прописними літерами
-  evList.educationalDegree = evList.educationalDegree.toLowerCase();
-  evList.educationalForm = evList.educationalForm.toLowerCase();
-  let academicDiscipline = chunkString(evList.academicDiscipline, 80);// розбиття довгого рядка  
-  evList.academicDiscipline = academicDiscipline[0];
-  evList.academicDisciplineContinuation = (typeof academicDiscipline[1] !== "undefined") ? academicDiscipline[1] : "";
-  evList.teachers = evList["aditionalTeachers"].join(', ');
-  if (evList.specialization_label !=="") evList.speciality += ` (${evList.specialization_label})`;
-  let listNumber = document.getElementById(`listNumber-${evList.recordNum}`).value;
-  if(evList.listNumber !== listNumber) evList.listNumber = listNumber;
 
-  createEvListHtml(titleContentEvList, evList, 'viewEvList');
-}
+  function viewEvListHtml(data) {
+    const titleContentEvList = {
+      title: "МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ ЧЕРКАСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ ІМЕНІ БОГДАНА ХМЕЛЬНИЦЬКОГО",
+      titleFile: "ВІДОМІСТЬ ОБЛІКУ УСПІШНОСТІ №",
+      result: "за результатами поточного і підсумкового контролів",
+      discipline: "з навчальної дисципліни",
+      fullNameDisc: "повна назва дисципліни за навчальним планом",
+      ects: "годин (кредитів ECTS)",
+      formResult: "Форма підсумкового контролю",
+      dateControl: "Дата контролю",
+      exam: "екзамен/залік",
+      specialty: "Спеціальність",
+      subSpec: "шифр і назва спеціальності",
+      edProgram: "Освітня програма",
+      subEdProg: "назва освітньої програми",
+      edDegree: "Освітній ступінь",
+      formOfStudy: "Форма навчання",
+      group: "Група",
+      subEdDegree: "бакалавр/магістр",
+      subFormOfStudy: "денна/заочна",
+      nameSurName: "посади і ПІБ викладачів, які виставляють підсумкову оцінку",
+      subNameSurName: "посади і ПІБ викладачів, які проводили практичні (семінарські, лабораторні) заняття й здійснювали поточний контроль",
+      lastNameSudent: "Прізвище, ініціали студента",
+      studentGradebook: "№ інд. навч. плану (залікової книжки) студента",
+      numberOfPoints: "Кількість балів за",
+      overallAssessment: "Загальна оцінка за шкалою",
+      teachersSignature: "Підпис викладача, який виставив оцінку",
+      currentControl: "Поточний контроль",
+      finalSemesterControl: "Підсумковий семестровий контроль",
+      overallAssessmentZVO: "ЗВО",
+      overallAssessmentECTS: "ECTS",
+    }
 
-function chunkString(str, len) {// розбиття рядка довжина якого більша len на підрядки
-  str = str.replace(/ +/g, ' ').trim();// знищення зайвих пропусків у рядку
-  let words = str.split(' '), result = [], lines = [], index = 0, currentLen = 0;
-  lines[0] = [];
-  for(let i = 0; i < words.length; i++){
-    if (currentLen + words[i].length + 1 > len) {index++; lines[index] = []; currentLen = 0;}    
-    lines[index].push(words[i]);
-    currentLen = currentLen + words[i].length + 1;
+    const evList = cloneObj(data.evaluationListData);
+
+    //===============================
+    evList.date = formatDate(evList.date);
+    evList.institute = evList.institute.toUpperCase(); // текст великими літерами
+    evList.controlForm = evList.controlForm.toLowerCase(); //текст прописними літерами
+    evList.educationalDegree = evList.educationalDegree.toLowerCase();
+    evList.educationalForm = evList.educationalForm.toLowerCase();
+    let academicDiscipline = chunkString(evList.academicDiscipline, 80); // розбиття довгого рядка  
+    evList.academicDiscipline = academicDiscipline[0];
+    evList.academicDisciplineContinuation = (typeof academicDiscipline[1] !== "undefined") ? academicDiscipline[1] : "";
+    evList.teachers = evList["aditionalTeachers"].join(', ');
+    if (evList.specialization_label !== "") evList.speciality += ` (${evList.specialization_label})`;
+    let listNumber = document.getElementById(`listNumber-${evList.recordNum}`).value;
+    if (evList.listNumber !== listNumber) evList.listNumber = listNumber;
+
+    createEvListHtml(titleContentEvList, evList, 'viewEvList');
   }
-  result = lines.map(el => {return el.join(" ")});
-  return result;
-}
 
-function formatDate(UNIX_timestamp){
-  const date = new Date(UNIX_timestamp);
-  const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
-  return date.toLocaleString('uk-UA', options);
-}
-
-function getLastNameAndInitials (str) {//перетворення рядка з Прізвищем іменем і по батькові у прізвище й ініціали
-    str = str.replace(/ +/g, ' ').trim();// знищення зайвих пропусків у рядку
-    let names = str.split(' '), result;
-        switch(names.length){
-          case 2:
-            result = str.replace(/(\S+) (\S)\S*/, "$1 $2.");
-          break;
-          case 3:
-            result = str.replace(/(\S+) (\S)\S* (\S)\S*/, "$1 $2. $3.");
-          break;
-          case 4:
-            result = str.replace(/(\S+) (\S)\S* (\S)\S* (\S)\S*/, "$1 $2. $3. $4.");
-          break;
-          default:
-           result = str;
-        }        
+  function chunkString(str, len) { // розбиття рядка довжина якого більша len на підрядки
+    str = str.replace(/ +/g, ' ').trim(); // знищення зайвих пропусків у рядку
+    let words = str.split(' '),
+      result = [],
+      lines = [],
+      index = 0,
+      currentLen = 0;
+    lines[0] = [];
+    for (let i = 0; i < words.length; i++) {
+      if (currentLen + words[i].length + 1 > len) {
+        index++;
+        lines[index] = [];
+        currentLen = 0;
+      }
+      lines[index].push(words[i]);
+      currentLen = currentLen + words[i].length + 1;
+    }
+    result = lines.map(el => {
+      return el.join(" ")
+    });
     return result;
-};
-  
+  }
+
+  function formatDate(UNIX_timestamp) {
+    const date = new Date(UNIX_timestamp);
+    const options = {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric'
+    };
+    return date.toLocaleString('uk-UA', options);
+  }
+
+  function getLastNameAndInitials(str) { //перетворення рядка з Прізвищем іменем і по батькові у прізвище й ініціали
+    str = str.replace(/ +/g, ' ').trim(); // знищення зайвих пропусків у рядку
+    let names = str.split(' '),
+      result;
+    switch (names.length) {
+      case 2:
+        result = str.replace(/(\S+) (\S)\S*/, "$1 $2.");
+        break;
+      case 3:
+        result = str.replace(/(\S+) (\S)\S* (\S)\S*/, "$1 $2. $3.");
+        break;
+      case 4:
+        result = str.replace(/(\S+) (\S)\S* (\S)\S* (\S)\S*/, "$1 $2. $3. $4.");
+        break;
+      default:
+        result = str;
+    }
+    return result;
+  };
 </script>

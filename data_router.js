@@ -23,13 +23,6 @@ function writeDataToInstituteRouter(obj) {
       obj.recordNumber = searchRecordInSheet(obj.uid, currentSheet);
       currentSheet.getRange(obj.recordNumber, 1).setValue(JSON.stringify(obj));
     }
-    /*
-    log({
-      recordNumber: obj.recordNumber,
-      uid: obj.uid,
-      status: obj.status
-    });
-    */
     return {
       recordNumber: obj.recordNumber,
       uid: obj.uid,
@@ -73,18 +66,20 @@ function writeRegistrationNumberToEvList(obj) {
   }
 }
 
-
-/*
-*************************************************
-НАСТУПНІ ФУНКЦІЇ ТРЕБА ВИОКРЕМИТИ У ФАЙЛ
-*************************************************
-*/
-
 function createEvaluationList(data, newFileName) {
   let evList = JSON.parse(JSON.stringify(data));
   const evaluationListId = createCopySpreadsheet(router.idEvaluationListsFolder, router.templateId, newFileName);
   const evaluationList = SpreadsheetApp.openById(evaluationListId);
   evList.date = Utilities.formatDate(new Date(evList.date), "Europe/Kiev", "dd.MM.yyyy");
+  evList.institute = evList.institute.toUpperCase();// текст великими літерами
+  evList.controlForm = evList.controlForm.toLowerCase();//текст прописними літерами
+  if(evList.controlForm !== "екзамен") evList.controlForm = "залік";
+  evList.educationalDegree = evList.educationalDegree.toLowerCase();
+  evList.educationalForm = evList.educationalForm.toLowerCase();
+  let academicDiscipline = chunkString(evList.academicDiscipline, 80);// розбиття довгого рядка  
+  evList.academicDiscipline = academicDiscipline[0];
+  evList.academicDisciplineContinuation = (typeof academicDiscipline[1] !== "undefined") ? academicDiscipline[1] : "";
+  if (evList.specialization_label !=="") evList.speciality += ` (${evList.specialization_label})`;
   let sheet = evaluationList.getSheetByName("1");
   for (let key in evList) {
     let range = propertyToRange[key];
@@ -97,7 +92,7 @@ function createEvaluationList(data, newFileName) {
           sheet = evaluationList.getSheetByName("2");
         }
         let position = ind + rangeNum;
-        sheet.getRange('B' + position).setValue(student.name);
+        sheet.getRange('B' + position).setValue(getInitials(student.name));
         sheet.getRange('D' + position).setValue(student.gradebookNumber);
         sheet.getRange('E' + position).setValue(student.currentGrade);
         sheet.getRange('F' + position).setValue(student.semesterGrade);
@@ -127,6 +122,7 @@ function spreedshetToPDF(SpreadsheetId, pdfFileName) {
     // DriveApp.getFileById(destSpreadSheet.getId()).setTrashed(true);//видалення файлу в корзину
     let urlFile = DriveApp.getFolderById(newFileId).getUrl();
     DriveApp.getFileById(newFileId).setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW); //розшарювання файлу
+   // return newFileId;
     return {"url": urlFile, "id": newFileId};
   } catch (e) {
     return 'Error: sending mail ' + e.toString();
@@ -192,7 +188,6 @@ function sendPdfToEmail(obj) {
     return 'Error: ' + e.toString();
   }
 }
-
 //============================================================
 
 function uuidv4() {
@@ -209,3 +204,36 @@ function uid() {
 }
 
 //====================================================================
+
+function getInitials (str) {//перетворення рядка з Прізвищем іменем і по батькові у прізвище й ініціали
+    str = str.replace(/ +/g, ' ').trim();// знищення зайвих пропусків у рядку
+    let names = str.split(' '), result;
+        switch(names.length){
+          case 2:
+            result = str.replace(/(\S+) (\S)\S*/, "$1 $2.");
+          break;
+          case 3:
+            result = str.replace(/(\S+) (\S)\S* (\S)\S*/, "$1 $2. $3.");
+          break;
+          case 4:
+            result = str.replace(/(\S+) (\S)\S* (\S)\S* (\S)\S*/, "$1 $2. $3. $4.");
+          break;
+          default:
+           result = str;
+        }        
+    return result;
+};
+
+function chunkString(str, len) {// розбиття рядка довжина якого більша len на підрядки
+  str = str.replace(/ +/g, ' ').trim();// знищення зайвих пропусків у рядку
+  let words = str.split(' '), result = [], lines = [], index = 0, currentLen = 0;
+  lines[0] = [];
+  for(let i = 0; i < words.length; i++){
+    if (currentLen + words[i].length + 1 > len) {index++; lines[index] = []; currentLen = 0;}    
+    lines[index].push(words[i]);
+    currentLen = currentLen + words[i].length + 1;
+  }
+  result = lines.map(el => {return el.join(" ")});
+  return result;
+}
+

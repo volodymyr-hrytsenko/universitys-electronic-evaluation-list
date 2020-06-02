@@ -91,7 +91,9 @@
     });
 
     modalBox.addEventListener("click", el => {
-      if (el.target.className === "modalBlock") {
+      if (el.target && el.target.className === "pdf__document") {
+        modalBox.innerHTML = "";
+      }else if(el.target && el.target.id === "closeUserInfoBox"){
         modalBox.innerHTML = "";
       }
     });
@@ -99,13 +101,19 @@
     page.addEventListener('click', function (el) {
       let adres = el.target.id.split("-");
       switch (adres[0]) {
+        case "addUserInfo":
+          generateAddUserInfoBox();
+          break;
         case "viewEvList":
           const b = document.createElement("div"),
-            c = document.createElement("div");
+            c = document.createElement("div"),
+            d = document.createElement("div");
           b.className = "modalBlock";
           c.className = "evList__Table__Wrap";
           c.id = "viewEvList";
-          b.append(c);
+          d.className = "pdf__document";
+          d.append(c);
+          b.append(d);
           modalBox.append(b);
           viewEvListHtml(filterResources(handBook.allEvListsByGroup, "recordNumber", parseInt(adres[1]))[0]);
           break;

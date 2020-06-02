@@ -201,6 +201,9 @@
         case "cancel": // затираємо кастомний alert
           delDialogBox();
           break;
+        case "addUserInfo": // just fun
+          document.getElementById('addUserInfo').className = "fa fa-smile-o";
+          break;
       }
     });
   }
@@ -426,7 +429,7 @@
     setRecordData(mainEvList)
       .then((data) => {
         // успіх
-        messageBox("Дані збережено", "success");
+        messageBox("Основну відомість оновлено", "success");
       })
       .catch((e) => {
         // при помилці
@@ -898,7 +901,10 @@
   }
 
   function filterTeachersDelatedEvLists(list) {
-    return filterResources(list, "status", 0).concat(filterResources(list, "status", 1));
+    const allEvList = filterResources(list, "status", 0).concat(filterResources(list, "status", 1)),
+      mainEvList = filterResources(allEvList, "evaluationListType", 1),
+      editionalEvList = filterResources(allEvList, "evaluationListType", 2);
+    return [...mainEvList, ... editionalEvList];
   }
 
   function getListOfTeachers() {
