@@ -371,7 +371,8 @@
 
     .wrappEvList>button {
         min-height: inherit;
-        max-width: unset;
+        width: 100%;
+        text-align: left;
         font-size: 20px;
         border: none;
         background-color: transparent;
@@ -504,6 +505,13 @@
         transition: .25s;
     }
 
+    .position-right {
+        background-color: #f2f2f2;
+        position: absolute;
+        top: 32px;
+        right: calc((100% - 630pt)/2);
+    }
+
     .closeForm::before,
     .closeForm::after {
         position: absolute;
@@ -523,7 +531,7 @@
     }
 
     .closeForm:hover {
-        background-color: #F2F2F2;
+        background-color: #e0e0e0;
     }
 
     .closeForm:hover:before,
@@ -693,15 +701,21 @@
         margin-left: 20px;
     }
 
-    #summaryEvList tr:nth-child(2)>td {
+    #summaryEvList tr:nth-child(2)>td,
+    #summaryEvList tr:nth-child(3)>td {
         text-align: left;
         background-color: #828282;
         color: white;
     }
 
+    #summaryEvList tr:nth-child(3)>td {
+        text-align: center;
+    }
+
     .previewIcoWrap {
         color: white;
         display: inline;
+        cursor: pointer;
     }
 
     #summaryEvList tr td .icoWrap {
@@ -730,8 +744,7 @@
         background-color: #ddd;
     }
 
-    table input,
-    .celContentWrap {
+    table input {
         border: none;
         background-color: transparent;
         height: inherit;
@@ -1054,12 +1067,34 @@
         cursor: pointer;
     }
 
-    .wrap-finishChoosingTeam {
-        margin: 20px;
+    .wrap-doneButton {
+        margin: 25px;
         display: flex;
         justify-content: center;
     }
 
+    .doneButton {
+        width: max-content;
+        height: 27px;
+        background: #F2F2F2;
+        color: #4f4f4f;
+        font: 500 18px Arial;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        -webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+        -moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+        box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.55);
+        transition: .25s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .doneButton:hover {
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
 
     /*---------------addUserInfoBox------------------------*/
 
@@ -1181,7 +1216,7 @@
 
     /*-----------------evulation list html-----------------*/
     .pdf__document {
-        position: absolute;
+        position: relative;
         top: 0;
         left: 0;
         width: 100%;
@@ -1214,6 +1249,10 @@
         table-layout: fixed;
     }
 
+    .header-table-evolution-list {
+        margin-top: 50px;
+    }
+
     .header-table-evolution-list tr,
     .table-evolution-list tr {
         height: 20px;
@@ -1235,6 +1274,7 @@
     .header-table-evolution-list td :nth-child(2),
     .table-evolution-list td:nth-child(2) {
         width: 165px;
+        padding-left: 5px;
     }
 
 
@@ -1274,6 +1314,11 @@
 
     .cell-content-subtext {
         font-size: 70%;
+    }
+
+    #tableEvList tr:nth-child(1)>td,
+    #tableEvList tr:nth-child(2)>td {
+        font-size: 75%;
     }
 
     .cell-content-bold {

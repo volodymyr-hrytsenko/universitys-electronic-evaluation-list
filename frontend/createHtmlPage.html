@@ -313,8 +313,8 @@
             <input type="text" name="autofocus sample" placeholder="Прізвище, ім'я та по батькові" id="autocomplete__input"></input>
             <ul id="autocomplete__results"></ul>
           </div>
-          <div class="wrap-finishChoosingTeam">
-            <button id="finishChoosingTeam">Готово</button>
+          <div class="wrap-doneButton">
+            <button class="doneButton" id="finishChoosingTeam">Готово</button>
           </div>
         </div>
       </div>`
@@ -449,26 +449,26 @@
 
   /*----------------------------- add user info -----------------------------------*/
 
-  function generateAddUserInfoBox(){
-    const userInfoBox =
-      `<div class="modalBlock">
-        <div id="addUserInfoBox">
-          <div class="wrap-close-abbMembersBox"><button class="closeForm" id="closeUserInfoBox" style="margin: 5px;"></button></div>
-          <div class="form__group" style="width: 90%; margin: auto;">
-            <input type="input" name="formInput" class="form__field" id="director" placeholder="П.І.П." value="">
-            <label for="director" class="form__label">Директор</label>
+  let generateAddUserInfoBox = function (obj) {
+      const userInfoBox =
+        `<div class="modalBlock">
+          <div id="addUserInfoBox">
+            <div class="wrap-close-abbMembersBox"><button class="closeForm" id="closeUserInfoBox" style="margin: 5px;"></button></div>
+            <div class="form__group" style="width: 90%; margin: auto;">
+              <input type="input" name="formInput" class="form__field" id="director" placeholder="П.І.П." value="${obj.director}">
+              <label for="director" class="form__label">Директор</label>
+            </div>
+            <div class="form__group" style="width: 90%; margin: 20px auto;">
+              <input type="input" name="formInput" class="form__field" id="secretary" placeholder="П.І.П." value="${obj.secretary}">
+              <label for="secretary" class="form__label">Секретар</label>
+            </div>
+            <div class="wrap-doneButton">
+              <button class="doneButton" id="finishAddUserInfo">Готово</button>
+            </div>
           </div>
-          <div class="form__group" style="width: 90%; margin: 20px auto;">
-            <input type="input" name="formInput" class="form__field" id="secretary" placeholder="П.І.П." value="">
-            <label for="secretary" class="form__label">Секретар</label>
-          </div>
-          <div class="wrap-finishChoosingTeam">
-            <button id="finishChoosingTeam">Готово</button>
-          </div>
-        </div>
-      </div>`
-    document.getElementById('modalBox').innerHTML = userInfoBox;
-  }
+        </div>`
+      document.getElementById('modalBox').innerHTML = userInfoBox;
+    }
 
   /*----------------------------- secretary ---------------------------------------*/
 
@@ -493,6 +493,10 @@
         contents: ''
       }],
       ['№', 'ПІБ', 'Залікова книжка'],
+      [{
+        parameters: 'colspan="3"',
+        contents: ''
+      }],
       [{
         parameters: 'colspan="3"',
         contents: 'Реєстраційний №'
@@ -534,10 +538,13 @@
       return;
     }
     filteredData.forEach((elem, ind) => {
-      tableArray[1].push(`<div class="celContentWrap">${elem.academicDiscipline}</div>
-      <div class="previewIcoWrap"><i id="viewEvList-${elem.recordNum}" class="fa fa-file-pdf-o"></i></div><a href="${elem.url}" 
+      tableArray[1].push(`<div>${elem.academicDiscipline}</div>`);
+
+      tableArray[2].push(`<div class="previewIcoWrap"><i id="viewEvList-${elem.recordNum}" class="fa fa-file-pdf-o"></i></div><a href="${elem.url}" 
       target="_blank"><i class="fa fa-download"></i></a>`);
-      tableArray[2].push(`<input type="text" id="listNumber-${elem.recordNum}" 
+
+
+      tableArray[3].push(`<input type="text" id="listNumber-${elem.recordNum}" 
       placeholder="№" value="${elem.listNumber}" disabled> 
       <div class="icoWrap"><i id="editListNumber-${elem.recordNum}" class="fa fa-pencil"></i></div>`);
     }); //Заповнюємо таблиці
@@ -816,7 +823,7 @@
       arrTemplate.push(
         [ind + 1,
           {
-            parameters: 'colspan="2"',
+            parameters: 'class="cell-content-left-align" colspan="2"',
             contents: getLastNameAndInitials(student.name)
           },
           student.gradebookNumber,

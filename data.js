@@ -12,7 +12,7 @@ function getUser() {
     obj.role = (typeof allUsers[email] !== "undefined") ? allUsers[email].role : "notwork";
     //obj.role = allUsers[email].role;
     obj.email = email;
-    //obj.email = "infoteh@vu.cdu.edu.ua";
+    // obj.email = "infoteh@vu.cdu.edu.ua";
     // obj.email = "iim@vu.cdu.edu.ua";
     obj.proFunctional = usersSetup.permissionRevokeSignature; //true; // дозвіл на відкликання підпису
     switch (obj.role) {

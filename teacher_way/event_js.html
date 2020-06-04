@@ -749,6 +749,12 @@
   }
 
   function scanningFillGaps(evList) {
+    // тимчасові перевірки (не потрібні підчас наступної сесії)
+    let {controlForm, controlFormId} = evList;
+    if(controlForm == null && Number.isInteger(+controlFormId)){
+      evList.controlForm = handBook.controlForm[parseInt(controlFormId)].value;
+    }
+    
     const arr = ["academicDiscipline", "studyCredits", "controlForm", "teacherFullName"];
     let result = true,
       gapsNumber = 0;

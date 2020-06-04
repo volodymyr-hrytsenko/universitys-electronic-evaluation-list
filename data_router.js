@@ -1,12 +1,50 @@
 function getRouterInstituteId(instituteId) {
-  const routsheet = SpreadsheetApp.openById(mainRouter.id).getSheetByName(mainRouter.sheet);
-  let routerInstituteId = routsheet.getRange(instituteId, 1).getValue();
-  if (routerInstituteId == '') { //якщо не існує ідентифікатора роутера інституту то створюємо новий документ
-    routerInstituteId = createFileSpreadsheet(router.idFolderRouters, instituteId);
-    //ід нового документу записуємо до роутера
-    routsheet.getRange(instituteId, 1).setValue(routerInstituteId);
-  }
-  return routerInstituteId;
+  try {
+    const routsheet = SpreadsheetApp.openById(mainRouter.id).getSheetByName(mainRouter.sheet);
+    let routerInstituteId = routsheet.getRange(instituteId, 1).getValue();
+    if (routerInstituteId == '') { //якщо не існує ідентифікатора роутера інституту то створюємо новий документ
+      routerInstituteId = createFileSpreadsheet(router.idFolderRouters, instituteId);
+      //ід нового документу записуємо до роутера
+      routsheet.getRange(instituteId, 1).setValue(routerInstituteId);
+    }
+    return routerInstituteId;
+  } catch (e) {
+      return {
+        success: false,
+        message: 'Error: ' + e.toString()
+      };
+    }  
+}
+
+function getInstituteOfficials(instituteId) {
+  try {
+    const routsheet = SpreadsheetApp.openById(mainRouter.id).getSheetByName(mainRouter.sheet);
+    let officials = routsheet.getRange(instituteId, 2, 1, 2).getValues()[0];
+    return {
+      director: officials[0],
+      secretary: officials[1]
+    };
+  } catch (e) {
+      return {
+        success: false,
+        message: 'Error: ' + e.toString()
+      };
+    }
+}
+
+function setInstituteOfficials(instituteId, officialsObj) {
+  try {
+    const routsheet = SpreadsheetApp.openById(mainRouter.id).getSheetByName(mainRouter.sheet);
+    let officials = routsheet.getRange(instituteId, 2, 1, 2).setValues([[officialsObj.director, officialsObj.secretary]]);
+    return {
+      success: true
+    };
+  } catch (e) {
+      return {
+        success: false,
+        message: 'Error: ' + e.toString()
+      };
+    }
 }
 
 function writeDataToInstituteRouter(obj) {

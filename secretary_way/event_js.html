@@ -46,6 +46,8 @@
         generateFormTrainingSelect(handBook.form_of_training);
         generateCoursSelect(handBook.course_number);
         generateGroupsSelect(handBook.filteredGroupsByFormTraining);
+
+        refreshUserInfo();
       })
       .catch((e) => {})
     setEventScaner();
@@ -93,8 +95,27 @@
     modalBox.addEventListener("click", el => {
       if (el.target && el.target.className === "pdf__document") {
         modalBox.innerHTML = "";
-      }else if(el.target && el.target.id === "closeUserInfoBox"){
+      } else if (el.target && el.target.id === "closePDF") {
         modalBox.innerHTML = "";
+      } else if (el.target && el.target.id === "closeUserInfoBox") {
+        modalBox.innerHTML = "";
+      } else if (el.target && el.target.id === "finishAddUserInfo") {
+        const directorName = modalBox.querySelector("#director").value,
+          secretaryName = modalBox.querySelector("#secretary").value;
+        setUserInfo(currentOption.instituteId, {
+            director: directorName,
+            secretary: secretaryName
+          })
+          .then((data) => {
+            // успіх
+            modalBox.innerHTML = "";
+            refreshUserInfo();
+          })
+          .catch((e) => {
+            // помилка
+            console.log(e);
+            messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
+          });
       }
     });
 
@@ -102,17 +123,24 @@
       let adres = el.target.id.split("-");
       switch (adres[0]) {
         case "addUserInfo":
-          generateAddUserInfoBox();
+          generateAddUserInfoBox({
+            director: currentOption.director,
+            secretary: currentOption.secretary
+          });
           break;
         case "viewEvList":
           const b = document.createElement("div"),
             c = document.createElement("div"),
-            d = document.createElement("div");
+            d = document.createElement("div"),
+            e = document.createElement("button");
           b.className = "modalBlock";
           c.className = "evList__Table__Wrap";
           c.id = "viewEvList";
+          e.className = "closeForm position-right";
+          e.id = "closePDF"
           d.className = "pdf__document";
           d.append(c);
+          d.append(e);
           b.append(d);
           modalBox.append(b);
           viewEvListHtml(filterResources(handBook.allEvListsByGroup, "recordNumber", parseInt(adres[1]))[0]);
@@ -241,6 +269,42 @@
     }
   }
 
+  function refreshUserInfo() {
+    getUserInfo(currentOption.instituteId)
+      .then((data) => {
+        // успіх
+        currentOption.director = data.director;
+        currentOption.secretary = data.secretary;
+      })
+      .catch((e) => {
+        // помилка
+        console.log(e);
+        messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
+      });
+  }
+
+  function setUserInfo(instId, obj) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(res => {
+          resolve(res);
+        })
+        .withFailureHandler(reject)
+        .setInstituteOfficials(instId, obj); // це функція з data_router
+    });
+  }
+
+  function getUserInfo(instId) {
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(res => {
+          resolve(res);
+        })
+        .withFailureHandler(reject)
+        .getInstituteOfficials(instId); // це функція з data_router
+    });
+  }
+
   function getAllEvListsByGroup(idInstitute, idGroup) {
     return new Promise((resolve, reject) => {
       google.script.run
@@ -262,26 +326,4 @@
         .writeRegistrationNumberToEvList(myobj); // це функція з data_router
     });
   }
-
-
-  // function qwe() {
-  //   let myobj = {
-  //     instituteId: currentOption.instituteId,
-  //     recordNumber: 39,
-  //     listNumber: "777"
-  //   }
-
-  //   // console.log(myobj);
-
-  //   setRegistrationNumber(myobj)
-  //     .then((data) => {
-  //       // успіх
-  //       console.log(data);
-  //     })
-  //     .catch((e) => {
-  //       // при помилці
-  //       console.log(e.toString());
-  //       messageBox("Сталася помилка. Будь ласка спробуйте ще раз", "error");
-  //     })
-  // }
 </script>
