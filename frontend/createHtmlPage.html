@@ -199,8 +199,9 @@
       data = evList.evaluationListData;
     let formButtons,
       form,
-      tableHeader = ["№", "Прізвище, ініціали студента", "Поточний контроль", "Підсумковий семестровий контроль",
-        "Загальна оцінка"
+      tableHeader = ["№",
+        `<div class="nameWrap">Прізвище, ініціали студента<div class="icoHeaderWrap"><i id="activity-delAllFromEvList" class="fa fa-times"></i></div></div>`,
+        "Поточний контроль", "Підсумковий семестровий контроль", "Загальна оцінка"
       ],
       tableRow,
       tableMain = [],
@@ -244,13 +245,32 @@
       </div>`;
 
     let arrFildTabie = ["name", "currentGrade", "semesterGrade", "gradeSum"];
+    console.log(data.students);
 
     data.students.forEach(el => {
       tableRow = [num];
       arrFildTabie.forEach(key => {
         switch (key) {
           case "name":
-            tableRow.push(el[key]);
+            if (el.noActivity) {
+              tableRow.push(
+                `<div class="nameWrap">
+                  ${el[key]}
+                  <div class="activity icoWrap deleted">
+                    <i id="activity-addtoEvList-${num}" class="fa fa-plus"></i>
+                  </div>
+                </div>`
+              );
+            } else {
+              tableRow.push(
+                `<div class="nameWrap">
+                  ${el[key]}
+                  <div class="activity icoWrap">
+                    <i id="activity-delFromEvList-${num}" class="fa fa-times"></i>
+                  </div>
+                </div>`
+              );
+            }
             break;
           case "gradeSum":
             tableRow.push(
@@ -450,8 +470,8 @@
   /*----------------------------- add user info -----------------------------------*/
 
   let generateAddUserInfoBox = function (obj) {
-      const userInfoBox =
-        `<div class="modalBlock">
+    const userInfoBox =
+      `<div class="modalBlock">
           <div id="addUserInfoBox">
             <div class="wrap-close-abbMembersBox"><button class="closeForm" id="closeUserInfoBox" style="margin: 5px;"></button></div>
             <div class="form__group" style="width: 90%; margin: auto;">
@@ -467,8 +487,8 @@
             </div>
           </div>
         </div>`
-      document.getElementById('modalBox').innerHTML = userInfoBox;
-    }
+    document.getElementById('modalBox').innerHTML = userInfoBox;
+  }
 
   /*----------------------------- secretary ---------------------------------------*/
 

@@ -18,9 +18,9 @@ function getUser() {
     switch (obj.role) {
       case "admin":
       case "admin_aisevlist":
-        obj.role = "secretary";
-        obj.email = "infoteh@vu.cdu.edu.ua";
-        // obj.role = "teacher";
+        // obj.role = "secretary";
+        // obj.email = "infoteh@vu.cdu.edu.ua";
+        obj.role = "teacher";
         break;
       case "teacher":
         obj.role = "teacher";

@@ -181,6 +181,9 @@
             messageBox("Наразі даний функціонал не доступний", "warning");
           }
           break;
+        case "activity":
+          scaningActivity(adres);
+          break;
         case "lose": // записуємо в форму значення "не з'явився"
           adres.shift();
           const controlForm = recordData.evaluationListData.controlFormId;
@@ -698,6 +701,63 @@
     }
   }
 
+  function scaningActivity(id) {
+    saveOrNotSave = 0; // вказівник на те що відбулися зміни
+    const table = document.getElementById("formTable"),
+      ico = document.getElementById(id.join("-")),
+      students = table.querySelectorAll(".activity");
+    console.log(students);
+    switch (id[1]) {
+      case "delFromEvList":
+        recordData.evaluationListData.students[id[2] - 1].noActivity = true;
+        ico.parentNode.className = "activity icoWrap deleted";
+        ico.className = "fa fa-plus";
+        ico.id = `activity-addtoEvList-${id[2]}`;
+        break;
+      case "addtoEvList":
+        recordData.evaluationListData.students[id[2] - 1].noActivity = false;
+        ico.parentNode.className = "activity icoWrap";
+        ico.className = "fa fa-times";
+        ico.id = `activity-delFromEvList-${id[2]}`;
+        break;
+      case "delAllFromEvList":
+        const headerIco = document.getElementById(id.join("-"));
+        headerIco.id = "activity-addAlltoEvList"
+        headerIco.className = "fa fa-plus";
+
+        students.forEach(el => {
+          el.className = "activity icoWrap deleted";
+        });
+        table.querySelectorAll(".fa-times").forEach(elem => {
+          elem.className = "fa fa-plus";
+          const id = elem.id.split("-");
+          elem.id = `activity-addtoEvList-${id[2]}`;
+        });
+        recordData.evaluationListData.students.forEach(item =>{
+          item.noActivity = true;
+        });
+        break;
+      case "addAlltoEvList":
+        const headerIcon = document.getElementById(id.join("-"));
+        headerIcon.id = "activity-delAllFromEvList";
+        headerIcon.className = "fa fa-times";
+
+        students.forEach(el => {
+          el.className = "activity icoWrap";
+        });
+        table.querySelectorAll(".fa-plus").forEach(elem => {
+          elem.className = "fa fa-times";
+          const id = elem.id.split("-");
+          elem.id = `activity-delFromEvList-${id[2]}`;
+        });
+        recordData.evaluationListData.students.forEach(item =>{
+          item.noActivity = false;
+        });
+        break;
+    }
+    console.log(recordData.evaluationListData.students);
+  }
+
   function scanningFormTable(id) {
     saveOrNotSave = 0; // вказівник на те що відбулися зміни
     let marks = document.getElementById(id.join("-")).value,
@@ -750,11 +810,14 @@
 
   function scanningFillGaps(evList) {
     // тимчасові перевірки (не потрібні підчас наступної сесії)
-    let {controlForm, controlFormId} = evList;
-    if(controlForm == null && Number.isInteger(+controlFormId)){
+    let {
+      controlForm,
+      controlFormId
+    } = evList;
+    if (controlForm == null && Number.isInteger(+controlFormId)) {
       evList.controlForm = handBook.controlForm[parseInt(controlFormId)].value;
     }
-    
+
     const arr = ["academicDiscipline", "studyCredits", "controlForm", "teacherFullName"];
     let result = true,
       gapsNumber = 0;
@@ -764,12 +827,7 @@
         return result;
       }
     });
-    evList.students.forEach(el => {
-      if (el.gradeSum === "") {
-        gapsNumber++;
-      }
-    });
-    return (evList.students.length === gapsNumber) ? result = false : result;
+    return result;
   }
 
   function getDataInstituteGroups(instituteId) {
@@ -812,6 +870,7 @@
     allGroupInfo.students = cloneObj(removeDuplicates(allGroupInfo.students, "sudentId"));
 
     allGroupInfo.students.forEach(element => {
+      element.noActivity = false;
       element.currentGrade = "";
       element.semesterGrade = "";
       element.gradeSum = "";
@@ -910,7 +969,7 @@
     const allEvList = filterResources(list, "status", 0).concat(filterResources(list, "status", 1)),
       mainEvList = filterResources(allEvList, "evaluationListType", 1),
       editionalEvList = filterResources(allEvList, "evaluationListType", 2);
-    return [...mainEvList, ... editionalEvList];
+    return [...mainEvList, ...editionalEvList];
   }
 
   function getListOfTeachers() {
